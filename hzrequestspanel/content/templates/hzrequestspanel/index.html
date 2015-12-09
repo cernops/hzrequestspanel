@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+{% block title %}{% trans "hzrequestspanel" %}{% endblock %}
+
+{% block page_header %}
+   {% include "horizon/common/_page_header.html" with title=_("My Angular panel") %}
+{% endblock page_header %}
+
+{% block main %}
+<div class="row">
+hello angular panel
+</div>
+{% endblock %}
