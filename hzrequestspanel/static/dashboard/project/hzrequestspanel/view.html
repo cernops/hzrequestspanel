@@ -1,0 +1,160 @@
+<div class="form" layout="column" layout-padding>
+  <h3 style="border-bottom: 1px solid #DDDDDD; padding-bottom: 0.5em;">Request quota change for "Cloud Infra Services"</h3>
+  <div layout="row" class="fila" layout-padding>
+    <div flex="30" class="div-title-fila">
+      <h4>Compute</h4>
+    </div>
+    <div flex layout="column">
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">Number of instances</div>
+        <div flex>
+          <input type="hidden" id="instances_number_actual" value="10"/>
+          <input type="number" id="instances_number" onchange="changeNumber('instances', 'number')" onmouseup="changeNumber('instances', 'number')" min="5" value="10" tabindex="1"/>
+        </div>
+      </div>
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">Number of cores</div>
+        <div flex>
+          <input type="hidden" id="cores_number_actual" value="20"/>
+          <input type="number" id="cores_number" onchange="changeNumber('cores', 'number')" onmouseup="changeNumber('cores', 'number')" min="0" value="20" tabindex="2"/></div>
+      </div>
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">RAM</div>
+        <div flex>
+          <input type="hidden" id="ram_number_actual" value="40"/>
+          <input type="number" id="ram_number" onchange="changeNumber('ram', 'number')" onmouseup="changeNumber('ram', 'number')" min="0" value="40" tabindex="3"/> GB</div>
+      </div>
+    </div>
+  </div>
+  <div layout="row" class="fila" layout-padding>
+    <div flex="30" class="div-title-fila">
+      <h4>Storage</h4>
+      <div class="volume-description" ng-hide="volume_descrip" style="border: 1px dashed #000000;" layout-padding layout-margin>
+            <p>Click the volume type to get the volume description.</p>
+      </div>
+      <div class="volume-description" ng-show="volume_descrip" style="border: 1px dashed #000000;" layout-padding layout-margin>
+              <h5>Volume description</h5>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Name: </td>
+                    <td>{$name$}</td>
+                  </tr>
+                  <tr>
+                    <td>Usage: </td>
+                    <td>{$usage$}</td>
+                  </tr>
+                  <tr>
+                    <td>Hypervisor: </td>
+                    <td>{$hyper$}</td>
+                  </tr>
+                  <tr>
+                    <td>Max IOPS: </td>
+                    <td>{$max_iops$}</td>
+                  </tr>
+                  <tr>
+                    <td>Max Throughput: </td>
+                    <td>{$max_throughput$}</td>
+                  </tr>
+                </tbody>
+              </table>
+      </div>
+    </div>
+    <div flex layout="column">
+      <div layout="row">
+        <div flex></div>
+        <div flex class="bold" style="text-align: center;">Number</div>
+        <div flex class="bold" style="text-align: center;">Space</div>
+      </div>
+      <div layout="row" class="fila-dato" ng-click="show_volume(0, 'standard')">
+        <input type="hidden" id="standard_number_actual" value="5">
+        <input type="hidden" id="standard_size_actual" value="40">
+        <div flex class="bold">Standard</div>
+        <div flex class="div-input-number"><input type="number" min="2" value="5" id="standard_number" onchange="changeNumber('standard', 'number')" onmouseup="changeNumber('standard', 'number')" tabindex="4"/></div>
+        <div flex class="div-input-number"><input type="number" min="0" value="40" id="standard_size" onchange="changeNumber('standard', 'size')" onmouseup="changeNumber('standard', 'size')" tabindex="5"/> GB</div>
+      </div>
+      <div layout="row" class="fila-dato" ng-click="show_volume(1, 'WIG-CP1')">
+        <input type="hidden" id="wig-cp1_number_actual" value="0">
+        <input type="hidden" id="wig-cp1_size_actual" value="0">
+        <div flex class="bold">WIG-CP1</div>
+        <div flex class="div-input-number">
+          <input type="number" id="wig-cp1_number" onchange="changeNumber('wig-cp1', 'number')" onmouseup="changeNumber('wig-cp1', 'number')" min="0" value="0" tabindex="6"/>
+        </div>
+        <div flex class="div-input-number">
+          <input type="number" id="wig-cp1_size" onchange="changeNumber('wig-cp1', 'size')" onmouseup="changeNumber('wig-cp1', 'size')" min="0" value="0" tabindex="7"/> GB
+        </div>
+      </div>
+      <div layout="row" class="fila-dato" ng-click="show_volume(2, 'WIG-CP01')">
+        <input type="hidden" id="wig-cp01_number_actual" value="0">
+        <input type="hidden" id="wig-cp01_size_actual" value="0">
+        <div flex class="bold">WIG-CPO1</div>
+        <div flex class="div-input-number">
+          <input type="number" id="wig-cp01_number" onchange="changeNumber('wig-cp01', 'number')" onmouseup="changeNumber('wig-cp01', 'number')" min="0" value="0" tabindex="8"/>
+        </div>
+        <div flex class="div-input-number">
+          <input type="number" id="wig-cp01_size" onchange="changeNumber('wig-cp01', 'size')" onmouseup="changeNumber('wig-cp01', 'size')" min="0" value="0" tabindex="9"/> GB
+        </div>
+      </div>
+      <div layout="row" class="fila-dato" ng-click="show_volume(3, 'IO1')">
+        <input type="hidden" id="io1_number_actual" value="0">
+        <input type="hidden" id="io1_size_actual" value="0">
+        <div flex class="bold">IO1</div>
+        <div flex class="div-input-number">
+          <input type="number" id="io1_number" onchange="changeNumber('io1', 'number')" onmouseup="changeNumber('io1', 'number')" min="0" value="0" tabindex="10"/>
+        </div>
+        <div flex class="div-input-number">
+          <input type="number" id="io1_size" onchange="changeNumber('io1', 'size')" onmouseup="changeNumber('io1', 'size')" min="0" value="0" tabindex="11"/> GB
+        </div>
+      </div>
+      <div layout="row" class="fila-dato" ng-click="show_volume(4, 'CP1')">
+        <input type="hidden" id="cp1_number_actual" value="0">
+        <input type="hidden" id="cp1_size_actual" value="0">
+        <div flex class="bold">CP1</div>
+        <div flex class="div-input-number">
+          <input type="number" id="cp1_number" onchange="changeNumber('cp1', 'number')" onmouseup="changeNumber('cp1', 'number')" min="0" value="0" tabindex="12"/>
+        </div>
+        <div flex class="div-input-number">
+          <input type="number" id="cp1_size" onchange="changeNumber('cp1', 'size')" onmouseup="changeNumber('cp1', 'size')" min="0" value="0" tabindex="13"/> GB
+        </div>
+      </div>
+      <div layout="row" class="fila-dato" ng-click="show_volume(5, 'CP2')">
+        <input type="hidden" id="cp2_number_actual" value="0">
+        <input type="hidden" id="cp2_size_actual" value="0">
+        <div flex class="bold">CP2</div>
+        <div flex class="div-input-number">
+          <input type="number" id="cp2_number" onchange="changeNumber('cp2', 'number')" onmouseup="changeNumber('cp2', 'number')" min="0" value="0" tabindex="14"/>
+        </div>
+        <div flex class="div-input-number">
+          <input type="number" id="cp2_size" onchange="changeNumber('cp2', 'size')" onmouseup="changeNumber('cp2', 'size')" min="0" value="0" tabindex="15"/> GB
+        </div>
+      </div>
+      <div layout="row" class="fila-dato" ng-click="show_volume(6, 'CP02')">
+        <input type="hidden" id="cp02_number_actual" value="0">
+        <input type="hidden" id="cp02_size_actual" value="0">
+        <div flex class="bold">CPO2</div>
+        <div flex class="div-input-number">
+          <input type="number" id="cp02_number" onchange="changeNumber('cp02', 'number')" onmouseup="changeNumber('cp02', 'number')" min="0" value="0" tabindex="16"/>
+        </div>
+        <div flex class="div-input-number">
+          <input type="number" id="cp02_size" onchange="changeNumber('cp02', 'size')" onmouseup="changeNumber('cp02', 'size')" min="0" value="0" tabindex="17"/> GB
+        </div>
+      </div>
+    </div>
+  </div>
+  <div layout="row" class="fila" layout-padding>
+    <div flex="30" class="div-title-fila">
+      <h4>Additional comments</h4>
+    </div>
+    <div flex>
+      <textarea id="textarea-comments" tabindex="18"></textarea>
+    </div>
+  </div>
+  <div ng-show="resquest_sent">
+      A new ticket has been created: <a href="#">{$ create_ticket_msg $}</a>
+  </div>
+  <div layout="row" layout-align="end center" class="fila" layout-padding>
+        <div><md-button class="cancel btn btn-sm btn-default" ng-click="cancel()" tabindex="19">Cancel</md-button></div>
+        <div><md-button class="cancel btn btn-sm btn-default" ng-click="reset(false)" tabindex="20">Reset</md-button></div>
+        <div><md-button class="next btn btn-sm btn-primary" ng-click="send_request()" tabindex="21">Request!</md-button></div>
+  </div>
+</div>
