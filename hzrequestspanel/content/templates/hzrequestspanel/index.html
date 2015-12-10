@@ -4,11 +4,12 @@
 {% block title %}{% trans "hzrequestspanel" %}{% endblock %}
 
 {% block page_header %}
-   {% include "horizon/common/_page_header.html" with title=_("My Angular panel") %}
+   <hz-page-header header="'My plugin'" description="'My custom plugin!'">
+   </hz-page-header>
 {% endblock page_header %}
 
 {% block main %}
-<div class="row">
-hello angular panel
-</div>
+  <ng-include
+    src="'{{ STATIC_URL }}dashboard/project/hzrequestspanel/hzrequestspanel.html'">
+  </ng-include>
 {% endblock %}
