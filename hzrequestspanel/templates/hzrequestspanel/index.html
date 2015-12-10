@@ -4,22 +4,15 @@
 {% block title %}{% trans "hzrequestspanel" %}{% endblock %}
 
 {% block page_header %}
-   <hz-page-header header="'Requests'">
-   </hz-page-header>
       <!-- Angular Material CSS now available via Google CDN; version 0.11.2 used here -->
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.2/angular-material.min.css">
-
-      <!-- Angular Material Dependencies 1.3.15 -->
-  <script src="{{ STATIC_URL }}dashboard/project/hzrequestspanel/angular.min.js"></script>
-  <script src="{{ STATIC_URL }}dashboard/project/hzrequestspanel/angular-animate.min.js"></script>
-  <script src="{{ STATIC_URL }}dashboard/project/hzrequestspanel/angular-aria.min.js"></script>
-  <script src="{{ STATIC_URL }}dashboard/project/hzrequestspanel/dialog.controller.js"></script>
 {% endblock page_header %}
 
 {% block main %}
   <ng-include
     src="'{{ STATIC_URL }}dashboard/project/hzrequestspanel/hzrequestspanel.html'">
   </ng-include>
-{% endblock %}
-  <script src="{{ STATIC_URL }}dashboard/project/hzrequestspanel/angular-material.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0-rc7/angular-material.min.js"></script>
+  <script src="{{ STATIC_URL }}dashboard/project/hzrequestspanel/dialog.controller.js"></script>
   <script src="{{ STATIC_URL }}dashboard/project/hzrequestspanel/bar.js"></script>
+{% endblock %}

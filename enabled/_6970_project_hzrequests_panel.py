@@ -11,3 +11,7 @@ ADD_PANEL = ('hzrequestspanel.content.panel.Hzrequestspanel')
 ADD_INSTALLED_APPS = ['hzrequestspanel']
 
 AUTO_DISCOVER_STATIC_FILES = True
+
+ADD_SCSS_FILES = [
+    'dashboard/project/hzrequestspanel/hzrequestspanel.scss',
+]

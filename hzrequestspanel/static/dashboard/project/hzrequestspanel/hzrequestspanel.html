@@ -1,40 +1,4 @@
 <div layout="column" layout-sm="column" layout-padding style="border-top: 1px solid #DDDDDD">
-  <div ng-show="false">
-    <h3>General</h3>
-    <div class="div-request" layout="row">
-      <div flex>
-        <h4>Request</h4>
-        <p>If you have any question or general request about Cloud Service, please click the button below.</p>
-        <div flex layout="row" layout-align="center center">
-          <div>
-                <md-button style="width: 200px; height: 100px" class="btn btn-default btn-sm ajax-modal btn-create ajax-update" >Submit a request</md-button>
-          </div>
-        </div>
-      </div>
-      <div flex>
-        <h4>Incident</h4>
-        <p>If you need to report a Cloud Service incident or problem, please click the button below.</p>
-        <div flex layout="row" layout-align="center center">
-          <div>
-                <md-button style="width: 200px; height: 100px" class="btn btn-default btn-sm ajax-modal btn-create ajax-update" >Report an incident</md-button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="div-request" layout="row">
-      <div flex="65">
-          <h3>Request for shared Cloud Service Project</h3>
-          <p>Projects are groups of related virtual machines such as those concerning a specific activity or production service.</p>
-          <p>Submiting the form, you will create a new SNOW ticket for your request. From that point, your request will be manage by Cloud Team from SNOW application. After submitting your ticket, you will receive a confirmation email.</p>
-          <p>Please read <a href="http://clouddocs.web.cern.ch/clouddocs/projects/creating_projects.html">http://clouddocs.web.cern.ch/clouddocs/projects/creating_projects.html</a> for details.</p>
-      </div>
-      <div flex layout="row" layout-align="center center">
-        <div>
-              <md-button style="width: 200px; height: 100px" class="btn btn-default btn-sm ajax-modal btn-create ajax-update" >Request shared project</md-button>
-        </div>
-      </div>
-    </div>
-  </div>
   <div layout="row">
     <div class="div-request"flex="65">
         <h3>Update quota for "Cloud Infra Services"</h3>
@@ -44,7 +8,7 @@
     </div>
     <div flex layout="row" layout-align="center center">
       <div>
-            <md-button style="width: 200px; height: 100px" class="btn btn-default btn-sm ajax-modal btn-create ajax-update" ng-click="showAdvanced($event)">Request quota change</md-button>
+            <md-button style="width: 200px; height: 100px" class="btn btn-default btn-sm " ng-click="showAdvanced($event)">Request quota change</md-button>
       </div>
     </div>
   </div>
