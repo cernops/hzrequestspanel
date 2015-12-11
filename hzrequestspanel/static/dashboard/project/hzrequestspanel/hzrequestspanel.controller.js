@@ -1,8 +1,10 @@
 (function(){
   'use strict';
 
-  angular.module('horizon.app.hzrequestspanel', ['ngMaterial'])
-    .controller('Hzrequestspanelcontroller', function($scope, $mdDialog, $mdMedia) {
+  angular.module('horizon.dasboard.hzrequestspanel')
+    .controller('Hzrequestspanelcontroller', Hzrequestspanelcontroller);
+
+  function Hzrequestspanelcontroller($scope, $mdDialog, $mdMedia) {
       $scope.status = '  ';
       $scope.customFullscreen = $mdMedia('sm');
 
@@ -27,7 +29,8 @@
         });
       };
 
-    });
+    }
+
     function DialogController($scope, $mdDialog, $http, $sce) {
       $scope.reset = function() {
         var compute_hidden_fields = ['instances', 'cores', 'ram'];
