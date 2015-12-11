@@ -1,14 +1,8 @@
 (function(){
+  'use strict';
 
-function showGreenMessage(){
-    document.getElementById('div-messages').style.display='block';
-}
-
-  angular.module('myapp', ['ngMaterial']).config(function($interpolateProvider) {
-    $interpolateProvider.startSymbol('{$');
-    $interpolateProvider.endSymbol('$}');
-})
-    .controller('AppCtrl', function($scope, $mdDialog, $mdMedia) {
+  angular.module('horizon.app.hzrequestspanel', ['ngMaterial'])
+    .controller('Hzrequestspanelcontroller', function($scope, $mdDialog, $mdMedia) {
       $scope.status = '  ';
       $scope.customFullscreen = $mdMedia('sm');
 
@@ -145,12 +139,7 @@ function showGreenMessage(){
       }
 
       function sendRequest(){
-        //$scope.resquest_sent = true;
-        //$http.get('create_ticket').success(function(data){
-        //    $scope.create_ticket_msg = data;
-        //});
         $mdDialog.cancel();
-        showGreenMessage();
       }
 
       function showForm(b){
