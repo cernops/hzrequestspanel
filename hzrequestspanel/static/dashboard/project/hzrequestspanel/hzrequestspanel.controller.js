@@ -1,18 +1,17 @@
 (function(){
   'use strict';
 
-  angular.module('horizon.app')
+  angular.module('horizon.dashboard.project.hzrequestspanel')
     .controller('Hzrequestspanelcontroller', Hzrequestspanelcontroller);
 
-  Hzrequestspanelcontroller.$inject = ['horizon.dashboard.project.workflow.launch-instance.modal.service'];
 
-  function Hzrequestspanelcontroller(modalService) {
+  function Hzrequestspanelcontroller() {
       var ctrl = this;
 
       ctrl.openRequestForm = openRequestForm;
 
       function openRequestForm(context){
-          modalService.open(context);
+
       }
   }
 
