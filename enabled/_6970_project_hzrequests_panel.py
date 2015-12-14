@@ -10,6 +10,8 @@ ADD_PANEL = ('hzrequestspanel.content.panel.Hzrequestspanel')
 
 ADD_INSTALLED_APPS = ['hzrequestspanel']
 
+ADD_ANGULAR_MODULES = ['horizon.dashboard.project.hzrequestspanel']
+
 AUTO_DISCOVER_STATIC_FILES = True
 
 ADD_SCSS_FILES = [
