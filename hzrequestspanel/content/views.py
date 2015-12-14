@@ -1,5 +1,6 @@
 from horizon import views
 
+from openstack_dashboard import usage
 
 class IndexView(views.APIView):
     # A very simple class-based view...
