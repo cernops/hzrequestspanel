@@ -23,6 +23,10 @@ $black: #000000;
 	h5 {
 		font-weight: bold;
 	}
+        h3{
+            border-bottom: 1px solid #DDDDDD;
+            padding-bottom: 0.5em;
+        }
 	input[type='number'] {
 		width: 8em;
 		text-align: center;
@@ -79,8 +83,13 @@ md-dialog {
 }
 .div-title-fila div {
 	margin-top: 2em;
+        border: 1px dashed $black;
 }
 .volume-description table tr td:first-child {
 	width: 48%;
 	font-weight: bold;
+}
+.div_volume_data_headers div{
+    text-align: center;
+    font-weight: bold;
 }

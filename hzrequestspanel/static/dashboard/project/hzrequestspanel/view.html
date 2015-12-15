@@ -1,5 +1,5 @@
-<div class="form" layout="column" layout-padding>
-  <h3 style="border-bottom: 1px solid #DDDDDD; padding-bottom: 0.5em;">Request quota change for "Cloud Infra Services"</h3>
+<div class="form" layout="column" layout-padding ng-controller="DialogController as ctrl">
+  <h3>Request quota change for "{$ project_name $}"</h3>
   <div layout="row" class="fila" layout-padding>
     <div flex="30" class="div-title-fila">
       <h4>Compute</h4>
@@ -8,31 +8,31 @@
       <div layout="row" class="fila-dato">
         <div flex class="bold">Number of instances</div>
         <div flex>
-          <input type="hidden" id="instances_number_actual" value="10"/>
-          <input type="number" id="instances_number" onchange="changeNumber('instances', 'number')" onmouseup="changeNumber('instances', 'number')" min="5" value="10" tabindex="1"/>
+          <input type="hidden" id="instances_number_actual" value="{$ nova_limits.maxTotalInstances $}" />
+          <input type="number" id="instances_number" onchange="changeNumber('instances', 'number')" onmouseup="changeNumber('instances', 'number')" min="{$ nova_limits.totalInstancesUsed $}" value="{$ nova_limits.maxTotalInstances $}" tabindex="1"/>
         </div>
       </div>
       <div layout="row" class="fila-dato">
         <div flex class="bold">Number of cores</div>
         <div flex>
-          <input type="hidden" id="cores_number_actual" value="20"/>
-          <input type="number" id="cores_number" onchange="changeNumber('cores', 'number')" onmouseup="changeNumber('cores', 'number')" min="0" value="20" tabindex="2"/></div>
+          <input type="hidden" id="cores_number_actual" value="{$ nova_limits.maxTotalCores $}"/>
+          <input type="number" id="cores_number" onchange="changeNumber('cores', 'number')" onmouseup="changeNumber('cores', 'number')" min="{$ nova_limits.totalCoresUsed $}" value="{$ nova_limits.maxTotalCores $}" tabindex="2"/></div>
       </div>
       <div layout="row" class="fila-dato">
         <div flex class="bold">RAM</div>
         <div flex>
-          <input type="hidden" id="ram_number_actual" value="40"/>
-          <input type="number" id="ram_number" onchange="changeNumber('ram', 'number')" onmouseup="changeNumber('ram', 'number')" min="0" value="40" tabindex="3"/> GB</div>
+          <input type="hidden" id="ram_number_actual" value="{$ nova_limits.maxTotalRAMSize $}"/>
+          <input type="number" id="ram_number" onchange="changeNumber('ram', 'number')" onmouseup="changeNumber('ram', 'number')" min="{$ nova_limits.totalRAMUsed $}" value="{$ nova_limits.maxTotalRAMSize $}" tabindex="3"/> GB</div>
       </div>
     </div>
   </div>
   <div layout="row" class="fila" layout-padding>
     <div flex="30" class="div-title-fila">
       <h4>Storage</h4>
-      <div class="volume-description" ng-hide="volume_descrip" style="border: 1px dashed #000000;" layout-padding layout-margin>
+      <div class="volume-description" ng-hide="volume_descrip" layout-padding layout-margin>
             <p>Click the volume type to get the volume description.</p>
       </div>
-      <div class="volume-description" ng-show="volume_descrip" style="border: 1px dashed #000000;" layout-padding layout-margin>
+      <div class="volume-description" ng-show="volume_descrip" layout-padding layout-margin>
               <h5>Volume description</h5>
               <table>
                 <tbody>
@@ -61,10 +61,10 @@
       </div>
     </div>
     <div flex layout="column">
-      <div layout="row">
+      <div id="div_volume_data_headers" layout="row">
         <div flex></div>
-        <div flex class="bold" style="text-align: center;">Number</div>
-        <div flex class="bold" style="text-align: center;">Space</div>
+        <div flex>Number</div>
+        <div flex>Space</div>
       </div>
       <div layout="row" class="fila-dato" ng-click="show_volume(0, 'standard')">
         <input type="hidden" id="standard_number_actual" value="5">
