@@ -9,20 +9,20 @@
         <div flex class="bold">Number of instances</div>
         <div flex>
           <input type="hidden" id="instances_number_actual" value="{$ nova_limits.maxTotalInstances $}" />
-          <input type="number" id="instances_number" onchange="changeNumber('instances', 'number')" ng-mouseup="changeNumber('instances', 'number')" min="{$ nova_limits.totalInstancesUsed $}" value="{$ nova_limits.maxTotalInstances $}" tabindex="1"/>
+          <input type="number" id="instances_number" ng-model="instances" ng-change="changeNumber('instances', 'number')" ng-mouseup="changeNumber('instances', 'number')" min="{$ nova_limits.totalInstancesUsed $}" value="{$ nova_limits.maxTotalInstances $}" tabindex="1"/>
         </div>
       </div>
       <div layout="row" class="fila-dato">
         <div flex class="bold">Number of cores</div>
         <div flex>
           <input type="hidden" id="cores_number_actual" value="{$ nova_limits.maxTotalCores $}"/>
-          <input type="number" id="cores_number" onchange="changeNumber('cores', 'number')" ng-mouseup="changeNumber('cores', 'number')" min="{$ nova_limits.totalCoresUsed $}" value="{$ nova_limits.maxTotalCores $}" tabindex="2"/></div>
+          <input type="number" id="cores_number" ng-model="cores" ng-change="changeNumber('cores', 'number')" ng-mouseup="changeNumber('cores', 'number')" min="{$ nova_limits.totalCoresUsed $}" value="{$ nova_limits.maxTotalCores $}" tabindex="2"/></div>
       </div>
       <div layout="row" class="fila-dato">
         <div flex class="bold">RAM</div>
         <div flex>
           <input type="hidden" id="ram_number_actual" value="{$ nova_limits.maxTotalRAMSize $}"/>
-          <input type="number" id="ram_number" onchange="changeNumber('ram', 'number')" ng-mouseup="changeNumber('ram', 'number')" min="{$ nova_limits.totalRAMUsed $}" value="{$ nova_limits.maxTotalRAMSize $}" tabindex="3"/> GB</div>
+          <input type="number" id="ram_number" ng-model="ram" ng-change="changeNumber('ram', 'number')" ng-mouseup="changeNumber('ram', 'number')" min="{$ nova_limits.totalRAMUsed $}" value="{$ nova_limits.maxTotalRAMSize $}" tabindex="3"/> GB</div>
       </div>
     </div>
   </div>
@@ -33,7 +33,7 @@
             <p>Click the volume type to get the volume description.</p>
       </div>
       <div class="volume-description" ng-show="volume_descrip" layout-padding layout-margin>
-              <h5>Volume description</h5>
+              <h5>Volume type description</h5>
               <table>
                 <tbody>
                   <tr>
@@ -69,16 +69,16 @@
       <div layout="row" class="fila-dato"
            ng-repeat="vol_type in volume_type_list_limits"
            ng-click="show_volume(vol_type.id)">
-            <input type="hidden" id="{$ vol_type.name $}_number_actual" value="{$ vol_type.volumes.used $}">
-            <input type="hidden" id="{$ vol_type.name $}_size_actual" value="{$ vol_type.gigabytes.used $}">
+            <input type="hidden" id="{$ vol_type.name $}_number_actual" value="{$ vol_type.volumes.total $}">
+            <input type="hidden" id="{$ vol_type.name $}_size_actual" value="{$ vol_type.gigabytes.total $}">
             <div flex class="bold">{$ vol_type.name $}</div>
             <div flex class="div-input-number">
                 <input type="number"
                        min="{$ vol_type.volumes.used $}"
                        value="{$ vol_type.volumes.total $}"
                        id="{$ vol_type.name $}_number"
-                       ng-change="changeNumber('{$ vol_type.name $}', 'number')"
-                       ng-mouseup="changeNumber('{$ vol_type.name $}', 'number')"
+                       ng-change="changeNumber(vol_type.name, 'number')"
+                       ng-mouseup="changeNumber(vol_type.name, 'number')"
                        ng-model="number"
                        tabindex="4"/>
             </div>
@@ -87,8 +87,8 @@
                        min="{$ vol_type.gigabytes.used $}"
                        value="{$ vol_type.gigabytes.total $}"
                        id="{$ vol_type.name $}_size"
-                       ng-change="changeNumber('{$ vol_type.name $}', 'size')"
-                       ng-mouseup="changeNumber('{$ vol_type.name $}', 'size')"
+                       ng-change="changeNumber(vol_type.name, 'size')"
+                       ng-mouseup="changeNumber(vol_type.name, 'size')"
                        ng-model="size"
                        tabindex="5"/> GB
             </div>
