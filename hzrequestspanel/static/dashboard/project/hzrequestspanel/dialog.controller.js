@@ -4,9 +4,12 @@
   angular.module('horizon.dashboard.project.hzrequestspanel')
     .controller('DialogController', DialogController);
 
-  DialogController.$inject = ['$mdDialog', '$http'];
+  DialogController.$inject = ['$mdDialog',
+                              '$http',
+                              'horizon.framework.util.http.service',
+                              'horizon.framework.widgets.toast.service'];
 
-  function DialogController($mdDialog, $http) {
+  function DialogController($mdDialog, $http, apiService, toastService) {
       var ctrl = this;
 
       ctrl.reset = function() {
@@ -120,7 +123,10 @@
 
       function sendRequest(){
         $mdDialog.cancel();
-        showGreenMessage();
+        return apiService.get('/api/hzrequests/requests/', config)
+          .error(function () {
+            toastService.add('error', gettext('Unable to send the request.'));
+          });
       }
 
       function showForm(b){
