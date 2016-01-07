@@ -56,6 +56,7 @@
   function DialogController($scope, $mdDialog, $http, novaAPI, keystoneAPI, cinderAPI) {
 
       $scope.nova_limits = {};
+      $scope.username = '';
       $scope.project_id = '';
       $scope.project_name = '';
       $scope.volume_types = {'volumes': []};
@@ -76,6 +77,7 @@
       }
 
       function onGetCurrentUserSession(dict){
+          $scope.username = dict['username'];
           $scope.project_id = dict['project_id'];
           $scope.project_name = dict['project_name'];
       }
@@ -142,7 +144,6 @@
       $scope.form_display = false;
       $scope.resquest_sent = false;
 
-      $scope.messageNewProject = showMessageNewProject;
       $scope.send_request = sendRequest;
       $scope.name = 'Standard';
       $scope.usage = 'default';
@@ -163,13 +164,43 @@
 
       }
 
-      function showMessageNewProject(){
-        alert('Do we really want this form?')
+      /**
+       * Create a new Service now ticket calling a REST API
+       * 
+       */
+      function sendRequest(){
+        var data = getFormData();
+        var r = apiService.post('/project/hzrequestspanel/hzrequests/requests/', data)
+          .error(function () {
+            toastService.add('error', gettext('Unable to create the ticket.'));
+        }).success(function(response){
+            toastService.add('success', gettext('Ticket created ' + response.ticket_id));
+            $mdDialog.cancel();
+        });
       }
 
-      function sendRequest(){
-        $mdDialog.cancel();
-        showGreenMessage();
+      /**
+       * Get the form information about quota change to be sent to API call
+       */
+      function getFormData() {
+          var data = {
+              'username': $scope.username,
+              'projectname': $scope.project_name,
+              'comments': document.getElementById('textarea-comments').value,
+              'instances': document.getElementById('instances_number').value,
+              'cores': document.getElementById('cores_number').value,
+              'ram': document.getElementById('ram_number').value,
+              'volumes': {}
+          };
+          for (var key in $scope.volume_types['volumes']){
+              var vol_type_name = $scope.volume_types['volumes'][key]['name'];
+              var dict_volume_data = {
+                  'gigabytes': document.getElementById(vol_type_name + '_size').value,
+                  'volumes': document.getElementById(vol_type_name + '_number').value
+              };
+              data['volumes'][vol_type_name] = dict_volume_data;
+          }
+          return data;
       }
 
       function showForm(b){

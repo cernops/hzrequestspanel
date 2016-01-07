@@ -11,12 +11,6 @@ class HZRequest(generic.View):
     """
     url_regex = r'hzrequests/requests/$'
 
-    @rest_utils.ajax()
-    def get(self, request):
-        print "hola"
-        return {}
-
     @rest_utils.ajax(data_required=True)
     def post(self, request):
-        request = {}
-        return hzrequests_service.create(request)
+        return hzrequests_service.create(request.DATA)
