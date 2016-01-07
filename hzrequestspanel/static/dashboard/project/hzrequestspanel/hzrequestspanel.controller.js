@@ -16,7 +16,9 @@
       '$http',
       'horizon.app.core.openstack-service-api.nova',
       'horizon.app.core.openstack-service-api.keystone',
-      'horizon.app.core.openstack-service-api.cinder'
+      'horizon.app.core.openstack-service-api.cinder',
+      'horizon.framework.util.http.service',
+      'horizon.framework.widgets.toast.service'
   ];
 
   function Hzrequestspanelcontroller($scope, $mdDialog, $mdMedia, keystoneAPI) {
@@ -53,7 +55,7 @@
       }
   }
 
-  function DialogController($scope, $mdDialog, $http, novaAPI, keystoneAPI, cinderAPI) {
+  function DialogController($scope, $mdDialog, $http, novaAPI, keystoneAPI, cinderAPI, apiService, toastService) {
 
       $scope.nova_limits = {};
       $scope.username = '';
@@ -66,6 +68,7 @@
       init();
 
       function init(){
+          toastService.clearAll();
           novaAPI.getLimits().success(onGetNovaLimits);
           keystoneAPI.getCurrentUserSession().success(onGetCurrentUserSession);
           cinderAPI.volumeTypeList().success(onVolumeTypeList);
@@ -139,6 +142,8 @@
       $scope.answer = function(answer) {
         $mdDialog.hide(answer);
       };
+
+      $scope.changeNumber = changeFormValue;
 
       $scope.show_form = showForm;
       $scope.form_display = false;
@@ -227,7 +232,7 @@
         document.getElementById('textarea-comments').value = '';
       }
 
-      function changeNumber(prefix_id, field){
+      function changeFormValue(prefix_id, field){
         changeBackgroundInputs(prefix_id, field)
 
         if(field == 'number'){
