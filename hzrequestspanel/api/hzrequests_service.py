@@ -1,26 +1,35 @@
 import logging
+import os
 
 from ccitools.cloud import CloudClient
 from ccitools.servicenow import ServiceNowClient
 
 LOG = logging.getLogger(__name__)
 
+def _get_config_data():
+    config = ConfigParser()
+    config.readfp(open(os.path.join(os.path.dirname(__file__),
+                                    '../hzrequestspane.conf')))
+    return config
+
 def _create(dict_data, volume_type_name_list):
+    config = _get_config_data()
+
     # Service Now data needed
-    sn_user = ''
-    sn_pass = ''
-    sn_instance = 'cerntest'
+    sn_user = config.get("servicenow", "sn_user")
+    sn_pass = config.get("servicenow", "sn_pass")
+    sn_instance = config.get("servicenow", "sn_instance")
+
+    # Extra params needed
+    short_description = config.get("servicenow",
+                                   "sn_short_desc").format(dict_data['projectname'])
+    funtional_element = config.get("servicenow", "sn_functional_element")
+    group = config.get("servicenow", "sn_group")
 
     # Setup clients
     snowclient = ServiceNowClient(sn_user, sn_pass, instance=sn_instance)
     cloud = CloudClient()
 
-    # Extra params needed
-    short_description = "Request change of resource quota for the " \
-                        "Cloud Project: {0}".format(dict_data['projectname'])
-    funtional_element = "Cloud Infrastructure"
-    group = "Cloud Infrastructure 3rd Line Support"
- 
     # Create the ticket
     ticket = snowclient.create_request(short_description, funtional_element,
                                        assignment_group=group)
