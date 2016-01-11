@@ -99,6 +99,11 @@ md-dialog {
         cursor: default !important;
 }
 
+#div_storage_rows{
+        overflow-y: auto;
+        height: 240px;
+}
+
 #section_storage{
         min-height: 295px;
 }

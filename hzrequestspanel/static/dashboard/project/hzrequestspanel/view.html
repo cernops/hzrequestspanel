@@ -67,32 +67,34 @@
         <div flex>Space</div>
       </div>
       <div class="loading" ng-show="loading_img_show_storage"></div>
-      <div layout="row" class="fila-dato"
-           ng-repeat="vol_type in volume_type_list_limits"
-           ng-click="show_volume(vol_type.id)">
-            <input type="hidden" id="{$ vol_type.name $}_number_actual" value="{$ vol_type.volumes.total $}">
-            <input type="hidden" id="{$ vol_type.name $}_size_actual" value="{$ vol_type.gigabytes.total $}">
-            <div flex class="bold">{$ vol_type.name $}</div>
-            <div flex class="div-input-number">
-                <input type="number"
-                       min="{$ vol_type.volumes.used $}"
-                       value="{$ vol_type.volumes.total $}"
-                       id="{$ vol_type.name $}_number"
-                       ng-change="changeNumber(vol_type.name, 'number')"
-                       ng-mouseup="changeNumber(vol_type.name, 'number')"
-                       ng-model="number"
-                       tabindex="4"/>
-            </div>
-            <div flex class="div-input-number">
-                <input type="number"
-                       min="{$ vol_type.gigabytes.used $}"
-                       value="{$ vol_type.gigabytes.total $}"
-                       id="{$ vol_type.name $}_size"
-                       ng-change="changeNumber(vol_type.name, 'size')"
-                       ng-mouseup="changeNumber(vol_type.name, 'size')"
-                       ng-model="size"
-                       tabindex="5"/> GB
-            </div>
+      <div id="div_storage_rows">
+          <div layout="row" class="fila-dato"
+              ng-repeat="vol_type in volume_type_list_limits"
+              ng-click="show_volume(vol_type.id)">
+              <input type="hidden" id="{$ vol_type.name $}_number_actual" value="{$ vol_type.volumes.total $}">
+              <input type="hidden" id="{$ vol_type.name $}_size_actual" value="{$ vol_type.gigabytes.total $}">
+              <div flex class="bold">{$ vol_type.name $}</div>
+              <div flex class="div-input-number">
+                  <input type="number"
+                         min="{$ vol_type.volumes.used $}"
+                         value="{$ vol_type.volumes.total $}"
+                         id="{$ vol_type.name $}_number"
+                         ng-change="changeNumber(vol_type.name, 'number')"
+                         ng-mouseup="changeNumber(vol_type.name, 'number')"
+                         ng-model="number"
+                         tabindex="4"/>
+              </div>
+              <div flex class="div-input-number">
+                  <input type="number"
+                         min="{$ vol_type.gigabytes.used $}"
+                         value="{$ vol_type.gigabytes.total $}"
+                         id="{$ vol_type.name $}_size"
+                         ng-change="changeNumber(vol_type.name, 'size')"
+                         ng-mouseup="changeNumber(vol_type.name, 'size')"
+                         ng-model="size"
+                         tabindex="5"/> GB
+              </div>
+        </div>
       </div>
     </div>
   </div>
