@@ -65,6 +65,8 @@
       $scope.tenant_absolute_limits = {};
       $scope.volume_type_list_limits = [];
 
+      $scope.loading_img_show_storage = false;
+
       init();
 
       function init(){
@@ -72,11 +74,14 @@
           novaAPI.getLimits().success(onGetNovaLimits);
           keystoneAPI.getCurrentUserSession().success(onGetCurrentUserSession);
           cinderAPI.volumeTypeList().success(onVolumeTypeList);
+          $scope.loading_img_show_storage = true;
           cinderAPI.tenantAbsoluteLimits().success(onTenantAbsoluteLimits);
       }
 
       function onGetNovaLimits(dict){
           $scope.nova_limits = dict;
+          $scope.nova_limits.totalRAMUsed = ($scope.nova_limits.totalRAMUsed / 1024);
+          $scope.nova_limits.maxTotalRAMSize = ($scope.nova_limits.maxTotalRAMSize / 1024);
       }
 
       function onGetCurrentUserSession(dict){
@@ -116,6 +121,8 @@
               };
              $scope.volume_type_list_limits[i] = d; i++;
           }
+          $scope.loading_img_show_storage = false;
+
       }
 
       function onVolumeTypeList(list){
@@ -179,7 +186,7 @@
           .error(function () {
             toastService.add('error', gettext('Unable to create the ticket.'));
         }).success(function(response){
-            toastService.add('success', gettext('Ticket created ' + response.ticket_id));
+            toastService.add('success', gettext('Ticket created ' + response.ticket_number));
             $mdDialog.cancel();
         });
       }

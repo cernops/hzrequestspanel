@@ -66,6 +66,7 @@ $black: #000000;
 }
 md-dialog {
 	width: 80% !important;
+	min-height: 740px !important;
 }
 .div-input-number {
 	text-align: center;
@@ -92,4 +93,19 @@ md-dialog {
 #div_volume_data_headers div{
     text-align: center;
     font-weight: bold;
+}
+
+#section_compute.fila .fila-dato {
+        cursor: default !important;
+}
+
+#section_storage{
+        min-height: 295px;
+}
+
+.loading {
+        background-image: url('/static/dashboard/project/hzrequestspanel/img/loading.svg');
+        width: 100px;
+        height: 100px;
+        margin: auto;
 }
