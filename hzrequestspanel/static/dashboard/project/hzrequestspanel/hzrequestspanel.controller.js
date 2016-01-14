@@ -64,6 +64,7 @@
       $scope.volume_types = {'volumes': []};
       $scope.tenant_absolute_limits = {};
       $scope.volume_type_list_limits = [];
+      $scope.volume_type_names = [];
 
       $scope.loading_img_show_storage = false;
 
@@ -119,7 +120,8 @@
                            'total': total_gigabytes
                        }
               };
-             $scope.volume_type_list_limits[i] = d; i++;
+              $scope.volume_type_names[i] = name;
+              $scope.volume_type_list_limits[i] = d; i++;
           }
           $scope.loading_img_show_storage = false;
 
@@ -221,20 +223,19 @@
 
       function reset(){
         var compute_hidden_fields = ['instances', 'cores', 'ram'];
-        var volume_hidden_fields = ['standard', 'wig-cp1', 'wig-cp01', 'io1', 'cp1', 'cp2', 'cp02'];
         for (var i in compute_hidden_fields){
             var start_value = document.getElementById(compute_hidden_fields[i] + '_number_actual').value;
             document.getElementById(compute_hidden_fields[i] + '_number').value = start_value;
             changeBackgroundInputs(compute_hidden_fields[i], 'number');
         }
-        for (var i in volume_hidden_fields){
-            var start_value = document.getElementById(volume_hidden_fields[i] + '_number_actual').value;
-            document.getElementById(volume_hidden_fields[i] + '_number').value = start_value;
-            changeBackgroundInputs(volume_hidden_fields[i], 'number');
+        for (var i in $scope.volume_type_names){
+            var start_value = document.getElementById($scope.volume_type_names[i] + '_number_actual').value;
+            document.getElementById($scope.volume_type_names[i] + '_number').value = start_value;
+            changeBackgroundInputs($scope.volume_type_names[i], 'number');
 
-            start_value = document.getElementById(volume_hidden_fields[i] + '_size_actual').value;
-            document.getElementById(volume_hidden_fields[i] + '_size').value = start_value;
-            changeBackgroundInputs(volume_hidden_fields[i], 'size');
+            start_value = document.getElementById($scope.volume_type_names[i] + '_size_actual').value;
+            document.getElementById($scope.volume_type_names[i] + '_size').value = start_value;
+            changeBackgroundInputs($scope.volume_type_names[i], 'size');
         }
         document.getElementById('textarea-comments').value = '';
       }
