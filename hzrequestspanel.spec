@@ -16,6 +16,7 @@ Source0:	%{pypi_name}-%{version}.tar.gz
 BuildArch:      noarch
 
 BuildRequires:	python2-devel
+BuildRequires:  python-setuptools
 
 %description
 OpenStack Dashboard plugin to create a new panel, under Project dashboard, to manage Requests to Service Now
