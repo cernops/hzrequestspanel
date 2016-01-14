@@ -74,9 +74,9 @@
           toastService.clearAll();
           novaAPI.getLimits().success(onGetNovaLimits);
           keystoneAPI.getCurrentUserSession().success(onGetCurrentUserSession);
-          cinderAPI.volumeTypeList().success(onVolumeTypeList);
+          cinderAPI.getVolumeTypes().success(onVolumeTypeList);
           $scope.loading_img_show_storage = true;
-          cinderAPI.tenantAbsoluteLimits().success(onTenantAbsoluteLimits);
+          cinderAPI.getAbsoluteLimits().success(onTenantAbsoluteLimits);
       }
 
       function onGetNovaLimits(dict){
@@ -104,10 +104,10 @@
               var used_volumes_key_string = 'used_volumes_' + name;
               var used_gigabytes_key_string = 'used_gigabytes_' + name;
 
-              var total_volumes = $scope.tenant_absolute_limits['items'][total_volumes_key_string];
-              var total_gigabytes = $scope.tenant_absolute_limits['items'][total_gigabytes_key_string];
-              var used_volumes = $scope.tenant_absolute_limits['items'][used_volumes_key_string];
-              var used_gigabytes = $scope.tenant_absolute_limits['items'][used_gigabytes_key_string];
+              var total_volumes = $scope.tenant_absolute_limits[total_volumes_key_string];
+              var total_gigabytes = $scope.tenant_absolute_limits[total_gigabytes_key_string];
+              var used_volumes = $scope.tenant_absolute_limits[used_volumes_key_string];
+              var used_gigabytes = $scope.tenant_absolute_limits[used_gigabytes_key_string];
 
               var d = {'id': id,
                        'name': name,
