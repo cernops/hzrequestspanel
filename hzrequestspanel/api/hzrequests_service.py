@@ -42,10 +42,9 @@ def create(dict_data):
     LOG.info("Creating service now ticket with: {0}".format(dict_data))
     # Call Daniel's function
     ticket_number = ''
-    try {
+    try:
        ticket_number = _create(dict_data, volume_type_name_list)
        return {"ticket_number": ticket_number}
-    } except Exception as e:
+    except Exception as e:
         LOG.error(e.message)
         return {"error_message": e.message}
-    }
