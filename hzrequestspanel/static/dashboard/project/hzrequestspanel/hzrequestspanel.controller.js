@@ -41,7 +41,7 @@
       function openRequestForm(ev){
         $mdDialog.show({
           controller: DialogController,
-          templateUrl: '/static/dashboard/project/hzrequestspanel/view.html',
+          templateUrl: STATIC_URL + 'dashboard/project/hzrequestspanel/view.html',
           parent: angular.element(document.body),
           targetEvent: ev,
           clickOutsideToClose:true,
