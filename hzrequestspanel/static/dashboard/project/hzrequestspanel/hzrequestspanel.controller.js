@@ -67,6 +67,7 @@
       $scope.volume_type_names = [];
 
       $scope.loading_img_show_storage = false;
+      $scope.static_url = STATIC_URL;
 
       init();
 
