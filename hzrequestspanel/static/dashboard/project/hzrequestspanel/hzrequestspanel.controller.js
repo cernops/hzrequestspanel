@@ -68,6 +68,7 @@
 
       $scope.loading_img_show_storage = false;
       $scope.static_url = STATIC_URL;
+      $scope.request_sent = false;
 
       init();
 
@@ -185,6 +186,7 @@
        */
       function sendRequest(){
         var data = getFormData();
+        $scope.request_sent = true;
         var r = apiService.post('/project/hzrequestspanel/hzrequests/requests/', data)
           .error(function () {
             toastService.add('error', gettext('Unable to create the ticket.'));
