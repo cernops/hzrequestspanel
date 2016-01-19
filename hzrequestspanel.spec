@@ -107,5 +107,5 @@ install -p -D -m 640 enabled/_6970_project_hzrequests_panel.py %{buildroot}%{_da
 %endif
 
 %changelog
-* Thu Jan 14 2016 Marcos Fermin Lobo <marcos.fermin.lobo@cern.ch> - 0.1-1
+* Thu Jan 14 2016 Marcos Fermin Lobo <marcos.fermin.lobo@cern.ch> 0.1-1
 - First RPM
