@@ -1,7 +1,7 @@
 import logging
 import os
 
-from ccitools.cloud import CloudClient
+from ConfigParser import ConfigParser
 from ccitools.servicenow import ServiceNowClient
 
 LOG = logging.getLogger(__name__)
@@ -28,19 +28,18 @@ def _create(dict_data, volume_type_name_list):
 
     # Setup clients
     snowclient = ServiceNowClient(sn_user, sn_pass, instance=sn_instance)
-    cloud = CloudClient()
 
     # Create the ticket
     ticket = snowclient.create_request(short_description, funtional_element,
                                        assignment_group=group)
+
     # Fill the ticket
     snowclient.create_quota_update(ticket.number, volume_type_name_list, dict_data)
 
     return ticket.number
 
-def create(dict_data):
+def create(dict_data, volume_type_name_list):
     LOG.info("Creating service now ticket with: {0}".format(dict_data))
-    # Call Daniel's function
     ticket_number = ''
     try:
        ticket_number = _create(dict_data, volume_type_name_list)
