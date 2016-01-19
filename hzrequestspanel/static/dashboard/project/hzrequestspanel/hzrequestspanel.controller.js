@@ -126,6 +126,7 @@
               $scope.volume_type_list_limits[i] = d; i++;
           }
           $scope.loading_img_show_storage = false;
+          $scope.$apply();
 
       }
 
