@@ -39,6 +39,7 @@ def _create(dict_data, volume_type_name_list):
         snowclient = ServiceNowClient(sn_user, sn_pass, instance=sn_instance)
     except Exception as e:
         LOG.error("Error instanciating snow client:" + e.message)
+        raise e
 
     # Create the ticket
     LOG.info("Create SNOW ticket short_description: '{0}', " \
@@ -49,6 +50,7 @@ def _create(dict_data, volume_type_name_list):
                                            assignment_group=group)
     except Exception as e:
         LOG.error("Error creating ticket:" + e.message)
+        raise e
 
     # Fill the ticket
     LOG.info("Update SNOW ticket ticket.number: '{0}', " \
@@ -59,16 +61,12 @@ def _create(dict_data, volume_type_name_list):
         snowclient.create_quota_update(ticket.number, volume_type_name_list, dict_data)
     except Exception as e:
         LOG.error("Error updating snow ticket:" + e.message)
+        raise e
 
     return ticket.number
 
 def create(dict_data, volume_type_name_list):
     LOG.info("Creating service now ticket with: {0}".format(dict_data))
-    ticket_number = ''
-    try:
-       ticket_number = _create(dict_data, volume_type_name_list)
-       LOG.info("SNOW ticket created successfully")
-       return {"ticket_number": ticket_number}
-    except Exception as e:
-        LOG.error("Error creating SNOW ticket: " + e.message)
-        return {"error_message": e.message}
+    ticket_number = _create(dict_data, volume_type_name_list)
+    LOG.info("SNOW ticket created successfully")
+    return {"ticket_number": ticket_number}
