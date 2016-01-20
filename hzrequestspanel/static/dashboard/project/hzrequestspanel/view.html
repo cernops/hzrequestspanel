@@ -109,8 +109,8 @@
     </div>
   </div>
   <div layout="row" layout-align="end center" class="fila" layout-padding>
-        <div><button class="btn btn-default secondary cancel" ng-click="cancel()" tabindex="31">Cancel</button></div>
-        <div><button class="btn btn-default secondary cancel" ng-click="reset(false)" tabindex="32">Reset</button></div>
+        <div><button class="btn btn-default secondary cancel" ng-click="cancel()" ng-disabled="request_sent" tabindex="31">Cancel</button></div>
+        <div><button class="btn btn-default secondary cancel" ng-click="reset(false)" ng-disabled="request_sent" tabindex="32">Reset</button></div>
         <div>
             <button class="btn btn-primary" ng-hide="request_sent" ng-click="send_request()" tabindex="21">Submit</button>
             <button class="btn btn-default secondary" ng-show="request_sent" ng-disabled="true" style="width: 82px;"><img ng-src="{$ static_url $}dashboard/project/hzrequestspanel/loading-button.svg" alt="loading spinner" /></button>
