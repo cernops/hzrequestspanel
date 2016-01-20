@@ -95,7 +95,7 @@ install -p -D -m 640 enabled/_6970_project_hzrequests_panel.py %{buildroot}%{_da
 %doc README.md
 %{python2_sitelib}/%{pypi_name}*
 %{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6970_project_hzrequests_panel.py*
-/etc/openstack-dashboard/%{pypi_name}.conf
+%attr(0644, apache, apache) /etc/openstack-dashboard/%{pypi_name}.conf
 
 # Files for python3
 %if 0%{?with_python3}
@@ -106,7 +106,7 @@ install -p -D -m 640 enabled/_6970_project_hzrequests_panel.py %{buildroot}%{_da
 %{_bindir}/%{pypi_name}*
 %{python3_sitelib}/%{pypi_name}
 %{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6970_project_hzrequests_panel.py*
-/etc/openstack-dashboard/%{pypi_name}.conf
+%attr(0644, apache, apache) /etc/openstack-dashboard/%{pypi_name}.conf
 %endif
 
 %changelog
