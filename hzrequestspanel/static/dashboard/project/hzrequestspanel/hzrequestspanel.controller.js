@@ -27,6 +27,7 @@
 
       ctrl.openRequestForm = openRequestForm;
       ctrl.customFullscreen = $mdMedia('sm');
+      ctrl.is_personal_project = false;
 
       init();
 
@@ -36,6 +37,7 @@
 
       function onGetCurrentUserSession(dict){
           ctrl.project_name = dict['project_name'];
+          ctrl.is_personal_project = (ctrl.project_name.indexOf("Personal") > -1);
       }
 
       function openRequestForm(ev){

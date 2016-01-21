@@ -6,10 +6,8 @@
 {% block title %}{% trans "Requests" %}{% endblock %}
 
 {% block page_header %}
-      <!-- Angular Material CSS now available via Google CDN; version 1.0.0 used here -->
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
 {% compress css %}
-    <link rel="stylesheet" href="{{ STATIC_URL }}dashboard/project/hzrequestspanel/hzrequestspanel.scss">
+    <link rel="stylesheet" href="{{ STATIC_URL }}dashboard/project/hzrequestspanel/angular-material.min.css">
 {% endcompress %}
 {% endblock page_header %}
 
@@ -17,7 +15,5 @@
   <ng-include
     src="'{{ STATIC_URL }}dashboard/project/hzrequestspanel/hzrequestspanel.html'">
   </ng-include>
-  <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-animate.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-aria.min.js"></script>
 {% endblock %}
+

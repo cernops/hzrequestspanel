@@ -1,12 +1,17 @@
 <div id="div-hzrequestspanel" ng-controller="Hzrequestspanelcontroller as ctrl" layout="column" layout-sm="column" layout-padding>
   <div layout="row" class="md-layout-row">
-    <div class="div-request"flex="65">
+    <div class="div-request" flex>
         <h3>Update quota for "{$ ctrl.project_name $}"</h3>
+        <div ng-hide="ctrl.is_personal_project">
         <p>Cloud project owners who want to change the resource quota for this project should click "Request quota change" button and fill the form.</p>
         <p>Submiting the form, you will create a new SNOW ticket for your request. From that point, your request will be manage by Cloud Team from SNOW application. After submitting your ticket, you will receive a confirmation email.</p>
         <p>For details on Cloud projects, please read <a href="http://clouddocs.web.cern.ch/clouddocs/details/quotas.html">http://clouddocs.web.cern.ch/clouddocs/details/quotas.html</a> </p>
+        </div>
+        <div ng-show="ctrl.is_personal_project">
+<h4 class="personal_project_msg">Please note that this feature is only available for Shared projects. Change to a Shared project in the dropdown project list.</h4>
+        </div>
     </div>
-    <div flex layout="row" class="md-layout-row layout-align-center-center" layout-align="center center">
+    <div flex="35" layout="row" ng-hide="ctrl.is_personal_project" class="md-layout-row layout-align-center-center" layout-align="center center">
       <div id="div-hzrequestspanel-button">
             <md-button ng-click="ctrl.openRequestForm($event)">Request quota change</md-button>
       </div>
