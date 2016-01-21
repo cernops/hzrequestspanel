@@ -2,7 +2,8 @@
   'use strict';
 
   angular.module('horizon.dashboard.project.hzrequestspanel')
-    .controller('Hzrequestspanelcontroller', Hzrequestspanelcontroller);
+    .controller('Hzrequestspanelcontroller', Hzrequestspanelcontroller)
+    .controller('DialogController', DialogController);
 
   Hzrequestspanelcontroller.$inject = [
       '$scope',
