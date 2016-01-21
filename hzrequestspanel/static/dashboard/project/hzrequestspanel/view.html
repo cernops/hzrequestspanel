@@ -1,5 +1,6 @@
 <div class="form" layout="column" layout-padding ng-controller="DialogController">
   <h3>Request quota change for "{$ project_name $}"</h3>
+  <form name="hzrequestspanelForm">
   <div id="section_compute" layout="row" class="fila" layout-padding>
     <div flex="30" class="div-title-fila">
       <h4>Compute</h4>
@@ -9,20 +10,40 @@
         <div flex class="bold">Number of instances</div>
         <div flex>
           <input type="hidden" id="instances_number_actual" value="{$ nova_limits.maxTotalInstances $}" />
-          <input type="number" id="instances_number" ng-model="instances" ng-change="changeNumber('instances', 'number')" ng-mouseup="changeNumber('instances', 'number')" min="{$ nova_limits.totalInstancesUsed $}" value="{$ nova_limits.maxTotalInstances $}" tabindex="7"/>
+          <input type="number" id="instances_number"
+              ng-model="instances"
+              min="{$ nova_limits.totalInstancesUsed $}"
+              tabindex="7"
+              ng-pattern="/^[0-9]+$/"
+              required
+              ng-class="{'up_number': instances > nova_limits.maxTotalInstances, 'down_number': instances < nova_limits.maxTotalInstances}"/>
         </div>
       </div>
       <div layout="row" class="fila-dato">
         <div flex class="bold">Number of cores</div>
         <div flex>
           <input type="hidden" id="cores_number_actual" value="{$ nova_limits.maxTotalCores $}"/>
-          <input type="number" id="cores_number" ng-model="cores" ng-change="changeNumber('cores', 'number')" ng-mouseup="changeNumber('cores', 'number')" min="{$ nova_limits.totalCoresUsed $}" value="{$ nova_limits.maxTotalCores $}" tabindex="8"/></div>
+          <input type="number" id="cores_number"
+              ng-model="cores"
+              min="{$ nova_limits.totalCoresUsed $}"
+              tabindex="8"
+              ng-pattern="/^[0-9]+$/"
+              required
+              ng-class="{'up_number': cores > nova_limits.maxTotalCores, 'down_number': cores < nova_limits.maxTotalCores}"/>
+        </div>
       </div>
       <div layout="row" class="fila-dato">
         <div flex class="bold">RAM</div>
         <div flex>
           <input type="hidden" id="ram_number_actual" value="{$ nova_limits.maxTotalRAMSize $}"/>
-          <input type="number" id="ram_number" ng-model="ram" ng-change="changeNumber('ram', 'number')" ng-mouseup="changeNumber('ram', 'number')" min="{$ nova_limits.totalRAMUsed $}" value="{$ nova_limits.maxTotalRAMSize $}" tabindex="9"/> GB</div>
+          <input type="number" id="ram_number"
+              ng-model="ram"
+              min="{$ nova_limits.totalRAMUsed $}"
+              tabindex="9"
+              ng-pattern="/^[0-9]+$/"
+              required
+              ng-class="{'up_number': ram > nova_limits.maxTotalRAMSize, 'down_number': ram < nova_limits.maxTotalRAMSize}" /> GB
+        </div>
       </div>
     </div>
   </div>
@@ -73,28 +94,32 @@
           <div layout="row" class="fila-dato"
               ng-repeat="vol_type in volume_type_list_limits"
               ng-click="show_volume(vol_type.id)">
-              <input type="hidden" id="{$ vol_type.name $}_number_actual" value="{$ vol_type.volumes.total $}">
-              <input type="hidden" id="{$ vol_type.name $}_size_actual" value="{$ vol_type.gigabytes.total $}">
+              <input type="hidden" id="{$ vol_type.id $}_number_actual" value="{$ vol_type.volumes.total $}">
+              <input type="hidden" id="{$ vol_type.id $}_size_actual" value="{$ vol_type.gigabytes.total $}">
               <div flex class="bold">{$ vol_type.name $}</div>
               <div flex class="div-input-number">
                   <input type="number"
                          min="{$ vol_type.volumes.used $}"
-                         value="{$ vol_type.volumes.total $}"
                          id="{$ vol_type.name $}_number"
-                         ng-change="changeNumber(vol_type.name, 'number')"
-                         ng-mouseup="changeNumber(vol_type.name, 'number')"
-                         ng-model="number"
-                         tabindex="{$ $index + 10 $}"/>
+                         ng-change="changeNumber(vol_type.id, 'number')"
+                         ng-mouseup="changeNumber(vol_type.id, 'number')"
+                         ng-model="volume_fields[vol_type.id + '_number']"
+                         tabindex="{$ $index + 10 $}"
+                         ng-pattern="/^[0-9]+$/"
+                         required
+                         ng-class="{'up_number': volume_fields[vol_type.id + '_number'] > vol_type.volumes.total, 'down_number': volume_fields[vol_type.id + '_number'] < vol_type.volumes.total}" />
               </div>
               <div flex class="div-input-number">
                   <input type="number"
                          min="{$ vol_type.gigabytes.used $}"
-                         value="{$ vol_type.gigabytes.total $}"
                          id="{$ vol_type.name $}_size"
-                         ng-change="changeNumber(vol_type.name, 'size')"
-                         ng-mouseup="changeNumber(vol_type.name, 'size')"
-                         ng-model="size"
-                         tabindex="{$ $index + 11 $}"/> GB
+                         ng-change="changeNumber(vol_type.id, 'size')"
+                         ng-mouseup="changeNumber(vol_type.id, 'size')"
+                         ng-model="volume_fields[vol_type.id + '_size']"
+                         tabindex="{$ $index + 11 $}"
+                         ng-pattern="/^[0-9]+$/"
+                         required
+                         ng-class="{'up_number': volume_fields[vol_type.id + '_size'] > vol_type.gigabytes.total, 'down_number': volume_fields[vol_type.id + '_size'] < vol_type.gigabytes.total}" /> GB
               </div>
         </div>
       </div>
@@ -109,11 +134,15 @@
     </div>
   </div>
   <div layout="row" layout-align="end center" class="fila" layout-padding>
-        <div><button class="btn btn-default secondary cancel" ng-click="cancel()" ng-disabled="request_sent" tabindex="31">Cancel</button></div>
-        <div><button class="btn btn-default secondary cancel" ng-click="reset(false)" ng-disabled="request_sent" tabindex="32">Reset</button></div>
+        <div ng-show="!hzrequestspanelForm.$valid">
+            Please review fields in red, you introduced incorrect values
+        </div>
+        <div><button class="btn btn-default secondary cancel" ng-click="cancel()" ng-disabled="request_sent" tabindex="31" title="Cancel operation and close form">Cancel</button></div>
+        <div><button class="btn btn-default secondary cancel" ng-click="reset(false)" ng-disabled="request_sent" tabindex="32" title="Restore previous values">Reset</button></div>
         <div>
-            <button class="btn btn-primary" ng-hide="request_sent" ng-click="send_request()" tabindex="21">Submit</button>
+            <button class="btn btn-primary" ng-hide="request_sent" ng-click="send_request()" ng-disabled="!hzrequestspanelForm.$valid" tabindex="31" title="Send your request change">Submit</button>
             <button class="btn btn-default secondary" ng-show="request_sent" ng-disabled="true" style="width: 82px;"><img ng-src="{$ static_url $}dashboard/project/hzrequestspanel/loading-button.svg" alt="loading spinner" /></button>
         </div>
   </div>
+  </form>
 </div>

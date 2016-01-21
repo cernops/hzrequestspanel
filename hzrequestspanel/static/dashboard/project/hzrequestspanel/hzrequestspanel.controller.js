@@ -67,11 +67,19 @@
       $scope.volume_types = {'volumes': []};
       $scope.tenant_absolute_limits = {};
       $scope.volume_type_list_limits = [];
-      $scope.volume_type_names = [];
+      $scope.volume_type_ids = [];
 
       $scope.loading_img_show_storage = false;
       $scope.static_url = STATIC_URL;
       $scope.request_sent = false;
+
+      /* COMPUTE MODEL FIELDS */
+      $scope.instances = 0;
+      $scope.cores = 0;
+      $scope.ram = 0;
+
+      /* STORAGE MODEL FIELDS */
+      $scope.volume_fields = [];
 
       init();
 
@@ -86,8 +94,11 @@
 
       function onGetNovaLimits(dict){
           $scope.nova_limits = dict;
+          $scope.instances = dict.maxTotalInstances;
+          $scope.cores = dict.maxTotalCores;
           $scope.nova_limits.totalRAMUsed = ($scope.nova_limits.totalRAMUsed / 1024);
           $scope.nova_limits.maxTotalRAMSize = ($scope.nova_limits.maxTotalRAMSize / 1024);
+          $scope.ram = $scope.nova_limits.maxTotalRAMSize;
       }
 
       function onGetCurrentUserSession(dict){
@@ -125,7 +136,10 @@
                            'total': total_gigabytes
                        }
               };
-              $scope.volume_type_names[i] = name;
+              $scope.volume_fields[id + '_number'] = total_volumes;
+              $scope.volume_fields[id + '_size'] = total_gigabytes;
+
+              $scope.volume_type_ids[i] = id;
               $scope.volume_type_list_limits[i] = d; i++;
           }
           $scope.loading_img_show_storage = false;
@@ -144,6 +158,8 @@
                   d[k] = list['items'][i]['extra_specs'][k];
               }
               vt[d['id']] = d;
+              $scope.volume_fields[d['id'] + '_number'] = 0;
+              $scope.volume_fields[d['id'] + '_size'] = 0;
           }
           $scope.volume_types = {'volumes': vt};
       }
@@ -157,7 +173,7 @@
         $mdDialog.hide(answer);
       };
 
-      $scope.changeNumber = changeFormValue;
+      $scope.changeNumber = changeInputVolumes;
 
       $scope.show_form = showForm;
       $scope.form_display = false;
@@ -193,6 +209,7 @@
         var r = apiService.post('/project/hzrequestspanel/hzrequests/requests/', data)
           .error(function () {
             toastService.add('error', gettext('Unable to create the ticket.'));
+            $mdDialog.cancel();
         }).success(function(response){
             toastService.add('success', gettext('Ticket created ' + response.ticket_number));
             $mdDialog.cancel();
@@ -207,9 +224,9 @@
               'username': $scope.username,
               'projectname': $scope.project_name,
               'comments': document.getElementById('textarea-comments').value,
-              'instances': document.getElementById('instances_number').value,
-              'cores': document.getElementById('cores_number').value,
-              'ram': document.getElementById('ram_number').value,
+              'instances': $scope.instances,
+              'cores': $scope.cores,
+              'ram': $scope.ram,
               'volumes': {}
           };
           for (var key in $scope.volume_types['volumes']){
@@ -228,52 +245,24 @@
       }
 
       function reset(){
-        var compute_hidden_fields = ['instances', 'cores', 'ram'];
-        for (var i in compute_hidden_fields){
-            var start_value = document.getElementById(compute_hidden_fields[i] + '_number_actual').value;
-            document.getElementById(compute_hidden_fields[i] + '_number').value = start_value;
-            changeBackgroundInputs(compute_hidden_fields[i], 'number');
-        }
-        for (var i in $scope.volume_type_names){
-            var start_value = document.getElementById($scope.volume_type_names[i] + '_number_actual').value;
-            document.getElementById($scope.volume_type_names[i] + '_number').value = start_value;
-            changeBackgroundInputs($scope.volume_type_names[i], 'number');
+        $scope.instances = parseInt(document.getElementById('instances_number_actual').value);
+        $scope.cores = parseInt(document.getElementById('cores_number_actual').value);
+        $scope.ram = parseInt(document.getElementById('ram_number_actual').value);
+        for (var i in $scope.volume_type_ids){
+            var start_value = parseInt(document.getElementById($scope.volume_type_ids[i] + '_number_actual').value);
+            $scope.volume_fields[$scope.volume_type_ids[i] + '_number'] = start_value;
 
-            start_value = document.getElementById($scope.volume_type_names[i] + '_size_actual').value;
-            document.getElementById($scope.volume_type_names[i] + '_size').value = start_value;
-            changeBackgroundInputs($scope.volume_type_names[i], 'size');
+            start_value = parseInt(document.getElementById($scope.volume_type_ids[i] + '_size_actual').value);
+            $scope.volume_fields[$scope.volume_type_ids[i] + '_size'] = start_value;
         }
         document.getElementById('textarea-comments').value = '';
       }
 
-      function changeFormValue(prefix_id, field){
-        changeBackgroundInputs(prefix_id, field)
-
-        if(field == 'number'){
-          var input = document.getElementById(prefix_id + '_' + field);
-          var volume_size = document.getElementById(prefix_id + '_size');
-          if(volume_size){
-            if(parseInt(input.value) > parseInt(volume_size.value)){
-              volume_size.value = input.value;
-            }
-            changeBackgroundInputs(prefix_id, 'size');
-          }
-        }
-      }
-
-      function changeBackgroundInputs(prefix_id, field){
-        var input_actual = document.getElementById(prefix_id + '_' + field + '_actual');
-        var input = document.getElementById(prefix_id + '_' + field);
-
-        if(parseInt(input.value) > parseInt(input_actual.value)){
-          input.style.background = '#2CB04B';
-          input.style.color = '#FFFFFF';
-        }else if (parseInt(input.value) < parseInt(input_actual.value)) {
-          input.style.background = '#7DA6B8'; //#006CCF//darkblue
-          input.style.color = '#FFFFFF';
-        }else{
-          input.style.background = '';
-          input.style.color = '#000000';
+      function changeInputVolumes(prefix_id, field){
+        if ($scope.volume_fields[prefix_id + '_number'] == 0) {
+            $scope.volume_fields[prefix_id + '_size'] = 0;
+        }else if ($scope.volume_fields[prefix_id + '_number'] > 0 && $scope.volume_fields[prefix_id + '_number'] > $scope.volume_fields[prefix_id + '_size']) {
+            $scope.volume_fields[prefix_id + '_size'] = $scope.volume_fields[prefix_id + '_number'];
         }
       }
 
