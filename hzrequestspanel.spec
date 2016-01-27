@@ -80,7 +80,6 @@ popd
 %if 0%{?with_python3}
 pushd %{py3dir}
 LANG=en_US.UTF-8 %{__python3} setup.py install --skip-build --root %{buildroot}
-mv %{buildroot}/%{_bindir}/%{pypi_name} %{buildroot}/%{_bindir}/python3-%{pypi_name}
 popd
 %endif
 
@@ -102,8 +101,6 @@ install -p -D -m 640 enabled/_6970_project_hzrequests_panel.py %{buildroot}%{_da
 %files -n python3-%{pypi_name} 
 %license LICENSE
 %doc doc/source/readme.rst README.rst
-%{_bindir}/python3-%{pypi_name}
-%{_bindir}/%{pypi_name}*
 %{python3_sitelib}/%{pypi_name}
 %{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6970_project_hzrequests_panel.py*
 %attr(0644, apache, apache) /etc/openstack-dashboard/%{pypi_name}.conf
