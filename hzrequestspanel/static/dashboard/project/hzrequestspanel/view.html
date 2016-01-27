@@ -40,8 +40,9 @@
               ng-model="ram"
               min="{$ nova_limits.totalRAMUsed $}"
               tabindex="9"
-              ng-pattern="/^[0-9]+$/"
+              ng-pattern="/^[0-9]*\.?[0-9]+$/"
               required
+              step="0.5"
               ng-class="{'up_number': ram > nova_limits.maxTotalRAMSize, 'down_number': ram < nova_limits.maxTotalRAMSize}" /> GB
         </div>
       </div>
@@ -137,7 +138,7 @@
         <div ng-show="!hzrequestspanelForm.$valid">
             Please review fields in red, you introduced incorrect values
         </div>
-        <div><button class="btn btn-default secondary cancel" ng-click="cancel()" ng-disabled="request_sent" tabindex="31" title="Cancel operation and close form">Cancel</button></div>
+        <div><button class="btn btn-default secondary cancel" ng-click="cancel()" ng-disabled="request_sent" tabindex="31" title="Cancel operation and close form"><span class="fa fa-close">&nbsp;</span>Cancel</button></div>
         <div><button class="btn btn-default secondary cancel" ng-click="reset(false)" ng-disabled="request_sent" tabindex="32" title="Restore previous values">Reset</button></div>
         <div>
             <button class="btn btn-primary" ng-hide="request_sent" ng-click="send_request()" ng-disabled="!hzrequestspanelForm.$valid" tabindex="31" title="Send your request change">Submit</button>

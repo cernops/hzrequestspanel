@@ -8,6 +8,43 @@ $black: #000000;
     border: 0.1em solid #CCCCCC;
 }
 
+#div-button-help{
+    text-align: right;
+}
+
+#button-request-help{
+    border: 1px solid #000000;
+    background-color: #eeeeee;
+    font-size: 2em;
+}
+
+#div-quota-charts h4{
+    text-align: center;
+}
+
+#div-quota-chart-compute{
+    border-right: 0.1em solid #DDDDDD;
+}
+
+#div-quota-chart-storage-headers div.bold{
+    text-align: center;
+}
+
+#div-quota-chart-storage-content{
+    height: 240px;
+    overflow-y: auto;
+}
+
+.storage-chart-volumes{
+    margin-right: 1em;
+}
+
+md-toolbar.help-toolbar-header{
+    background-color: #ffffff;
+    border-bottom: 1px solid #DDDDDD;
+    color: #000000;
+}
+
 .bold {
 	font-weight: bold;
 }

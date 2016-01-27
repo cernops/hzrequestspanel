@@ -1,20 +1,92 @@
-<div id="div-hzrequestspanel" ng-controller="Hzrequestspanelcontroller as ctrl" layout="column" layout-sm="column" layout-padding>
-  <div layout="row" class="md-layout-row">
-    <div class="div-request" flex>
-        <h3>Update quota for "{$ ctrl.project_name $}"</h3>
-        <div ng-hide="ctrl.is_personal_project">
-        <p>Cloud project owners who want to change the resource quota for this project should click "Request quota change" button and fill the form.</p>
-        <p>Submiting the form, you will create a new SNOW ticket for your request. From that point, your request will be manage by Cloud Team from SNOW application. After submitting your ticket, you will receive a confirmation email.</p>
-        <p>For details on Cloud projects, please read <a href="http://clouddocs.web.cern.ch/clouddocs/details/quotas.html">http://clouddocs.web.cern.ch/clouddocs/details/quotas.html</a> </p>
-        </div>
-        <div ng-show="ctrl.is_personal_project">
-<h4 class="personal_project_msg">Please note that this feature is only available for Shared projects. Change to a Shared project in the dropdown project list.</h4>
-        </div>
-    </div>
-    <div flex="35" layout="row" ng-hide="ctrl.is_personal_project" class="md-layout-row layout-align-center-center" layout-align="center center">
-      <div id="div-hzrequestspanel-button">
-            <md-button ng-click="ctrl.openRequestForm($event)">Request quota change</md-button>
+<div id="div-hzrequestspanel" ng-controller="Hzrequestspanelcontroller as ctrl" layout="column" layout-sm="column" layout-padding ng-cloak>
+  <div layout="column">
+      <div layout="row">
+          <h3 flex>Request Quota Change for "{$ ctrl.project_name $}"</h3>
+          <div flex="33" id="div-button-help" ng-hide="ctrl.is_personal_project">
+              <button id="button-request-help" ng-click="ctrl.openHelp()" title="Click to see help"><span class="fa fa-question-circle">&nbsp;</span></button>
+          </div>
       </div>
-    </div>
+
+        <div ng-show="ctrl.is_personal_project">
+            <h4 class="personal_project_msg">Please note that this feature is only available for Shared projects. Change to a Shared project in the dropdown project list.</h4>
+        </div>
+
+
+      <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
+        <md-toolbar class="help-toolbar-header">
+          <h1 class="md-toolbar-tools">Help: Request Quota Change</h1>
+        </md-toolbar>
+        <md-content layout-padding>
+            <p>Cloud project owners who want to change the resource quota for this project should click "Request quota change" button and fill the form.</p>
+            <p>Submiting the form, you will create a new SNOW ticket for your request. From that point, your request will be manage by Cloud Team from <a href="https://cern.service-now.com/service-portal/" title="Go to Service Now Web Page" targe="_blank">CERN Service Portal</a> website.</p>
+            <p>After submitting your ticket, you will receive a confirmation email.</p>
+            <p>For details on Cloud projects, please read <a href="http://clouddocs.web.cern.ch/clouddocs/details/quotas.html" target="_blank">http://clouddocs.web.cern.ch/clouddocs/details/quotas.html</a> </p>
+            <button class="btn btn-default secondary cancel" ng-click="ctrl.closeHelp()"><span class="fa fa-close">&nbsp;</span>Close</button>
+        </md-content>
+      </md-sidenav>
+
+      <div layout="row" class="md-layout-row layout-align-end-center" layout-align="end center" ng-hide="ctrl.is_personal_project">
+          <div>
+              <button class="btn btn-primary" ng-click="ctrl.openRequestForm($event)" title="Click to open Reques Quota Change form">Request quota change</button>
+          </div>
+      </div>
+      <div layout="row" id="div-quota-charts" layout-padding layout-margin ng-hide="ctrl.is_personal_project">
+         <div flex id="div-quota-chart-compute" layout="column">
+	     <h4>Compute Quota</h4>
+             <div layout="row" layout-padding>
+                 <div flex="33" class="bold">Instances ({$ ctrl.nova_limits.totalInstancesUsed $}/{$ ctrl.nova_limits.maxTotalInstances $})</div>
+                 <div flex title="{$ ((ctrl.nova_limits.totalInstancesUsed * 100) / ctrl.nova_limits.maxTotalInstances) $}%">
+		      <svg height="20" width="100%">
+                          <rect width="100%" height="19" y="1" style="fill:#FFFFFF;stroke-width:1;stroke:#000000"/>
+                          <rect style="fill:#428bca;stroke-width:0" y="1" height="19" width="{$ ((ctrl.nova_limits.totalInstancesUsed * 100) / ctrl.nova_limits.maxTotalInstances) $}%"/>
+		      </svg>
+                 </div>
+             </div>
+             <div layout="row" layout-padding>
+                 <div flex="33" class="bold">Cores ({$ ctrl.nova_limits.totalCoresUsed $}/{$ ctrl.nova_limits.maxTotalCores $})</div>
+                 <div flex title="{$ ((ctrl.nova_limits.totalCoresUsed * 100) / ctrl.nova_limits.maxTotalCores) $}%">
+                      <svg height="20" width="100%">
+                          <rect width="100%" height="19" y="0" style="fill:#FFFFFF;stroke-width:1;stroke:#000000"/>
+                          <rect style="fill:#428bca;stroke-width:0" y="1" height="19" width="{$ ((ctrl.nova_limits.totalCoresUsed * 100) / ctrl.nova_limits.maxTotalCores) $}%"/>
+                      </svg>
+                 </div>
+             </div>
+             <div layout="row" layout-padding>
+                 <div flex="33" class="bold">RAM ({$ ctrl.nova_limits.totalRAMUsed $}/{$ ctrl.nova_limits.maxTotalRAMSize $})</div>
+                 <div flex title="{$ ((ctrl.nova_limits.totalRAMUsed * 100) / ctrl.nova_limits.maxTotalRAMSize) $}%">
+                      <svg height="20" width="100%">
+                          <rect width="100%" height="19" y="0" style="fill:#FFFFFF;stroke-width:1;stroke:#000000"/>
+                          <rect style="fill:#428bca;stroke-width:0" y="1" height="19" width="{$ ((ctrl.nova_limits.totalRAMUsed * 100) / ctrl.nova_limits.maxTotalRAMSize) $}%"/>
+                      </svg>
+                 </div>
+             </div>
+         </div>
+         <div flex layout="column">
+             <h4>Storage Quota</h4>
+             <div id="div-quota-chart-storage-headers" layout="row" layout-padding>
+                 <div flex="33">&nbsp;</div>
+                 <div flex class="bold">Number</div>
+                 <div flex class="bold">Space</div>
+             </div>
+             <div id="div-quota-chart-storage-content" layout="column">
+	          <div layout="row" ng-repeat="vol_type in ctrl.volume_type_list_limits" layout-padding>
+        	      <div flex="33" class="bold">{$ vol_type.name $} ({$ vol_type.volumes.used $}/{$ vol_type.volumes.total $})</div>
+	              <div flex class="storage-chart-volumes" title="{$ ((vol_type.volumes.used * 100) / vol_type.volumes.total) $}%">
+        	              <svg height="20" width="100%">
+                	          <rect width="100%" height="19" y="0" style="fill:#FFFFFF;stroke-width:1;stroke:#000000"/>
+                        	  <rect style="fill:#428bca;stroke-width:0" y="1" height="19" width="{$ ((vol_type.volumes.used * 100) / vol_type.volumes.total) $}%"/>
+	                      </svg>
+        	      </div>
+	              <div flex title="{$ ((vol_type.gigabytes.used * 100) / vol_type.gigabytes.total) $}%">
+        	              <svg height="20" width="100%">
+                	          <rect width="100%" height="19" y="0" style="fill:#FFFFFF;stroke-width:1;stroke:#000000"/>
+                        	  <rect style="fill:#428bca;stroke-width:0" y="1" height="19" width="{$ ((vol_type.gigabytes.used * 100) / vol_type.gigabytes.total) $}%"/>
+	                      </svg>
+        	      </div>
+	          </div>
+             </div>
+         </div>
+      </div>
   </div>
+
 </div>

@@ -9,6 +9,9 @@
       '$scope',
       '$mdDialog',
       '$mdMedia',
+      '$mdSidenav',
+      'horizon.app.core.openstack-service-api.nova',
+      'horizon.app.core.openstack-service-api.cinder',
       'horizon.app.core.openstack-service-api.keystone'];
 
   DialogController.$inject = [
@@ -22,24 +25,100 @@
       'horizon.framework.widgets.toast.service'
   ];
 
-  function Hzrequestspanelcontroller($scope, $mdDialog, $mdMedia, keystoneAPI) {
+  function Hzrequestspanelcontroller($scope, $mdDialog, $mdMedia, $mdSidenav, novaAPI, cinderAPI, keystoneAPI) {
       var ctrl = this;
       ctrl.project_name = '';
+
+      ctrl.nova_limits = {};
+      ctrl.tenant_absolute_limits = {};
+      ctrl.volume_fields = {};
+      ctrl.volume_type_list_limits = {};
+      ctrl.volume_types = {};
 
       ctrl.openRequestForm = openRequestForm;
       ctrl.customFullscreen = $mdMedia('sm');
       ctrl.is_personal_project = false;
 
+      ctrl.openHelp = buildToggler;
+      ctrl.closeHelp = closeHelp;
+
       init();
+
+      function buildToggler() {
+          $mdSidenav('right').toggle();
+      }
+
+      function closeHelp(){
+          $mdSidenav('right').close()
+      }
 
       function init(){
            keystoneAPI.getCurrentUserSession().success(onGetCurrentUserSession);
+           novaAPI.getLimits().success(onGetNovaLimits);
+           cinderAPI.getVolumeTypes().success(onVolumeTypeList);
+           cinderAPI.getAbsoluteLimits().success(onTenantAbsoluteLimits);
       }
 
       function onGetCurrentUserSession(dict){
           ctrl.project_name = dict['project_name'];
           ctrl.is_personal_project = (ctrl.project_name.indexOf("Personal") > -1);
       }
+
+      function onGetNovaLimits(dict){
+          ctrl.nova_limits = dict;
+          ctrl.nova_limits.totalRAMUsed = (ctrl.nova_limits.totalRAMUsed / 1024);
+          ctrl.nova_limits.maxTotalRAMSize = (ctrl.nova_limits.maxTotalRAMSize / 1024);
+      }
+
+      function onTenantAbsoluteLimits(dict){
+          ctrl.tenant_absolute_limits = dict
+          var l = [];
+          var i = 0;
+          for (var k in ctrl.volume_types['volumes']){
+              var id = ctrl.volume_types['volumes'][k]['id'];
+              var name = ctrl.volume_types['volumes'][k]['name'];
+
+              var total_volumes_key_string = 'total_volumes_' + name;
+              var total_gigabytes_key_string = 'total_gigabytes_' + name;
+              var used_volumes_key_string = 'used_volumes_' + name;
+              var used_gigabytes_key_string = 'used_gigabytes_' + name;
+
+              var total_volumes = ctrl.tenant_absolute_limits[total_volumes_key_string];
+              var total_gigabytes = ctrl.tenant_absolute_limits[total_gigabytes_key_string];
+              var used_volumes = ctrl.tenant_absolute_limits[used_volumes_key_string];
+              var used_gigabytes = ctrl.tenant_absolute_limits[used_gigabytes_key_string];
+
+              var d = {'id': id,
+                       'name': name,
+                       'volumes': {
+                           'used': used_volumes,
+                           'total': total_volumes
+                       },
+                       'gigabytes': {
+                           'used': used_gigabytes,
+                           'total': total_gigabytes
+                       }
+              };
+              ctrl.volume_type_list_limits[i] = d; i++;
+          }
+      }
+
+      function onVolumeTypeList(list){
+          var len = list['items'].length;
+          var vt = [];
+          for (var i=0; i < len; i++){
+              var d = {'id': list['items'][i]['id'],
+                       'name': list['items'][i]['name'],
+                       'description': list['items'][i]['description']
+              };
+              for (var k in list['items'][i]['extra_specs']){
+                  d[k] = list['items'][i]['extra_specs'][k];
+              }
+              vt[d['id']] = d;
+          }
+          ctrl.volume_types = {'volumes': vt};
+      }
+
 
       function openRequestForm(ev){
         $mdDialog.show({
