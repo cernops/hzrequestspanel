@@ -160,6 +160,33 @@
       /* STORAGE MODEL FIELDS */
       $scope.volume_fields = [];
 
+      $scope.changeNumber = changeInputVolumes;
+
+      $scope.show_form = showForm;
+      $scope.form_display = false;
+      $scope.resquest_sent = false;
+
+      $scope.send_request = sendRequest;
+
+      /* VARS FOR VOLUME TYPE DESCRIPTION */
+      $scope.name = '';
+      $scope.usage = '';
+      $scope.hyper = '';
+      $scope.max_iops = '';
+      $scope.max_throughput = '';
+
+      /* VARS TO CHANGE VOLUME TYPE DESCRIPTION */
+      $scope.show_volume = showVolume;
+      $scope.volume_descrip = false;
+
+      /* TO EXECUTE ON COMPUTE INFO CHANGE*/
+      $scope.compute_change = {'instances': '', 'cores': '', 'ram': ''};
+      $scope.change_instances = change_instances;
+      $scope.change_cores = change_cores;
+      $scope.change_ram = change_ram;
+
+      $scope.reset = reset;
+
       init();
 
       function init(){
@@ -218,6 +245,8 @@
               $scope.volume_fields[id + '_number'] = total_volumes;
               $scope.volume_fields[id + '_size'] = total_gigabytes;
 
+              $scope.volume_type_change[id] = {'number': '', 'size': ''};
+
               $scope.volume_type_ids[i] = id;
               $scope.volume_type_list_limits[i] = d; i++;
           }
@@ -228,6 +257,7 @@
       function onVolumeTypeList(list){
           var len = list['items'].length;
           var vt = [];
+          var default_volume_type_name = 'standard'
           for (var i=0; i < len; i++){
               var d = {'id': list['items'][i]['id'],
                        'name': list['items'][i]['name'],
@@ -239,11 +269,22 @@
               vt[d['id']] = d;
               $scope.volume_fields[d['id'] + '_number'] = 0;
               $scope.volume_fields[d['id'] + '_size'] = 0;
+
+              if (d['name'] == default_volume_type_name){
+                  set_default_volume_type_description(d);
+              }
           }
           $scope.volume_types = {'volumes': vt};
       }
 
-      $scope.reset = reset;
+      function set_default_volume_type_description(data){
+          $scope.volume_descrip = true;
+          $scope.name = data['name'];
+          $scope.usage = data['usage'];
+          $scope.hyper = data['hypervisor'];
+          $scope.max_iops = data['max_iops'];
+          $scope.max_throughput = data['max_throughput'];
+      }
 
       $scope.cancel = function() {
         $mdDialog.cancel();
@@ -252,22 +293,6 @@
         $mdDialog.hide(answer);
       };
 
-      $scope.changeNumber = changeInputVolumes;
-
-      $scope.show_form = showForm;
-      $scope.form_display = false;
-      $scope.resquest_sent = false;
-
-      $scope.send_request = sendRequest;
-      $scope.name = 'Standard';
-      $scope.usage = 'default';
-      $scope.hyper = 'Linux';
-      $scope.max_iops = '100';
-      $scope.max_throughput = '80 MB/s';
-
-      $scope.show_volume = showVolume;
-      $scope.volume_descrip = false;
-
       function showVolume(i){
         $scope.volume_descrip = true;
         $scope.name = $scope.volume_types['volumes'][i]['name'];
@@ -275,7 +300,6 @@
         $scope.hyper = $scope.volume_types['volumes'][i]['hypervisor'];
         $scope.max_iops = $scope.volume_types['volumes'][i]['max_iops'];
         $scope.max_throughput = $scope.volume_types['volumes'][i]['max_throughput'];
-
       }
 
       /**
@@ -343,6 +367,44 @@
         }else if ($scope.volume_fields[prefix_id + '_number'] > 0 && $scope.volume_fields[prefix_id + '_number'] > $scope.volume_fields[prefix_id + '_size']) {
             $scope.volume_fields[prefix_id + '_size'] = $scope.volume_fields[prefix_id + '_number'];
         }
+
+        change_volume_type_percentaje(prefix_id);
+      }
+
+      function change_volume_type_percentaje(vol_id){
+          var number_new = $scope.volume_fields[vol_id + '_number'];
+          var size_new = $scope.volume_fields[vol_id + '_size'];
+          var number_actual =  parseInt(document.getElementById(vol_id + '_number_actual').value);
+          var size_actual = parseInt(document.getElementById(vol_id + '_size_actual').value);
+
+          var percent_number = parseInt(((100 * number_new) / number_actual) - 100);
+          var percent_size = parseInt(((100 * size_new) / size_actual) - 100);
+          var sign_number = '';
+          var sign_size = '';
+          if (percent_number > 0) { sign_number = '+'; }
+          if (percent_size > 0) { sign_size = '+'; }
+          $scope.volume_type_change[vol_id]['number'] = sign_number + (number_new - number_actual) + ' (' + sign_number + '' +  percent_number + '%)';
+          $scope.volume_type_change[vol_id]['size'] = sign_size + (size_new - size_actual) + ' (' + sign_size + '' +percent_size + '%)';
+      }
+
+      function change_instances(){
+          change_compute('instances', $scope.instances, $scope.nova_limits.maxTotalInstances);
+      }
+
+      function change_cores(){
+          change_compute('cores', $scope.cores, $scope.nova_limits.maxTotalCores);
+      }
+
+      function change_ram(){
+          change_compute('ram', $scope.ram, $scope.nova_limits.maxTotalRAMSize);
+      }
+
+      function change_compute(field, number_new, number_actual){
+          var percentaje = (((100 * number_new) / number_actual) - 100);
+          var sign = '';
+          if (number_new > 0) { sign = '+'; }
+          $scope.compute_change[field] = sign + (number_new - number_actual) + ' (' + sign + '' + percentaje + ')%';
+
       }
 
     }

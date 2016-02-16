@@ -1,9 +1,8 @@
 {% extends 'base.html' %}
-
 {% load i18n %}
 {% load compress %}
 
-{% block title %}{% trans "Requests" %}{% endblock %}
+{% block title %}{% trans "Instance Overview" %}{% endblock %}
 
 {% block page_header %}
 {% compress css %}
@@ -12,8 +11,5 @@
 {% endblock page_header %}
 
 {% block main %}
-  <ng-include
-    src="'{{ STATIC_URL }}dashboard/project/hzrequestspanel/hzrequestspanel.html'">
-  </ng-include>
+  {% include "hzrequestspanel/usage_summary.html" %}
 {% endblock %}
-

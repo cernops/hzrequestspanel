@@ -14,6 +14,8 @@ ADD_ANGULAR_MODULES = ['horizon.dashboard.project.hzrequestspanel']
 
 AUTO_DISCOVER_STATIC_FILES = True
 
+DEFAULT_PANEL = 'hzrequestspanel'
+
 ADD_SCSS_FILES = [
     'dashboard/project/hzrequestspanel/hzrequestspanel.scss',
 ]

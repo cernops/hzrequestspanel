@@ -87,13 +87,15 @@ popd
 
 # Install enabled file for the plugin
 install -p -D -m 640 etc/%{pypi_name}.conf %{buildroot}/etc/openstack-dashboard/%{pypi_name}.conf
-install -p -D -m 640 enabled/_6970_project_hzrequests_panel.py %{buildroot}%{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6970_project_hzrequests_panel.py
+install -p -D -m 640 enabled/_1021_project_hzrequests_panel.py %{buildroot}%{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_1021_project_hzrequests_panel.py
+install -p -D -m 640 enabled/_6868_project_remove_overview_panel.py %{buildroot}%{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6868_project_remove_overview_panel.py
 
 %files -n python2-%{pypi_name}
 %license LICENSE
 %doc README.md
 %{python2_sitelib}/%{pypi_name}*
-%{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6970_project_hzrequests_panel.py*
+%{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_1021_project_hzrequests_panel.py*
+%{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6868_project_remove_overview_panel.py*
 %attr(0644, apache, apache) /etc/openstack-dashboard/%{pypi_name}.conf
 
 # Files for python3
@@ -102,7 +104,8 @@ install -p -D -m 640 enabled/_6970_project_hzrequests_panel.py %{buildroot}%{_da
 %license LICENSE
 %doc doc/source/readme.rst README.rst
 %{python3_sitelib}/%{pypi_name}
-%{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6970_project_hzrequests_panel.py*
+%{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_1021_project_hzrequests_panel.py*
+%{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6868_project_remove_overview_panel.py*
 %attr(0644, apache, apache) /etc/openstack-dashboard/%{pypi_name}.conf
 %endif
 

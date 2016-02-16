@@ -12,11 +12,13 @@
           <input type="hidden" id="instances_number_actual" value="{$ nova_limits.maxTotalInstances $}" />
           <input type="number" id="instances_number"
               ng-model="instances"
+              ng-change="change_instances()"
+              ng-mouseup="change_instances()"
               min="{$ nova_limits.totalInstancesUsed $}"
               tabindex="7"
               ng-pattern="/^[0-9]+$/"
-              required
-              ng-class="{'up_number': instances > nova_limits.maxTotalInstances, 'down_number': instances < nova_limits.maxTotalInstances}"/>
+              required />
+          <span>{$ compute_change['instances'] $}</span>
         </div>
       </div>
       <div layout="row" class="fila-dato">
@@ -25,11 +27,13 @@
           <input type="hidden" id="cores_number_actual" value="{$ nova_limits.maxTotalCores $}"/>
           <input type="number" id="cores_number"
               ng-model="cores"
+              ng-change="change_cores()"
+              ng-mouseup="change_cores()"
               min="{$ nova_limits.totalCoresUsed $}"
               tabindex="8"
               ng-pattern="/^[0-9]+$/"
-              required
-              ng-class="{'up_number': cores > nova_limits.maxTotalCores, 'down_number': cores < nova_limits.maxTotalCores}"/>
+              required />
+          <span>{$ compute_change['cores'] $}</span>
         </div>
       </div>
       <div layout="row" class="fila-dato">
@@ -38,12 +42,14 @@
           <input type="hidden" id="ram_number_actual" value="{$ nova_limits.maxTotalRAMSize $}"/>
           <input type="number" id="ram_number"
               ng-model="ram"
+              ng-change="change_ram()"
+              ng-mouseup="change_ram()"
               min="{$ nova_limits.totalRAMUsed $}"
               tabindex="9"
               ng-pattern="/^[0-9]*\.?[0-9]+$/"
               required
-              step="0.5"
-              ng-class="{'up_number': ram > nova_limits.maxTotalRAMSize, 'down_number': ram < nova_limits.maxTotalRAMSize}" /> GB
+              step="0.5" />
+          <span>{$ compute_change['ram'] $}</span>
         </div>
       </div>
     </div>
@@ -98,7 +104,7 @@
               <input type="hidden" id="{$ vol_type.id $}_number_actual" value="{$ vol_type.volumes.total $}">
               <input type="hidden" id="{$ vol_type.id $}_size_actual" value="{$ vol_type.gigabytes.total $}">
               <div flex class="bold">{$ vol_type.name $}</div>
-              <div flex class="div-input-number">
+              <div flex layout="row" class="div-input-number">
                   <input type="number"
                          min="{$ vol_type.volumes.used $}"
                          id="{$ vol_type.name $}_number"
@@ -107,10 +113,10 @@
                          ng-model="volume_fields[vol_type.id + '_number']"
                          tabindex="{$ $index + 10 $}"
                          ng-pattern="/^[0-9]+$/"
-                         required
-                         ng-class="{'up_number': volume_fields[vol_type.id + '_number'] > vol_type.volumes.total, 'down_number': volume_fields[vol_type.id + '_number'] < vol_type.volumes.total}" />
+                         required />
+                  <span>{$ volume_type_change[vol_type.id]['number'] $}</span>
               </div>
-              <div flex class="div-input-number">
+              <div flex layout="row" class="div-input-number">
                   <input type="number"
                          min="{$ vol_type.gigabytes.used $}"
                          id="{$ vol_type.name $}_size"
@@ -119,8 +125,8 @@
                          ng-model="volume_fields[vol_type.id + '_size']"
                          tabindex="{$ $index + 11 $}"
                          ng-pattern="/^[0-9]+$/"
-                         required
-                         ng-class="{'up_number': volume_fields[vol_type.id + '_size'] > vol_type.gigabytes.total, 'down_number': volume_fields[vol_type.id + '_size'] < vol_type.gigabytes.total}" /> GB
+                         required />
+                  <span>{$ volume_type_change[vol_type.id]['size'] $} GB</span>
               </div>
         </div>
       </div>
