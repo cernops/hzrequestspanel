@@ -9,7 +9,7 @@ var tenant_name = "{{request.user.project_name}}".replace(new RegExp(' ', 'g'), 
 document.write('<a id="link_monitoring" href="{{ HORIZON_CONFIG.openstack_monitoring_base_url }}'+prefix+tenant_name+'" title="{% trans "Detailed view of Usage history" %}" target="_blank">{% trans "Detailed view of Usage history" %}</a>');
 </script>
 </div>
-  <div style="text-align: right;" ng-controller="Hzrequestspanelcontroller as ctrl">
+  <div style="text-align: right;" ng-controller="Hzrequestspanelcontroller as ctrl" ng-hide="ctrl.is_personal_project">
       <button class="btn btn-primary" ng-click="ctrl.openRequestForm($event)" title="Click to open Reques Quota Change form">Request quota change</button>
   </div>
 
