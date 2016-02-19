@@ -1,0 +1,64 @@
+stages:
+        - build
+        - deploy
+
+rpmbuild:
+        stage: build
+        image: docker.cern.ch/cloud-infrastructure/kojiclient
+        except:
+                - master
+        script:
+                - cd $CI_PROJECT_DIR
+                - export SPEC=$(ls *spec)
+                - export PKG=$(rpm -q --specfile $SPEC --queryformat "%{name}-%{version}")
+                - rm -rf /tmp/$PKG
+                - mkdir /tmp/$PKG
+                - cp -R * /tmp/$PKG
+                - cd /tmp
+                - tar zcvf ~/rpmbuild/SOURCES/$PKG.tar.gz $PKG
+                - cd $PKG
+                - cp *spec ~/rpmbuild/SOURCES
+                - yum-builddep -y $SPEC
+                - rpmbuild -bs $SPEC
+                - rpmbuild -bb $SPEC
+        tags:
+                - docker-swarm-builder
+
+kojicheck:
+        stage: build
+        image: docker.cern.ch/cloud-infrastructure/kojiclient
+        except:
+                - master
+        script:
+                - cd $CI_PROJECT_DIR
+                - export SPEC=$(ls *spec)
+                - export PKG=$(rpm -q --specfile $SPEC --queryformat "%{name}-%{version}-%{release}")
+                - echo $SVCBUILD_PASSWORD | kinit svcbuild@CERN.CH
+                - if koji search -r build $PKG | grep $PKG; then exit 1; fi
+        tags:
+                - docker-swarm-builder
+
+kojibuild:
+        stage: deploy
+        image: docker.cern.ch/cloud-infrastructure/kojiclient
+        only:
+                - master
+        script:
+                - cd $CI_PROJECT_DIR
+                - export SPEC=$(ls *spec)
+                - export PKG=$(rpm -q --specfile $SPEC --queryformat "%{name}-%{version}")
+                - export PKG_REL=$(rpm -q --specfile --define dist.el7 $SPEC --queryformat "%{name}-%{version}-%{release}")
+                - rm -rf /tmp/$PKG
+                - mkdir /tmp/$PKG
+                - cp -R * /tmp/$PKG
+                - cd /tmp
+                - tar zcvf ~/rpmbuild/SOURCES/$PKG.tar.gz $PKG
+                - cd $PKG
+                - cp *spec ~/rpmbuild/SOURCES
+                - rpmbuild -bs -D 'dist .el7' $SPEC
+                - echo $SVCBUILD_PASSWORD | kinit svcbuild@CERN.CH
+                - echo $PKG_REL
+                - echo $KOJI_TARGET
+                - koji build --wait $KOJI_TARGET $(find ~/rpmbuild/SRPMS -name $PKG_REL*)
+        tags:
+                - docker-swarm-builder
