@@ -22,7 +22,7 @@ rpmbuild:
                 - rpmbuild -bs $SPEC
                 - rpmbuild -bb $SPEC
         tags:
-                - docker-swarm-builder
+                - cci-swarm-builder
 
 kojicheck:
         stage: build
@@ -36,7 +36,7 @@ kojicheck:
                 - echo $SVCBUILD_PASSWORD | kinit svcbuild@CERN.CH
                 - if koji search -r build $PKG | grep $PKG; then exit 1; fi
         tags:
-                - docker-swarm-builder
+                - cci-swarm-builder
 
 kojibuild:
         stage: deploy
@@ -61,4 +61,4 @@ kojibuild:
                 - echo $KOJI_TARGET
                 - koji build --wait $KOJI_TARGET $(find ~/rpmbuild/SRPMS -name $PKG_REL*)
         tags:
-                - docker-swarm-builder
+                - cci-swarm-builder
