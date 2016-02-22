@@ -2,15 +2,18 @@
 
 <div class="quota-dynamic">
   <h3 class="quota-heading">{% trans "Limit Summary" %}</h3>
-<div id="div_link_monitoring" style="font-size: 1.2em; padding-bottom: 0.5em;">
-<script>
-var prefix = "tenant_";
-var tenant_name = "{{request.user.project_name}}".replace(new RegExp(' ', 'g'), "_");
-document.write('<a id="link_monitoring" href="{{ HORIZON_CONFIG.openstack_monitoring_base_url }}'+prefix+tenant_name+'" title="{% trans "Detailed view of Usage history" %}" target="_blank">{% trans "Detailed view of Usage history" %}</a>');
-</script>
-</div>
-  <div style="text-align: right;" ng-controller="Hzrequestspanelcontroller as ctrl" ng-hide="ctrl.is_personal_project">
+  <div style="margin-top: 2em; margin-bottom: 2em;">
+    <div id="div_link_monitoring" style="font-size: 1.2em; float: left;">
+      <script>
+        var prefix = "tenant_";
+        var tenant_name = "{{request.user.project_name}}".replace(new RegExp(' ', 'g'), "_");
+        document.write('<a id="link_monitoring" href="{{ HORIZON_CONFIG.openstack_monitoring_base_url }}'+prefix+tenant_name+'" title="{% trans "Detailed view of Usage history" %}" target="_blank">{% trans "Detailed view of Usage history" %}</a>');
+      </script>
+    </div>
+    <div style="text-align: right;" ng-controller="Hzrequestspanelcontroller as ctrl" ng-hide="ctrl.is_personal_project">
       <button class="btn btn-primary" ng-click="ctrl.openRequestForm($event)" title="Click to open Reques Quota Change form">Request quota change</button>
+    </div>
+    <div style="clear:both;"></div>
   </div>
 
     {% for quota in charts %}

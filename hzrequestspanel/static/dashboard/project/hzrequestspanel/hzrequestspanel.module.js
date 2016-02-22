@@ -2,7 +2,7 @@
   'use strict';
 
   var deps = [];
-  if (window.location.href.indexOf('dashboard/project/') > -1){
+  if (window.location.href.indexOf('project/') > -1){
     deps = ['ngMaterial'];
   }
 

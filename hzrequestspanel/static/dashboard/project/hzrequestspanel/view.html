@@ -1,5 +1,24 @@
 <div class="form" layout="column" layout-padding ng-controller="DialogController">
   <h3>Request quota change for "{$ project_name $}"</h3>
+
+  <div id="div-button-help">
+      <button id="button-request-help" ng-click="openHelp()" title="Click to see help"><span class="fa fa-question-circle">&nbsp;</span></button>
+  </div>
+  <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
+      <md-toolbar class="help-toolbar-header">
+          <h1 class="md-toolbar-tools">Help: Request Quota Change</h1>
+      </md-toolbar>
+      <md-content layout-padding>
+          <p>Cloud project owners who want to change the resource quota for this project should click "Request quota change" button and fill the form.</p>
+          <p>Submiting the form, you will create a new SNOW ticket for your request. From that point, your request will be manage by Cloud Team from <a href="https://cern.service-now.com/service-portal/" title="Go to Service Now Web Page" targe="_blank">CERN Service Portal</a> website.</p>
+          <p>After submitting your ticket, you will receive a confirmation email.</p>
+          <p>For details on Cloud projects, please read <a href="http://clouddocs.web.cern.ch/clouddocs/details/quotas.html" target="_blank">http://clouddocs.web.cern.ch/clouddocs/details/quotas.html</a> </p>
+          <div id="div-button-help-close">
+              <button class="btn btn-default secondary cancel" ng-click="closeHelp()"><span class="fa fa-close">&nbsp;</span>Close</button>
+          </div>
+      </md-content>
+  </md-sidenav>
+
   <form name="hzrequestspanelForm">
   <div id="section_compute" layout="row" class="fila" layout-padding>
     <div flex="30" class="div-title-fila">
@@ -49,7 +68,7 @@
               ng-pattern="/^[0-9]*\.?[0-9]+$/"
               required
               step="0.5" />
-          <span>{$ compute_change['ram'] $}</span>
+          <span>{$ compute_change['ram'] $} GB</span>
         </div>
       </div>
     </div>
