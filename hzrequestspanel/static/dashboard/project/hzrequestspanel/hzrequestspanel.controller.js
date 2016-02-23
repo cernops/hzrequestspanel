@@ -28,6 +28,19 @@
       ctrl.openRequestForm = openRequestForm;
       ctrl.customFullscreen = $mdMedia('sm');
 
+      ctrl.is_personal_project = true;
+
+      init();
+
+      function init(){
+           keystoneAPI.getCurrentUserSession().success(onGetCurrentUserSession);
+      }
+
+      function onGetCurrentUserSession(dict){
+          ctrl.project_name = dict['project_name'];
+          ctrl.is_personal_project = (ctrl.project_name.indexOf("Personal") > -1);
+      }
+
       function openRequestForm(ev){
         $mdDialog.show({
           controller: DialogController,
@@ -74,8 +87,6 @@
       $scope.form_display = false;
       $scope.resquest_sent = false;
 
-      $scope.send_request = sendRequest;
-
       /* VARS FOR VOLUME TYPE DESCRIPTION */
       $scope.name = '';
       $scope.usage = '';
@@ -96,7 +107,10 @@
       $scope.change_cores = change_cores;
       $scope.change_ram = change_ram;
 
+      /* FORM BUTTONS */
+      $scope.cancel = cancel;
       $scope.reset = reset;
+      $scope.send_request = sendRequest;
 
       /* HELP BUTTON */
       $scope.openHelp = openHelp;
@@ -265,6 +279,10 @@
       function showForm(b){
         $scope.form_display = b;
       }
+
+      function cancel() {
+        $mdDialog.cancel();
+      };
 
       function reset(){
         $scope.instances = parseInt(document.getElementById('instances_number_actual').value);

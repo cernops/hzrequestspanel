@@ -116,7 +116,7 @@
       <div class="loading" ng-show="loading_img_show_storage">
           <img ng-src="{$ static_url $}dashboard/project/hzrequestspanel/loading.svg" alt="loading spinner" />
       </div>
-      <div id="div_storage_rows">
+      <div id="div_storage_rows" ng-hide="loading_img_show_storage">
           <div layout="row" class="fila-dato"
               ng-repeat="vol_type in volume_type_list_limits"
               ng-click="show_volume(vol_type.id)">
