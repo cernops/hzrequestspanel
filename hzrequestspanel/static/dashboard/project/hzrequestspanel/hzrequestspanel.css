@@ -169,3 +169,8 @@ md-dialog {
 textarea {
     width: 100%;
 }
+
+/* FIX for font-family in Angular CSS */
+button, html, input, select, textarea{
+    font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+}
