@@ -144,9 +144,7 @@
 
       function onTenantAbsoluteLimits(dict){
           $scope.tenant_absolute_limits = dict
-          var l = [];
           var i = 0;
-          var index_standard = 0;
           for (var k in $scope.volume_types['volumes']){
               var id = $scope.volume_types['volumes'][k]['id'];
               var name = $scope.volume_types['volumes'][k]['name'];
@@ -179,17 +177,31 @@
 
               $scope.volume_type_ids[i] = id;
               $scope.volume_type_list_limits[i] = d;
-              if (name == 'standard'){
-                  index_standard = i;
-              }
               i++;
           }
           $scope.loading_img_show_storage = false;
 
           // Hack to put STANDAR in first place
-          var temp = $scope.volume_type_list_limits[0];
-          $scope.volume_type_list_limits[0] = $scope.volume_type_list_limits[index_standard];
-          $scope.volume_type_list_limits[index_standard] = temp;
+          $scope.volume_type_list_limits = sort_volume_type_list_limits();
+      }
+
+      function sort_volume_type_list_limits(){
+          $scope.volume_type_list_limits.sort( function(a, b){
+                  return a['name'] > b['name'] ? 1 : a['name'] < b['name'] ? -1 : 0;
+              }
+          );
+          var l = $scope.volume_type_list_limits.length;
+          var custom_sorted_list = [];
+          var k = 1;
+          for (var i = 0; i < l; i++) {
+              if ($scope.volume_type_list_limits[i]['name'] == 'standard') {
+                  custom_sorted_list[0] = $scope.volume_type_list_limits[i];
+              }else{
+                  custom_sorted_list[k] = $scope.volume_type_list_limits[i];
+                  k++;
+              }
+          }
+          return custom_sorted_list;
       }
 
       function onVolumeTypeList(list){
@@ -288,12 +300,17 @@
         $scope.instances = parseInt(document.getElementById('instances_number_actual').value);
         $scope.cores = parseInt(document.getElementById('cores_number_actual').value);
         $scope.ram = parseInt(document.getElementById('ram_number_actual').value);
+        change_compute('instances', $scope.instances, $scope.instances);
+        change_compute('cores', $scope.cores, $scope.cores);
+        change_compute('ram', $scope.ram, $scope.ram);
         for (var i in $scope.volume_type_ids){
             var start_value = parseInt(document.getElementById($scope.volume_type_ids[i] + '_number_actual').value);
             $scope.volume_fields[$scope.volume_type_ids[i] + '_number'] = start_value;
 
             start_value = parseInt(document.getElementById($scope.volume_type_ids[i] + '_size_actual').value);
             $scope.volume_fields[$scope.volume_type_ids[i] + '_size'] = start_value;
+
+            change_volume_type_percentaje($scope.volume_type_ids[i]);
         }
         document.getElementById('textarea-comments').value = '';
       }
@@ -314,16 +331,23 @@
           var number_actual =  parseInt(document.getElementById(vol_id + '_number_actual').value);
           var size_actual = parseInt(document.getElementById(vol_id + '_size_actual').value);
 
-          var number = (number_new - number_actual);
-          var size = (size_new - size_actual);
+          var number = parseInt(number_new - number_actual);
+          var size = parseInt(size_new - size_actual);
           if (isNaN(number)){ number = 0; }
           if (isNaN(size)){ size = 0; }
 
-          var percent_number = parseInt(((100 * number_new) / number_actual) - 100);
-          var percent_size = parseInt(((100 * size_new) / size_actual) - 100);
+          var percent_number = 0;
+          if ( number_new != number_actual) {
+              if (number_actual == 0) { number_actual = 1; }
+              percent_number = parseInt(((100 * number_new) / number_actual) - 100);
+          }
+          var percent_size = 0;
+          if (size_new != size_actual) {
+              if (size_actual == 0) { size_actual = 1; }
+              percent_size = parseInt(((100 * size_new) / size_actual) - 100);
+          }
           if (isNaN(percent_number)){ percent_number = 0; }
           if (isNaN(percent_size)){ percent_size = 0; }
-
           var sign_number = '';
           var sign_size = '';
           if (percent_number > 0) { sign_number = '+'; }

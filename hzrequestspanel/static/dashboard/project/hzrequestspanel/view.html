@@ -10,7 +10,7 @@
       </md-toolbar>
       <md-content layout-padding>
           <p>Cloud project owners who want to change the resource quota for this project should click "Request quota change" button and fill the form.</p>
-          <p>Submiting the form, you will create a new SNOW ticket for your request. From that point, your request will be manage by Cloud Team from <a href="https://cern.service-now.com/service-portal/" title="Go to Service Now Web Page" targe="_blank">CERN Service Portal</a> website.</p>
+          <p>Submiting the form, you will create a new SNOW ticket for your request. From that point, your request will be manage by Cloud Team from <a href="https://cern.service-now.com/service-portal/" title="Go to Service Now Web Page" target="_blank">CERN Service Portal</a> website.</p>
           <p>After submitting your ticket, you will receive a confirmation email.</p>
           <p>For details on Cloud projects, please read <a href="http://clouddocs.web.cern.ch/clouddocs/details/quotas.html" target="_blank">http://clouddocs.web.cern.ch/clouddocs/details/quotas.html</a> </p>
           <div id="div-button-help-close">
@@ -109,7 +109,7 @@
     </div>
     <div flex layout="column">
       <div id="div_volume_data_headers" layout="row">
-        <div flex></div>
+        <div flex="25"></div>
         <div flex>Number</div>
         <div flex>Space</div>
       </div>
@@ -122,7 +122,7 @@
               ng-click="show_volume(vol_type.id)">
               <input type="hidden" id="{$ vol_type.id $}_number_actual" value="{$ vol_type.volumes.total $}">
               <input type="hidden" id="{$ vol_type.id $}_size_actual" value="{$ vol_type.gigabytes.total $}">
-              <div flex class="bold">{$ vol_type.name $}</div>
+              <div flex="25" class="bold">{$ vol_type.name $}</div>
               <div flex layout="row" class="div-input-number">
                   <input type="number"
                          min="{$ vol_type.volumes.used $}"
