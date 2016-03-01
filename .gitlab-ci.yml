@@ -47,7 +47,7 @@ kojibuild:
                 - cd $CI_PROJECT_DIR
                 - export SPEC=$(ls *spec)
                 - export PKG=hzrequestspanel-0.1
-                - export PKG_REL=hzrequestspanel-0.1-2
+                - export PKG_REL=python-hzrequestspanel-0.1-2
                 - rm -rf /tmp/$PKG
                 - mkdir /tmp/$PKG
                 - cp -R * /tmp/$PKG
