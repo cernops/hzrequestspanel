@@ -8,7 +8,8 @@
   Hzrequestspanelcontroller.$inject = [
       '$scope',
       '$mdDialog',
-      '$mdMedia'
+      '$mdMedia',
+      'horizon.app.core.openstack-service-api.keystone'
   ];
 
   DialogController.$inject = [
@@ -22,7 +23,7 @@
       'horizon.framework.widgets.toast.service'
   ];
 
-  function Hzrequestspanelcontroller($scope, $mdDialog, $mdMedia) {
+  function Hzrequestspanelcontroller($scope, $mdDialog, $mdMedia, keystoneAPI) {
       var ctrl = this;
 
       ctrl.openRequestForm = openRequestForm;

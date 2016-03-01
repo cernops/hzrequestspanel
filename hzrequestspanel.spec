@@ -6,7 +6,7 @@
 
 Name:		python-%{pypi_name}
 Version:	0.1
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	OpenStack Dashboard panel plugin for Service Now requests
 
 License:	ASL 2.0
@@ -110,5 +110,5 @@ install -p -D -m 640 enabled/_6868_project_remove_overview_panel.py %{buildroot}
 %endif
 
 %changelog
-* Thu Jan 14 2016 Marcos Fermin Lobo <marcos.fermin.lobo@cern.ch> 0.1-2
+* Thu Jan 14 2016 Marcos Fermin Lobo <marcos.fermin.lobo@cern.ch> 0.1-3
 - First RPM
