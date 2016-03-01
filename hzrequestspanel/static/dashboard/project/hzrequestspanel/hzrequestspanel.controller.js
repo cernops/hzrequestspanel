@@ -93,6 +93,7 @@
       $scope.hyper = '';
       $scope.max_iops = '';
       $scope.max_throughput = '';
+      $scope.description = '';
 
       /* VARS TO CHANGE VOLUME TYPE DESCRIPTION */
       $scope.show_volume = showVolume;
@@ -234,6 +235,7 @@
           $scope.hyper = data['hypervisor'];
           $scope.max_iops = data['max_iops'];
           $scope.max_throughput = data['max_throughput'];
+          $scope.description = data['description'];
       }
 
       function showVolume(i){
@@ -243,6 +245,7 @@
         $scope.hyper = $scope.volume_types['volumes'][i]['hypervisor'];
         $scope.max_iops = $scope.volume_types['volumes'][i]['max_iops'];
         $scope.max_throughput = $scope.volume_types['volumes'][i]['max_throughput'];
+        $scope.description = $scope.volume_types['volumes'][i]['description'];
       }
 
       /**
