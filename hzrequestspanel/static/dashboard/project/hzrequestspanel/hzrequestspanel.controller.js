@@ -355,8 +355,17 @@
           var sign_size = '';
           if (percent_number > 0) { sign_number = '+'; }
           if (percent_size > 0) { sign_size = '+'; }
-          $scope.volume_type_change[vol_id]['number'] = sign_number + number + ' (' + sign_number + '' +  percent_number + '%)';
-          $scope.volume_type_change[vol_id]['size'] = sign_size + size + ' (' + sign_size + '' +percent_size + '%)';
+
+          if (number == 0 && percent_number == 0) {
+               $scope.volume_type_change[vol_id]['number'] = '';
+          }else{
+               $scope.volume_type_change[vol_id]['number'] = sign_number + number + ' (' + sign_number + '' +  percent_number + '%)';
+          }
+          if (size == 0 && percent_size == 0) {
+               $scope.volume_type_change[vol_id]['size'] = '';
+          }else{
+               $scope.volume_type_change[vol_id]['size'] = sign_size + size + ' (' + sign_size + '' +percent_size + '%)';
+          }
       }
 
       function change_instances(){
@@ -378,7 +387,13 @@
           if (isNaN(percentaje)){ percentaje = 0; }
           var sign = '';
           if (number_new > 0) { sign = '+'; }
-          $scope.compute_change[field] = sign + (number_new - number_actual) + ' (' + sign + '' + percentaje + '%)';
+
+          // Only display info if it is != 0
+          if (number == 0 && percentaje == 0) {
+              $scope.compute_change[field] = '';
+          }else{
+              $scope.compute_change[field] = sign + number + ' (' + sign + '' + percentaje + '%)';
+          }
       }
 
       function openHelp() {
