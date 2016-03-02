@@ -1,4 +1,4 @@
-<div class="form" layout="column" layout-padding ng-controller="DialogController">
+<div class="form" layout="column" layout-padding>
   <h3>Request quota change for "{$ project_name $}"</h3>
 
   <div id="div-button-help">
@@ -88,7 +88,20 @@
                     <td>{$name$}</td>
                   </tr>
                   <tr>
-                    <td colspan="2">{$description$}</td>
+                    <td>Usage: </td>
+                    <td>{$usage$}</td>
+                  </tr>
+                  <tr>
+                    <td>Hypervisor: </td>
+                    <td>{$hyper$}</td>
+                  </tr>
+                  <tr>
+                    <td>Max IOPS: </td>
+                    <td>{$max_iops$}</td>
+                  </tr>
+                  <tr>
+                    <td>Max Throughput: </td>
+                    <td>{$max_throughput$}</td>
                   </tr>
                 </tbody>
               </table>

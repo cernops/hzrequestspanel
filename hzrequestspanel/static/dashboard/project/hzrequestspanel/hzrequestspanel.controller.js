@@ -19,6 +19,7 @@
       'horizon.app.core.openstack-service-api.nova',
       'horizon.app.core.openstack-service-api.keystone',
       'horizon.app.core.openstack-service-api.cinder',
+      'horizon.app.core.openstack-service-api.settings',
       'horizon.framework.util.http.service',
       'horizon.framework.widgets.toast.service'
   ];
@@ -59,7 +60,7 @@
       }
   }
 
-  function DialogController($scope, $mdDialog, $mdSidenav, novaAPI, keystoneAPI, cinderAPI, apiService, toastService) {
+  function DialogController($scope, $mdDialog, $mdSidenav, novaAPI, keystoneAPI, cinderAPI, settingsAPI, apiService, toastService) {
 
       $scope.nova_limits = {};
       $scope.username = '';
@@ -144,6 +145,19 @@
           $scope.project_name = dict['project_name'];
       }
 
+      function onGetSetting(dict){
+          $scope.volume_type_meta = dict;
+          dict['standard']['name'] = 'standard';
+          set_default_volume_type_description(dict['standard']);
+          for (var key in $scope.volume_types['volumes']){
+              var name = $scope.volume_types['volumes'][key]['name'];
+              $scope.volume_types['volumes'][key]['usage'] = dict[name]['usage'];
+              $scope.volume_types['volumes'][key]['hypervisor'] = dict[name]['hypervisor'];
+              $scope.volume_types['volumes'][key]['max_iops'] = dict[name]['iops'];
+              $scope.volume_types['volumes'][key]['max_throughput'] = dict[name]['throughput'];
+          }
+      }
+
       function onTenantAbsoluteLimits(dict){
           $scope.tenant_absolute_limits = dict
           var i = 0;
@@ -209,7 +223,6 @@
       function onVolumeTypeList(list){
           var len = list['items'].length;
           var vt = [];
-          var default_volume_type_name = 'standard'
           for (var i=0; i < len; i++){
               var d = {'id': list['items'][i]['id'],
                        'name': list['items'][i]['name'],
@@ -221,12 +234,9 @@
               vt[d['id']] = d;
               $scope.volume_fields[d['id'] + '_number'] = 0;
               $scope.volume_fields[d['id'] + '_size'] = 0;
-
-              if (d['name'] == default_volume_type_name){
-                  set_default_volume_type_description(d);
-              }
           }
           $scope.volume_types = {'volumes': vt};
+          settingsAPI.getSetting('VOLUME_TYPE_META').then(onGetSetting);
       }
 
       function set_default_volume_type_description(data){
@@ -234,8 +244,8 @@
           $scope.name = data['name'];
           $scope.usage = data['usage'];
           $scope.hyper = data['hypervisor'];
-          $scope.max_iops = data['max_iops'];
-          $scope.max_throughput = data['max_throughput'];
+          $scope.max_iops = data['iops'];
+          $scope.max_throughput = data['throughput'];
           $scope.description = data['description'];
       }
 
