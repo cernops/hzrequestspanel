@@ -397,7 +397,7 @@
           if (isNaN(number)){ number = 0; }
           if (isNaN(percentaje)){ percentaje = 0; }
           var sign = '';
-          if (number_new > 0) { sign = '+'; }
+          if (number > 0) { sign = '+'; }
 
           // Only display info if it is != 0
           if (number == 0 && percentaje == 0) {
