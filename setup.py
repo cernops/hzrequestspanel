@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'hzrequestspanel',
-    version = '0.0.1',
+    version = '0.1',
     description = 'A plugin for OpenStack Dashboard Panel SNOW requests',
     author = 'Marcos Fermin Lobo',
     author_email = 'marcos.fermin.lobo@cern.ch',
