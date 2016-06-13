@@ -289,7 +289,15 @@
               'instances': $scope.instances,
               'cores': $scope.cores,
               'ram': $scope.ram,
-              'volumes': {}
+              'volumes': {},
+              'current_quota': {
+                  'nova_quota': {
+                      'instances': document.getElementById('instances_number_actual').value,
+                      'cores': document.getElementById('cores_number_actual').value,
+                      'ram': document.getElementById('ram_number_actual').value
+                  },
+                  'cinder_quota': {}
+              }
           };
           for (var key in $scope.volume_types['volumes']){
               var vol_type_name = $scope.volume_types['volumes'][key]['name'];
@@ -298,6 +306,11 @@
                   'volumes': document.getElementById(vol_type_name + '_number').value
               };
               data['volumes'][vol_type_name] = dict_volume_data;
+
+              var gigabytes_key = 'gigabytes_' + vol_type_name;
+              var volumes_key = 'volumes_' + vol_type_name;
+              data['current_quota']['cinder_quota'][gigabytes_key] = document.getElementById(key + '_size_actual').value;
+              data['current_quota']['cinder_quota'][volumes_key] = document.getElementById(key + '_number_actual').value;
           }
           return data;
       }

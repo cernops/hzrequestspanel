@@ -2,8 +2,10 @@ import logging
 
 from ConfigParser import ConfigParser
 from ccitools.servicenow import ServiceNowClient
+from hzrequestspanel.api.ccitoolslib import *
 
 LOG = logging.getLogger(__name__)
+LOG.setLevel(logging.INFO)
 
 def _get_config_data():
     config = ConfigParser()
@@ -29,6 +31,8 @@ def _create(dict_data, volume_type_name_list):
                                    "sn_short_desc").format(dict_data['projectname'])
     funtional_element = config.get("servicenow", "sn_functional_element")
     group = config.get("servicenow", "sn_group")
+    functional_element_escalate = config.get("servicenow", "sn_functional_element_escalate")
+    group_escalate = config.get("servicenow", "sn_group_escalate")
 
     snowclient = None
     ticket = None
@@ -53,14 +57,27 @@ def _create(dict_data, volume_type_name_list):
         raise e
 
     # Fill the ticket
-    LOG.info("Update SNOW ticket ticket.number: '{0}', " \
-             "volume_type_name_list: {1}, dict_data: {2}".format(ticket.number,
-                                                             volume_type_name_list,
-                                                             dict_data))
+    LOG.info("Update SNOW ticket '{0}', volume_type_name_list: {1}, " \
+             "dict_data: {2}".format(ticket.number,
+                                     volume_type_name_list,
+                                     dict_data))
     try:
         snowclient.create_quota_update(ticket.number, volume_type_name_list, dict_data)
     except Exception as e:
         LOG.error("Error updating snow ticket:" + e.message)
+        raise e
+
+    # Scalate the ticket to other FE
+    LOG.info("Escalate ticket '{0}' to FE {1} and group " \
+             "{2}".format(ticket.number,
+                          functional_element_escalate,
+                          group_escalate))
+    try:
+        escalate_ticket(snowclient, ticket.number, functional_element_escalate, group_escalate, dict_data)
+    except Exception as e:
+        msg = "Error escalating snow ticket {0} to FE '{1}' and Group " \
+              "'{2}': ".format(ticket.number, functional_element_escalate, group_escalate)
+        LOG.error(msg + e.message)
         raise e
 
     return ticket.number
@@ -70,3 +87,30 @@ def create(dict_data, volume_type_name_list):
     ticket_number = _create(dict_data, volume_type_name_list)
     LOG.info("SNOW ticket created successfully")
     return {"ticket_number": ticket_number}
+
+def escalate_ticket(snowclient, ticket_number, fe, asign_group, dict_data):
+    LOG.info("GET record producer from SNOW with ticket '{0}'".format(ticket_number))
+    rp = snowclient.get_quota_update_request_rp(ticket_number)
+
+    LOG.info("Get username from ticket number '{0}'".format(ticket_number))
+    username = snowclient.users.getRecords(sys_id=snowclient.get_ticket(ticket_number).u_caller_id)[0].first_name
+
+    LOG.info("Add comment to ticket number '{0}'".format(ticket_number))
+    snowclient.add_comment(ticket_number, USER_MESSAGE % username)
+
+    rp_dict = rp_to_dict(rp,
+                         dict_data['current_quota']['nova_quota'],
+                         dict_data['current_quota']['cinder_quota'])
+
+    LOG.info("Getting request summary")
+    req_summary = request_summary(rp_dict,
+                                  dict_data['current_quota']['nova_quota'],
+                                  dict_data['current_quota']['cinder_quota'])
+    LOG.info("Getting worknote message")
+    worknote_msg = worknote_message(rp_dict, req_summary)
+    LOG.info("Add worknote to ticket number '{0}'".format(ticket_number))
+    snowclient.add_work_note(ticket_number, worknote_msg)
+
+    LOG.info("Escalate ticket number '{0}' to FE '{1}' and Group " \
+             "'{2}'".format(ticket_number, fe, asign_group))
+    snowclient.change_functional_element(ticket_number, fe, asign_group)

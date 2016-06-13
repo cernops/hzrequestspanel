@@ -10,7 +10,7 @@ rpmbuild:
         script:
                 - cd $CI_PROJECT_DIR
                 - export SPEC=$(ls *spec)
-                - export PKG=hzrequestspanel-0.1
+                - export PKG=hzrequestspanel-0.2
                 - rm -rf /tmp/$PKG
                 - mkdir /tmp/$PKG
                 - cp -R * /tmp/$PKG
@@ -32,7 +32,7 @@ kojicheck:
         script:
                 - cd $CI_PROJECT_DIR
                 - export SPEC=$(ls *spec)
-                - export PKG=hzrequestspanel-0.1-5
+                - export PKG=hzrequestspanel-0.2-1
                 - echo $SVCBUILD_PASSWORD | kinit svcbuild@CERN.CH
                 - if koji search -r build $PKG | grep $PKG; then exit 1; fi
         tags:
@@ -46,8 +46,8 @@ kojibuild:
         script:
                 - cd $CI_PROJECT_DIR
                 - export SPEC=$(ls *spec)
-                - export PKG=hzrequestspanel-0.1
-                - export PKG_REL=python-hzrequestspanel-0.1-5
+                - export PKG=hzrequestspanel-0.2
+                - export PKG_REL=python-hzrequestspanel-0.2-1
                 - rm -rf /tmp/$PKG
                 - mkdir /tmp/$PKG
                 - cp -R * /tmp/$PKG
