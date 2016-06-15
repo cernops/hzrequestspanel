@@ -364,17 +364,18 @@
           if (isNaN(size)){ size = 0; }
 
           var percent_number = 0;
-          if ( number_new != number_actual) {
-              if (number_actual == 0) { number_actual = 1; }
+          var percent_size = 0;
+          if ( number_new != number_actual && number_actual > 0) {
               percent_number = parseInt(((100 * number_new) / number_actual) - 100);
           }
-          var percent_size = 0;
-          if (size_new != size_actual) {
-              if (size_actual == 0) { size_actual = 1; }
+          if (size_new != size_actual && size_actual > 0) {
               percent_size = parseInt(((100 * size_new) / size_actual) - 100);
           }
-          if (isNaN(percent_number)){ percent_number = 0; }
-          if (isNaN(percent_size)){ percent_size = 0; }
+          if (number_actual == 0){ percent_number = 100; }
+          if (size_actual == 0){ percent_size = 100; }
+          if (number_new == 0){ percent_number = 0; }
+          if (size_new == 0){ percent_size = 0; }
+
           var sign_number = '';
           var sign_size = '';
           if (percent_number > 0) { sign_number = '+'; }

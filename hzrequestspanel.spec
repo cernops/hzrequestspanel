@@ -6,7 +6,7 @@
 
 Name:		python-%{pypi_name}
 Version:	0.2
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	OpenStack Dashboard panel plugin for Service Now requests
 
 License:	ASL 2.0
@@ -110,6 +110,9 @@ install -p -D -m 640 enabled/_6868_project_remove_overview_panel.py %{buildroot}
 %endif
 
 %changelog
+* Wed Jun 15 2016 Marcos Fermin Lobo <marcos.fermin.lobo@cern.ch> 0.2-2
+- Fix RAM data to send (OS-2873) and set proper % when the initial value is 0
+
 * Wed May 04 2016 Marcos Fermin Lobo <marcos.fermin.lobo@cern.ch> 0.2-1
 - OS-2873 Escalate request quota change SNOW ticket
 

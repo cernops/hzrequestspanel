@@ -46,13 +46,13 @@ def request_summary(rp, nova_quota, cinder_quota):
     diff_instances, percent_intances = __calculate_variation(nova_quota['instances'], rp['instances'])
     variation_instances = "%+d (%+d%%)" % (diff_instances, percent_intances)
 
-    diff_ram, percent_ram = __calculate_variation(int(nova_quota['ram'])/1024, rp['ram'])
+    diff_ram, percent_ram = __calculate_variation(int(nova_quota['ram']), rp['ram'])
     variation_ram = "%+d (%+d%%)" % (diff_ram, percent_ram)
 
     t = prettytable.PrettyTable(["Quota", "Current", "Requested", "Variation"])
     t.add_row(["Cores", nova_quota['cores'], rp['cores'], variation_cores])
     t.add_row(["Instances", nova_quota['instances'], rp['instances'], variation_instances])
-    t.add_row(["RAM (GB)", int(nova_quota['ram'])/1024, rp['ram'], variation_ram ])
+    t.add_row(["RAM (GB)", int(nova_quota['ram']), rp['ram'], variation_ram ])
 
     if 'volume_quota' in rp.keys():
         for volume_quota in rp['volume_quota']:
@@ -114,10 +114,7 @@ def rp_to_dict(rp, nova_quota, cinder_quota):
 
             else: #if requested empty, then load current value
                 if field in nova_quota.keys():
-                    if field == 'ram':
-                        rp_dict[field] = int(nova_quota[field])/1024
-                    else:
-                        rp_dict[field] = int(nova_quota[field])
+                    rp_dict[field] = int(nova_quota[field])
                 elif field in cinder_quota.keys():
                     rp_dict[field] = int(cinder_quota[field])
 
