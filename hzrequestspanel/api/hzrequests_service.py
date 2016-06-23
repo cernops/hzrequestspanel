@@ -37,13 +37,17 @@ def _create(dict_data, volume_type_name_list):
     snowclient = None
     ticket = None
 
+    default_exception = Exception("Unable to create the ticket. Please retry. " \
+                                  "If the problem persists, contact " \
+                                  "the Cloud Team")
+
     # Setup clients
     LOG.info("Instanciate SNOW client")
     try:
         snowclient = ServiceNowClient(sn_user, sn_pass, instance=sn_instance)
     except Exception as e:
         LOG.error("Error instanciating snow client:" + e.message)
-        raise e
+        raise default_exception
 
     # Create the ticket
     LOG.info("Create SNOW ticket short_description: '{0}', " \
@@ -54,7 +58,7 @@ def _create(dict_data, volume_type_name_list):
                                            assignment_group=group)
     except Exception as e:
         LOG.error("Error creating ticket:" + e.message)
-        raise e
+        raise default_exception
 
     # Fill the ticket
     LOG.info("Update SNOW ticket '{0}', volume_type_name_list: {1}, " \
@@ -65,7 +69,7 @@ def _create(dict_data, volume_type_name_list):
         snowclient.create_quota_update(ticket.number, volume_type_name_list, dict_data)
     except Exception as e:
         LOG.error("Error updating snow ticket:" + e.message)
-        raise e
+        raise default_exception
 
     # Scalate the ticket to other FE
     LOG.info("Escalate ticket '{0}' to FE {1} and group " \
@@ -78,7 +82,11 @@ def _create(dict_data, volume_type_name_list):
         msg = "Error escalating snow ticket {0} to FE '{1}' and Group " \
               "'{2}': ".format(ticket.number, functional_element_escalate, group_escalate)
         LOG.error(msg + e.message)
-        raise e
+        raise Exception("Your ticket {0} has been successfully created, " \
+                        "however we have identified some issues during the " \
+                        "process. Please go to Service-Now and verify your " \
+                        "request. If you find any problems, please contact " \
+                        "the Cloud Team.".format(ticket.number))
 
     return ticket.number
 

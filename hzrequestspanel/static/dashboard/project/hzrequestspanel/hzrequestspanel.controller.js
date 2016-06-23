@@ -267,8 +267,10 @@
         var data = getFormData();
         $scope.request_sent = true;
         var r = apiService.post('/project/hzrequestspanel/hzrequests/requests/', data)
-          .error(function () {
-            toastService.add('error', gettext('Unable to create the ticket.'));
+          .error(function (response) {
+            var mode = 'error';
+            if (response.includes("Ticket created")){ mode = 'warning'; }
+            toastService.add(mode, gettext(response));
             //Close request quota change model dialog
             $mdDialog.cancel();
         }).success(function(response){
