@@ -11,9 +11,10 @@ SNOW_MESSAGE = """Dear HW Resources manager,
 Could you please review the following quota update request?
 
 %s
-Also, could you please make sure that the numbers in the form correspond to your decision,
-before you reassign this ticket to the "Cloud Infrastructure 3rd Level" FE? This will allow
-for the automated update of the project quota. Thanks!
+
+In order to apply these values, please execute the following job:
+
+https://cirundeck.cern.ch/project/HW-Resources/job/show/ad45c0a5-5a81-4861-a7ee-fbb7d54f122a
 
 Best regards,
         Cloud Infrastructure Team"""
