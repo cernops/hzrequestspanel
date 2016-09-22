@@ -1,0 +1,29 @@
+SPECFILE = hzrequestspanel.spec
+
+all:
+	python setup.py sdist --dist-dir .
+
+clean:
+	python setup.py clean --all
+
+srpm:   all
+	rpmbuild -bs --define "_sourcedir `pwd`" ${SPECFILE}
+
+rpm:   all
+	rpmbuild -ba --define "_sourcedir `pwd`" ${SPECFILE}
+
+scratch:
+	koji build cci6-utils --nowait --scratch git+ssh://git@gitlab.cern.ch:8443/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
+	koji build cci7-utils --nowait --scratch git+ssh://git@gitlab.cern.ch:8443/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
+
+build:
+	koji build cci6-utils --nowait git+ssh://git@gitlab.cern.ch:8443/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
+	koji build cci7-utils --nowait git+ssh://git@gitlab.cern.ch:8443/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
+
+tag-qa:
+	koji tag-pkg cci7-utils-qa --nowait python-hzrequestspanel-$(shell git describe).el7
+	koji tag-pkg cci6-utils-qa --nowait python-hzrequestspanel-$(shell git describe).el6
+
+tag-stable:
+	koji tag-pkg cci7-utils-stable --nowait python-hzrequestspanel-$(shell git describe).el7
+	koji tag-pkg cci6-utils-stable --nowait python-hzrequestspanel-$(shell git describe).el6
