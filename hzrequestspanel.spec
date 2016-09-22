@@ -5,8 +5,8 @@
 %endif
 
 Name:		python-%{pypi_name}
-Version:	0.2
-Release:	3%{?dist}
+Version:	1.0
+Release:	1%{?dist}
 Summary:	OpenStack Dashboard panel plugin for Service Now requests
 
 License:	ASL 2.0
@@ -86,7 +86,7 @@ popd
 %{__python2} setup.py install --skip-build --root %{buildroot}
 
 # Install enabled file for the plugin
-install -p -D -m 640 etc/%{pypi_name}.conf %{buildroot}/etc/openstack-dashboard/%{pypi_name}.conf
+# install -p -D -m 640 etc/%{pypi_name}.conf %{buildroot}/etc/openstack-dashboard/%{pypi_name}.conf
 install -p -D -m 640 enabled/_1021_project_hzrequests_panel.py %{buildroot}%{_datadir}/openstack-dashboard/openstack_dashboard/enabled/_1021_project_hzrequests_panel.py
 install -p -D -m 640 enabled/_6868_project_remove_overview_panel.py %{buildroot}%{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6868_project_remove_overview_panel.py
 
@@ -96,7 +96,7 @@ install -p -D -m 640 enabled/_6868_project_remove_overview_panel.py %{buildroot}
 %{python2_sitelib}/%{pypi_name}*
 %{_datadir}/openstack-dashboard/openstack_dashboard/enabled/_1021_project_hzrequests_panel.py*
 %{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6868_project_remove_overview_panel.py*
-%attr(0644, apache, apache) /etc/openstack-dashboard/%{pypi_name}.conf
+# %attr(0644, apache, apache) /etc/openstack-dashboard/%{pypi_name}.conf
 
 # Files for python3
 %if 0%{?with_python3}
@@ -106,10 +106,14 @@ install -p -D -m 640 enabled/_6868_project_remove_overview_panel.py %{buildroot}
 %{python3_sitelib}/%{pypi_name}
 %{_datadir}/openstack-dashboard/openstack_dashboard/enabled/_1021_project_hzrequests_panel.py*
 %{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6868_project_remove_overview_panel.py*
-%attr(0644, apache, apache) /etc/openstack-dashboard/%{pypi_name}.conf
+# %attr(0644, apache, apache) /etc/openstack-dashboard/%{pypi_name}.conf
 %endif
 
 %changelog
+* Thu Sep 22 2016 Daniel Fernandez Rodriguez <danielfr@cern.ch> 1.0-1
+- Change quota update request worknote message
+- Add Makefile.koji to project
+
 * Thu Jun 23 2016 Marcos Fermin Lobo <marcos.fermin.lobo@cern.ch> 0.2-3
 - OS-3092 Improve error message for request quota change action
 

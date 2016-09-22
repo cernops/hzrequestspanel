@@ -1,24 +1,13 @@
-from setuptools import setup, find_packages
+#!/usr/bin/env python
+
+from distutils.core import setup
 
 setup(
     name = 'hzrequestspanel',
-    version = '0.2',
+    version = '1.0',
     description = 'A plugin for OpenStack Dashboard Panel SNOW requests',
-    author = 'Marcos Fermin Lobo',
-    author_email = 'marcos.fermin.lobo@cern.ch',
-    classifiers = [
-        'Environment :: OpenStack',
-        'Framework :: Django',
-        'Intended Audience :: Developers',
-        'Intended Audience :: System Administrators',
-        'License :: OSI Approved :: Apache Software License',
-        'Operating System :: OS Independent',
-        'Operating System :: POSIX :: Linux',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
-        'Topic :: Internet :: WWW/HTTP',
-    ],
-    packages=find_packages(),
+    author='Cloud Infrastructure Team',
+    author_email='cloud-infrastructure-3rd-level@cern.ch',
+    packages=['hzrequestspanel', 'hzrequestspanel/content', 'hzrequestspanel/api'],
     include_package_data = True,
 )

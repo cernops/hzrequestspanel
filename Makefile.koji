@@ -13,12 +13,12 @@ rpm:   all
 	rpmbuild -ba --define "_sourcedir `pwd`" ${SPECFILE}
 
 scratch:
-	koji build cci6-utils --nowait --scratch git+ssh://git@gitlab.cern.ch:8443/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
-	koji build cci7-utils --nowait --scratch git+ssh://git@gitlab.cern.ch:8443/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
+	koji build cci6-utils --nowait --scratch git+ssh://git@gitlab.cern.ch:7999/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
+	koji build cci7-utils --nowait --scratch git+ssh://git@gitlab.cern.ch:7999/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
 
 build:
-	koji build cci6-utils --nowait git+ssh://git@gitlab.cern.ch:8443/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
-	koji build cci7-utils --nowait git+ssh://git@gitlab.cern.ch:8443/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
+	koji build cci6-utils --nowait git+ssh://git@gitlab.cern.ch:7999/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
+	koji build cci7-utils --nowait git+ssh://git@gitlab.cern.ch:7999/cloud-infrastructure/hzrequestspanel.git#$(shell git describe)
 
 tag-qa:
 	koji tag-pkg cci7-utils-qa --nowait python-hzrequestspanel-$(shell git describe).el7
