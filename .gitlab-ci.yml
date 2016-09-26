@@ -8,19 +8,7 @@ rpmbuild:
         except:
                 - master
         script:
-                - cd $CI_PROJECT_DIR
-                - export SPEC=$(ls *spec)
-                - export PKG=hzrequestspanel-0.2
-                - rm -rf /tmp/$PKG
-                - mkdir /tmp/$PKG
-                - cp -R * /tmp/$PKG
-                - cd /tmp
-                - tar zcvf ~/rpmbuild/SOURCES/$PKG.tar.gz $PKG
-                - cd $PKG
-                - cp *spec ~/rpmbuild/SOURCES
-                - yum-builddep -y $SPEC
-                - rpmbuild -bs $SPEC
-                - rpmbuild -bb $SPEC
+                - curl https://gitlab.cern.ch/cloud-infrastructure/cloud-dev/raw/master/gitlab/rpmbuild.sh | bash
         tags:
                 - cci-swarm-builder
 
@@ -30,11 +18,7 @@ kojicheck:
         except:
                 - master
         script:
-                - cd $CI_PROJECT_DIR
-                - export SPEC=$(ls *spec)
-                - export PKG=hzrequestspanel-0.2-3
-                - echo $SVCBUILD_PASSWORD | kinit svcbuild@CERN.CH
-                - if koji search -r build $PKG | grep $PKG; then exit 1; fi
+                - curl https://gitlab.cern.ch/cloud-infrastructure/cloud-dev/raw/master/gitlab/kojicheck.sh | bash
         tags:
                 - cci-swarm-builder
 
@@ -44,21 +28,7 @@ kojibuild:
         only:
                 - master
         script:
-                - cd $CI_PROJECT_DIR
-                - export SPEC=$(ls *spec)
-                - export PKG=hzrequestspanel-0.2
-                - export PKG_REL=python-hzrequestspanel-0.2-3
-                - rm -rf /tmp/$PKG
-                - mkdir /tmp/$PKG
-                - cp -R * /tmp/$PKG
-                - cd /tmp
-                - tar zcvf ~/rpmbuild/SOURCES/$PKG.tar.gz $PKG
-                - cd $PKG
-                - cp *spec ~/rpmbuild/SOURCES
-                - rpmbuild -bs -D 'dist .el7' $SPEC
-                - echo $SVCBUILD_PASSWORD | kinit svcbuild@CERN.CH
-                - echo $PKG_REL
-                - echo $KOJI_TARGET
-                - koji build --wait $KOJI_TARGET $(find ~/rpmbuild/SRPMS -name $PKG_REL*)
+                - export DIST='.el7.cern'
+                - curl https://gitlab.cern.ch/cloud-infrastructure/cloud-dev/raw/master/gitlab/kojibuild.sh | bash
         tags:
                 - cci-swarm-builder

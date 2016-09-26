@@ -11,7 +11,7 @@ Summary:	OpenStack Dashboard panel plugin for Service Now requests
 
 License:	ASL 2.0
 URL:		https://gitlab.cern.ch/mferminl/hzrequestspanel
-Source0:	%{pypi_name}-%{version}.tar.gz
+Source0:	python-%{pypi_name}-%{version}.tar.gz
 
 BuildArch:      noarch
 
@@ -57,7 +57,7 @@ OpenStack Dashboard plugin to create a new panel, under Project dashboard, to ma
 %endif
 
 %prep
-%autosetup -n %{pypi_name}-%{version}
+%autosetup -n python-%{pypi_name}-%{version}
 # Remove bundled egg-info
 rm -rf %{pypi_name}.egg-info
 
@@ -103,7 +103,7 @@ install -p -D -m 640 enabled/_6868_project_remove_overview_panel.py %{buildroot}
 %files -n python3-%{pypi_name} 
 %license LICENSE
 %doc doc/source/readme.rst README.rst
-%{python3_sitelib}/%{pypi_name}
+%{python3_sitelib}/%{pypi_name}*
 %{_datadir}/openstack-dashboard/openstack_dashboard/enabled/_1021_project_hzrequests_panel.py*
 %{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6868_project_remove_overview_panel.py*
 # %attr(0644, apache, apache) /etc/openstack-dashboard/%{pypi_name}.conf
