@@ -28,7 +28,6 @@ kojibuild:
         only:
                 - master
         script:
-                - export DIST='.el7.cern'
                 - curl https://gitlab.cern.ch/cloud-infrastructure/cloud-dev/raw/master/gitlab/kojibuild.sh | bash
         tags:
                 - cci-swarm-builder
