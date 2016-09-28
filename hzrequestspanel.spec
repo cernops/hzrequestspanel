@@ -6,7 +6,7 @@
 
 Name:		python-%{pypi_name}
 Version:	1.0
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	OpenStack Dashboard panel plugin for Service Now requests
 
 License:	ASL 2.0
