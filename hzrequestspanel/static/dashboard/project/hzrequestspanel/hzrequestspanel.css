@@ -152,12 +152,6 @@ md-dialog {
         min-height: 295px;
 }
 
-.loading {
-        width: 100px;
-        height: 100px;
-        margin: auto;
-}
-
 #section_compute, #section_storage, #section_comments{
         font-size: 1em !important;
 }
