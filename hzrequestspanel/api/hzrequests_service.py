@@ -34,6 +34,9 @@ def _create(dict_data, volume_type_name_list):
     functional_element_escalate = config.get("servicenow", "sn_functional_element_escalate")
     group_escalate = config.get("servicenow", "sn_group_escalate")
 
+    watchlist_departments = [dep.lower() for dep in config.get("servicenow", "watchlist_departments").split()]
+    watchlist_egroup_template = config.get("servicenow", "watchlist_egroup_template")
+
     snowclient = None
     ticket = None
 
@@ -71,6 +74,9 @@ def _create(dict_data, volume_type_name_list):
         LOG.error("Error updating snow ticket:" + e.message)
         raise default_exception
 
+    # Add experiment resource coordinator to the watchlist
+    add_to_watchlist(snowclient, ticket.number, watchlist_departments, watchlist_egroup_template)
+
     # Scalate the ticket to other FE
     LOG.info("Escalate ticket '{0}' to FE {1} and group " \
              "{2}".format(ticket.number,
@@ -95,6 +101,16 @@ def create(dict_data, volume_type_name_list):
     ticket_number = _create(dict_data, volume_type_name_list)
     LOG.info("SNOW ticket created successfully")
     return {"ticket_number": ticket_number}
+
+def add_to_watchlist(snowclient, ticket_number, watchlist_departments, watchlist_egroup_template):
+    rp = snowclient.get_quota_update_request_rp(ticket_number)
+    project_name = rp.project_name.lower()
+    department = [dep for dep in watchlist_departments if project_name.startswith(dep)]
+    if len(department) != 0:
+        LOG.info("[ OK ] Adding '%s' to %s" % (watchlist_egroup_template % department[0], ticket_number))
+        snowclient.add_email_watch_list(ticket_number, watchlist_egroup_template % department[0])
+    else:
+        LOG.info("No need of adding resource coordinator to the watchlist")
 
 def escalate_ticket(snowclient, ticket_number, fe, asign_group, dict_data):
     LOG.info("GET record producer from SNOW with ticket '{0}'".format(ticket_number))
