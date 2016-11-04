@@ -5,3 +5,4 @@ import horizon
 class Hzrequestspanel(horizon.Panel):
     name = _("Overview")
     slug = "hzrequestspanel"
+    permissions = ('openstack.services.compute',)

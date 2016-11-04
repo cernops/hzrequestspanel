@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load compress %}
-
 {% block title %}{% trans "Instance Overview" %}{% endblock %}
 
 {% block page_header %}
@@ -12,5 +11,10 @@
 {% endblock page_header %}
 
 {% block main %}
-  {% include "hzrequestspanel/usage_summary.html" %}
+  {% include "hzrequestspanel/_limit_summary.html" %}
+
+  {% if simple_tenant_usage_enabled %}
+    {% include "hzrequestspanel/_usage_summary.html" %}
+    {{ table.render }}
+  {% endif %}
 {% endblock %}
