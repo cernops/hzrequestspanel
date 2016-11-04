@@ -1,3 +1,6 @@
+%global cern_version CERN_VERSION_PLACEHOLDER
+%global cern_release CERN_RELEASE_PLACEHOLDER
+
 %global pypi_name hzrequestspanel
 
 %if 0%{?fedora}
@@ -5,8 +8,8 @@
 %endif
 
 Name:		python-%{pypi_name}
-Version:	1.0
-Release:	2%{?dist}
+Version:    %{cern_version}
+Release:    %{cern_release}%{?dist}
 Summary:	OpenStack Dashboard panel plugin for Service Now requests
 
 License:	ASL 2.0
@@ -110,6 +113,9 @@ install -p -D -m 640 enabled/_6868_project_remove_overview_panel.py %{buildroot}
 %endif
 
 %changelog
+* Fri Nov 04 2016 Mateusz Kowalski <mateusz.kowalski@cern.ch> 1.0-3
+- Merge changes from Horizon newton
+
 * Thu Sep 22 2016 Daniel Fernandez Rodriguez <danielfr@cern.ch> 1.0-1
 - Change quota update request worknote message
 - Add Makefile.koji to project
