@@ -164,6 +164,10 @@ textarea {
     width: 100%;
 }
 
+.btn-custom-margin {
+    margin-bottom: 30px;
+}
+
 /* FIX for font-family in Angular CSS */
 button, html, input, select, textarea{
     font-family: "Open Sans", Helvetica, Arial, sans-serif !important;

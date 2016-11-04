@@ -11,7 +11,7 @@
       </script>
     </div>
     <div style="text-align: right;" ng-controller="Hzrequestspanelcontroller as ctrl" ng-hide="ctrl.is_personal_project">
-      <button class="btn btn-primary" ng-click="ctrl.openRequestForm($event)" title="Click to open Reques Quota Change form">Request quota change</button>
+      <button class="btn-custom-margin btn btn-primary" ng-click="ctrl.openRequestForm($event)" title="Click to open Reques Quota Change form">Request quota change</button>
     </div>
      {% for quota in charts %}
        {% if forloop.first or forloop.counter0|divisibleby:5 %}
