@@ -4,6 +4,7 @@
 {% block title %}{% trans "Instance Overview" %}{% endblock %}
 
 {% block page_header %}
+    {% include "horizon/common/_page_header.html" with title=_("Overview") %}
 {% compress css %}
     <link rel="stylesheet" href="{{ STATIC_URL }}dashboard/project/hzrequestspanel/angular-material.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}dashboard/project/hzrequestspanel/hzrequestspanel.css">
