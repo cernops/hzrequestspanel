@@ -108,8 +108,8 @@ md-toolbar.help-toolbar-header{
 }
 
 md-dialog {
-	width: 70% !important;
-	min-height: 745px !important;
+	width: 80% !important;
+	/*min-height: 745px !important;*/
 }
 .div-input-number {
 	text-align: center;
