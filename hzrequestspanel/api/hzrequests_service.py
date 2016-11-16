@@ -4,7 +4,7 @@ from ConfigParser import ConfigParser
 from ccitools.servicenow import ServiceNowClient
 from hzrequestspanel.api.ccitoolslib import *
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger('horizon.hzrequests')
 LOG.setLevel(logging.INFO)
 
 def _get_config_data():
