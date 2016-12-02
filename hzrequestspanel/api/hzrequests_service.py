@@ -131,7 +131,7 @@ def escalate_ticket(snowclient, ticket_number, fe, asign_group, dict_data):
                                   dict_data['current_quota']['nova_quota'],
                                   dict_data['current_quota']['cinder_quota'])
     LOG.info("Getting worknote message")
-    worknote_msg = worknote_message(rp_dict, req_summary)
+    worknote_msg = worknote_message(ticket_number, req_summary)
     LOG.info("Add worknote to ticket number '{0}'".format(ticket_number))
     snowclient.add_work_note(ticket_number, worknote_msg)
 
