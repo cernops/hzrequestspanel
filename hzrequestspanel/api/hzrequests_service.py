@@ -2,6 +2,7 @@ import logging
 
 from ConfigParser import ConfigParser
 from ccitools.servicenow import ServiceNowClient
+from ccitools.xldap import XldapClient
 from hzrequestspanel.api.ccitoolslib import *
 
 LOG = logging.getLogger('horizon.hzrequests')
@@ -68,6 +69,14 @@ def _create(dict_data, volume_type_name_list):
              "dict_data: {2}".format(ticket.number,
                                      volume_type_name_list,
                                      dict_data))
+
+    try:
+        xldap = XldapClient('ldap://xldap.cern.ch')
+        dict_data['username'] = xldap.get_primary_account(dict_data['username'])
+    except Exception as e:
+        LOG.error("Username not found:" + e.message)
+        raise default_exception
+
     try:
         snowclient.create_quota_update(ticket.number, volume_type_name_list, dict_data)
     except Exception as e:

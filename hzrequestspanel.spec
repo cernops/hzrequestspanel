@@ -113,8 +113,9 @@ install -p -D -m 640 enabled/_6868_project_remove_overview_panel.py %{buildroot}
 %endif
 
 %changelog
-* Fri Nov 04 2016 Daniel Fernandez Rodriguez <danielfr@cern.ch> 1.0-4
-- Add experiment resource coordinator to the watchlist
+* Wed Dec 07 2016 Daniel Fernandez Rodriguez <danielfr@cern.ch> 1.2-1
+- Prefill job URL with snow_ticket
+- Query Active Directory to check if user existance
 
 * Fri Nov 04 2016 Mateusz Kowalski <mateusz.kowalski@cern.ch> 1.0-3
 - Merge changes from Horizon newton
