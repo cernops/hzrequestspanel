@@ -79,6 +79,9 @@ LANG=en_US.UTF-8 %{__python3} setup.py build
 popd
 %endif
 
+%pretrans
+systemctl stop httpd
+
 %install
 %if 0%{?with_python3}
 pushd %{py3dir}
@@ -92,6 +95,9 @@ popd
 # install -p -D -m 640 etc/%{pypi_name}.conf %{buildroot}/etc/openstack-dashboard/%{pypi_name}.conf
 install -p -D -m 640 enabled/_1021_project_hzrequests_panel.py %{buildroot}%{_datadir}/openstack-dashboard/openstack_dashboard/enabled/_1021_project_hzrequests_panel.py
 install -p -D -m 640 enabled/_6868_project_remove_overview_panel.py %{buildroot}%{_datadir}/openstack-dashboard/openstack_dashboard/local/enabled/_6868_project_remove_overview_panel.py
+
+%posttrans
+systemctl start httpd
 
 %files -n python2-%{pypi_name}
 %license LICENSE
@@ -113,6 +119,9 @@ install -p -D -m 640 enabled/_6868_project_remove_overview_panel.py %{buildroot}
 %endif
 
 %changelog
+* Tue Mar 07 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 1.5-1
+- Automatically restart httpd when upgrading package
+
 * Wed Dec 07 2016 Daniel Fernandez Rodriguez <danielfr@cern.ch> 1.2-1
 - Prefill job URL with snow_ticket
 - Query Active Directory to check if user existance
