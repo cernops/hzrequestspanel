@@ -11,7 +11,7 @@ LOG.setLevel(logging.INFO)
 def _get_config_data():
     config = ConfigParser()
     try:
-        config.readfp(open('/etc/openstack-dashboard/hzrequestspanel.conf'))
+        config.readfp(open('/etc/openstack-dashboard/hzrequestspanel/hzrequestspanel.conf'))
     except Exception as e:
         LOG.error("Error reading hzrequestspanel.conf file:" + e.message)
 
