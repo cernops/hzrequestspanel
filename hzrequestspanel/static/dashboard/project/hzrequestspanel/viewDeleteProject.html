@@ -1,0 +1,55 @@
+<div class="form" layout="column" layout-padding>
+  <h3>Delete project "{$ project_name $}"</h3>
+
+  <div id="div-button-help">
+      <button id="button-request-help" ng-click="openHelp()" title="Click to see help"><span class="fa fa-question-circle">&nbsp;</span></button>
+  </div>
+  <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
+      <md-toolbar class="help-toolbar-header">
+          <h1 class="md-toolbar-tools">Help: Delete this project</h1>
+      </md-toolbar>
+      <md-content layout-padding>
+          <p>This form allows you to delete a project from the CERN IT Infrastructure services.</p>
+          <div id="div-button-help-close">
+              <button class="btn btn-default secondary cancel" ng-click="closeHelp()"><span class="fa fa-close">&nbsp;</span>Close</button>
+          </div>
+      </md-content>
+  </md-sidenav>
+
+  <form name="hzrequestspanelForm">
+  <div id="section_general" layout="row" class="fila" layout-padding>
+    <div flex="30" class="div-title-fila">
+      <h4>General</h4>
+    </div>
+    <div flex layout="column">
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">Please confirm project name</div>
+        <div flex>
+          <input type="text" id="project_name"
+              ng-model="user_entered_project_name"
+              ng-Pattern="project_name"
+              required />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="section_comments" layout="row" class="fila" layout-padding>
+    <div flex="30" class="div-title-fila">
+      <h4>Additional comments</h4>
+    </div>
+    <div flex>
+      <textarea id="textarea-comments" tabindex="30"></textarea>
+    </div>
+  </div>
+  <div layout="row" layout-align="end center" class="fila" layout-padding>
+        <div ng-show="!hzrequestspanelForm.$valid">
+            Please review the fields, you introduced an incorrect value somewhere
+        </div>
+        <div><button class="btn btn-default secondary cancel" ng-click="cancel()" ng-disabled="request_sent" tabindex="31" title="Cancel operation and close form"><span class="fa fa-close">&nbsp;</span>Cancel</button></div>
+        <div>
+            <button class="btn btn-primary" ng-hide="request_sent" ng-click="send_request()" ng-disabled="!hzrequestspanelForm.$valid" tabindex="31" title="Send your request change">Submit</button>
+            <button class="btn btn-default secondary" ng-show="request_sent" ng-disabled="true" style="width: 82px;"><img ng-src="{$ static_url $}dashboard/project/hzrequestspanel/loading-button.svg" alt="loading spinner" /></button>
+        </div>
+  </div>
+  </form>
+</div>
