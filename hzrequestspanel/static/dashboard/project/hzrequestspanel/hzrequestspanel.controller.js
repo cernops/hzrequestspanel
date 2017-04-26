@@ -3,7 +3,9 @@
 
   angular.module('horizon.dashboard.project.hzrequestspanel')
     .controller('Hzrequestspanelcontroller', Hzrequestspanelcontroller)
-    .controller('DialogController', DialogController);
+    .controller('DialogController', DialogController)
+    .controller('DialogControllerNewProject', DialogControllerNewProject)
+    .controller('DialogControllerDeleteProject', DialogControllerDeleteProject);
 
   Hzrequestspanelcontroller.$inject = [
       '$scope',
@@ -24,10 +26,30 @@
       'horizon.framework.widgets.toast.service'
   ];
 
+  DialogControllerNewProject.$inject = [
+      '$scope',
+      '$mdDialog',
+      '$mdSidenav',
+      'horizon.app.core.openstack-service-api.keystone',
+      'horizon.framework.util.http.service',
+      'horizon.framework.widgets.toast.service'
+  ];
+
+  DialogControllerDeleteProject.$inject = [
+      '$scope',
+      '$mdDialog',
+      '$mdSidenav',
+      'horizon.app.core.openstack-service-api.keystone',
+      'horizon.framework.util.http.service',
+      'horizon.framework.widgets.toast.service'
+  ];
+
   function Hzrequestspanelcontroller($scope, $mdDialog, $mdMedia, keystoneAPI) {
       var ctrl = this;
 
       ctrl.openRequestForm = openRequestForm;
+      ctrl.openRequestFormNewProject = openRequestFormNewProject;
+      ctrl.openRequestFormDeleteProject = openRequestFormDeleteProject;
       ctrl.customFullscreen = $mdMedia('sm');
 
       ctrl.is_personal_project = true;
@@ -47,6 +69,38 @@
         $mdDialog.show({
           controller: DialogController,
           templateUrl: STATIC_URL + 'dashboard/project/hzrequestspanel/view.html',
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          clickOutsideToClose: false,
+          fullscreen: $mdMedia('sm') && $scope.customFullscreen
+        });
+        $scope.$watch(function() {
+          return $mdMedia('sm');
+        }, function(sm) {
+          $scope.customFullscreen = (sm === true);
+        });
+      }
+
+      function openRequestFormNewProject(ev){
+        $mdDialog.show({
+          controller: DialogControllerNewProject,
+          templateUrl: STATIC_URL + 'dashboard/project/hzrequestspanel/viewNewProject.html',
+          parent: angular.element(document.body),
+          targetEvent: ev,
+          clickOutsideToClose: false,
+          fullscreen: $mdMedia('sm') && $scope.customFullscreen
+        });
+        $scope.$watch(function() {
+          return $mdMedia('sm');
+        }, function(sm) {
+          $scope.customFullscreen = (sm === true);
+        });
+      }
+
+      function openRequestFormDeleteProject(ev){
+        $mdDialog.show({
+          controller: DialogControllerDeleteProject,
+          templateUrl: STATIC_URL + 'dashboard/project/hzrequestspanel/viewDeleteProject.html',
           parent: angular.element(document.body),
           targetEvent: ev,
           clickOutsideToClose: false,
@@ -285,6 +339,7 @@
        */
       function getFormData() {
           var data = {
+              'ticket_type': 'quota_change',
               'username': $scope.username,
               'projectname': $scope.project_name,
               'comments': document.getElementById('textarea-comments').value,
@@ -432,5 +487,207 @@
       }
 
     }
+
+  function DialogControllerNewProject($scope, $mdDialog, $mdSidenav, keystoneAPI, apiService, toastService) {
+
+      $scope.nova_limits = {};
+      $scope.username = '';
+      $scope.project_id = '';
+      $scope.project_name = '';
+
+      $scope.loading_img_show_storage = false;
+      $scope.static_url = STATIC_URL;
+      $scope.request_sent = false;
+
+      /* REQUEST FIELDS */
+      $scope.exp_or_dept = '';
+      $scope.new_project_name = '';
+      $scope.new_project_description = '';
+      $scope.new_project_owner = '';
+      $scope.new_project_egroup = '';
+
+      $scope.instances = 25;
+      $scope.cores = 25;
+      $scope.ram = 50;
+
+      $scope.volumes_size = 500;
+      $scope.volumes_number = 5;
+
+      $scope.show_form = showForm;
+      $scope.form_display = false;
+      $scope.resquest_sent = false;
+
+      /* FORM BUTTONS */
+      $scope.cancel = cancel;
+      $scope.send_request = sendRequest;
+
+      /* HELP BUTTON */
+      $scope.openHelp = openHelp;
+      $scope.closeHelp = closeHelp;
+
+      init();
+
+      function init(){
+          toastService.clearAll();
+          keystoneAPI.getCurrentUserSession().success(onGetCurrentUserSession);
+      }
+
+      function onGetCurrentUserSession(dict){
+          $scope.username = dict['username'];
+          $scope.project_id = dict['project_id'];
+          $scope.project_name = dict['project_name'];
+      }
+
+      /**
+       * Create a new Service now ticket calling a REST API
+       *
+       */
+      function sendRequest(){
+        var data = getFormData();
+        $scope.request_sent = true;
+        var r = apiService.post('/project/hzrequestspanel/hzrequests/requests/', data)
+          .error(function (response) {
+            var mode = 'error';
+            if (response.includes("Ticket created")){ mode = 'warning'; }
+            toastService.add(mode, gettext(response));
+            //Close request quota change model dialog
+            $mdDialog.cancel();
+        }).success(function(response){
+            toastService.add('success', gettext('Ticket created ' + response.ticket_number));
+            //Close request quota change model dialog
+            $mdDialog.cancel();
+        });
+      }
+
+      /**
+       * Get the form information about quota change to be sent to API call
+       */
+      function getFormData() {
+          var data = {
+              'ticket_type': 'new_project',
+              'username': $scope.username,
+              'comments': document.getElementById('textarea-comments').value,
+              'exp_or_dept': $scope.exp_or_dept,
+              'new_project_name': $scope.new_project_name,
+              'new_project_description': $scope.new_project_description,
+              'new_project_owner': $scope.new_project_owner,
+              'new_project_egroup': $scope.new_project_egroup,
+              'instances': $scope.instances,
+              'cores': $scope.cores,
+              'ram': $scope.ram,
+              'volumes_size': $scope.volumes_size,
+              'volumes_number': $scope.volumes_number
+          };
+
+          return data;
+      }
+
+      function showForm(b){
+        $scope.form_display = b;
+      }
+
+      function cancel() {
+        $mdDialog.cancel();
+      }
+
+      function openHelp() {
+          $mdSidenav('right').toggle();
+      }
+
+      function closeHelp(){
+          $mdSidenav('right').close()
+      }
+
+    }
+
+  function DialogControllerDeleteProject($scope, $mdDialog, $mdSidenav, keystoneAPI, apiService, toastService) {
+
+      $scope.nova_limits = {};
+      $scope.username = '';
+      $scope.project_id = '';
+      $scope.project_name = '';
+      $scope.user_entered_project_name = '';
+
+      $scope.loading_img_show_storage = false;
+      $scope.static_url = STATIC_URL;
+      $scope.request_sent = false;
+
+      $scope.show_form = showForm;
+      $scope.form_display = false;
+      $scope.resquest_sent = false;
+
+      /* FORM BUTTONS */
+      $scope.cancel = cancel;
+      $scope.send_request = sendRequest;
+
+      /* HELP BUTTON */
+      $scope.openHelp = openHelp;
+      $scope.closeHelp = closeHelp;
+
+      init();
+
+      function init(){
+          toastService.clearAll();
+          keystoneAPI.getCurrentUserSession().success(onGetCurrentUserSession);
+      }
+
+      function onGetCurrentUserSession(dict){
+          $scope.username = dict['username'];
+          $scope.project_id = dict['project_id'];
+          $scope.project_name = dict['project_name'];
+      }
+
+      /**
+       * Create a new Service now ticket calling a REST API
+       *
+       */
+      function sendRequest(){
+        var data = getFormData();
+        $scope.request_sent = true;
+        var r = apiService.post('/project/hzrequestspanel/hzrequests/requests/', data)
+          .error(function (response) {
+            var mode = 'error';
+            if (response.includes("Ticket created")){ mode = 'warning'; }
+            toastService.add(mode, gettext(response));
+            //Close request quota change model dialog
+            $mdDialog.cancel();
+        }).success(function(response){
+            toastService.add('success', gettext('Ticket created ' + response.ticket_number));
+            //Close request quota change model dialog
+            $mdDialog.cancel();
+        });
+      }
+
+      /**
+       * Get the form information about quota change to be sent to API call
+       */
+      function getFormData() {
+          var data = {
+              'ticket_type': 'delete_project',
+              'username': $scope.username,
+              'projectname': $scope.project_name,
+              'comments': document.getElementById('textarea-comments').value
+          };
+
+          return data;
+      }
+
+      function showForm(b){
+        $scope.form_display = b;
+      }
+
+      function cancel() {
+        $mdDialog.cancel();
+      }
+
+      function openHelp() {
+          $mdSidenav('right').toggle();
+      }
+
+      function closeHelp(){
+          $mdSidenav('right').close()
+      }
+
+}
 
 })();

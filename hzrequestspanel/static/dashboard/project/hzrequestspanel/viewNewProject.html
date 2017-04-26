@@ -1,0 +1,147 @@
+<div class="form" layout="column" layout-padding>
+  <h3>Request new project</h3>
+
+  <div id="div-button-help">
+      <button id="button-request-help" ng-click="openHelp()" title="Click to see help"><span class="fa fa-question-circle">&nbsp;</span></button>
+  </div>
+  <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
+      <md-toolbar class="help-toolbar-header">
+          <h1 class="md-toolbar-tools">Help: Request new project</h1>
+      </md-toolbar>
+      <md-content layout-padding>
+          <p>This form allows you to request compute resources (cores, memory, …) from the CERN IT Infrastructure services.</p>
+          <p>Compute resources are typically provided by means of virtual machines hosted on IT's private OpenStack Cloud. As resources in OpenStack are organized in shared projects, a resource request is essentially a request for a new project to which (after an approval process) the resources are allocated. You can find out more about projects here.</p>
+          <p>Note: As resource provisioning is focused on virtual machines, the provisioning of physical machine resources follows a special approval process. For reasons of simplicity, this form should also be used to request such physical machines. In addition to providing an initial explanation, the requestor may also be asked to work with the Cloud Team to evaluate the use of virtual machines to provision the resources. Request for physical hardware can be made using the 'Comments' field below, giving as many details as possible.</p>
+          <div id="div-button-help-close">
+              <button class="btn btn-default secondary cancel" ng-click="closeHelp()"><span class="fa fa-close">&nbsp;</span>Close</button>
+          </div>
+      </md-content>
+  </md-sidenav>
+
+  <form name="hzrequestspanelForm">
+  <div id="section_general" layout="row" class="fila" layout-padding>
+    <div flex="30" class="div-title-fila">
+      <h4>General</h4>
+    </div>
+    <div flex layout="column">
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">Experiment or department</div>
+        <div flex>
+          <input type="text" id="exp_or_dept"
+              ng-model="exp_or_dept"
+              required />
+        </div>
+      </div>
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">Name of the project</div>
+        <div flex>
+          <input type="text" id="new_project_name"
+              ng-model="new_project_name"
+              required />
+        </div>
+      </div>
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">Description</div>
+        <div flex>
+          <input type="text" id="new_project_description"
+              ng-model="new_project_description"
+              required />
+        </div>
+      </div>
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">Owner (primary account)</div>
+        <div flex>
+          <input type="text" id="new_project_owner"
+              ng-model="new_project_owner"
+              required />
+        </div>
+      </div>
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">E-group of project members</div>
+        <div flex>
+          <input type="text" id="new_project_egroup"
+              ng-model="new_project_egroup"
+              required />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="section_compute" layout="row" class="fila" layout-padding>
+    <div flex="30" class="div-title-fila">
+      <h4>Compute</h4>
+    </div>
+    <div flex layout="column">
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">Number of instances</div>
+        <div flex>
+          <input type="number" id="instances_number"
+              ng-model="instances"
+              ng-pattern="/^[0-9]+$/"
+              required />
+        </div>
+      </div>
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">Number of cores</div>
+        <div flex>
+          <input type="number" id="cores_number"
+              ng-model="cores"
+              ng-pattern="/^[0-9]+$/"
+              required />
+        </div>
+      </div>
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">RAM</div>
+        <div flex>
+          <input type="number" id="ram_number"
+              ng-model="ram"
+              ng-pattern="/^[0-9]*\.?[0-9]+$/"
+              required />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="section_storage" layout="row" class="fila" layout-padding>
+    <div flex="30" class="div-title-fila">
+      <h4>Storage</h4>
+    </div>
+    <div flex layout="column">
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">Amount of diskspace</div>
+        <div flex>
+          <input type="number" id="volumes_size"
+              ng-model="volumes_size"
+              ng-pattern="/^[0-9]+$/"
+              required />
+        </div>
+      </div>
+      <div layout="row" class="fila-dato">
+        <div flex class="bold">Number of volumes</div>
+        <div flex>
+          <input type="number" id="volumes_number"
+              ng-model="volumes_number"
+              ng-pattern="/^[0-9]+$/"
+              required />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="section_comments" layout="row" class="fila" layout-padding>
+    <div flex="30" class="div-title-fila">
+      <h4>Additional comments</h4>
+    </div>
+    <div flex>
+      <textarea id="textarea-comments" tabindex="30"></textarea>
+    </div>
+  </div>
+  <div layout="row" layout-align="end center" class="fila" layout-padding>
+        <div ng-show="!hzrequestspanelForm.$valid">
+            Please review the fields, you introduced an incorrect value somewhere
+        </div>
+        <div><button class="btn btn-default secondary cancel" ng-click="cancel()" ng-disabled="request_sent" tabindex="31" title="Cancel operation and close form"><span class="fa fa-close">&nbsp;</span>Cancel</button></div>
+        <div>
+            <button class="btn btn-primary" ng-hide="request_sent" ng-click="send_request()" ng-disabled="!hzrequestspanelForm.$valid" tabindex="31" title="Send your request change">Submit</button>
+            <button class="btn btn-default secondary" ng-show="request_sent" ng-disabled="true" style="width: 82px;"><img ng-src="{$ static_url $}dashboard/project/hzrequestspanel/loading-button.svg" alt="loading spinner" /></button>
+        </div>
+  </div>
+  </form>
+</div>
