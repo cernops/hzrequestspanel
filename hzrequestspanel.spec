@@ -119,6 +119,9 @@ systemctl start httpd
 %endif
 
 %changelog
+* Tue May 09 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.0-1
+- Complete refactoring of this code
+
 * Tue May 09 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 1.6-1
 - Fix link to Quota History Dashboard (force selecting organization)
 
