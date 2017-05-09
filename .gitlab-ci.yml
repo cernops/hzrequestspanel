@@ -30,5 +30,5 @@ kojibuild:
   only:
     - tags
   script:
-    - export DIST='.el7.cern'
+    - export DIST='.el7'
     - curl https://gitlab.cern.ch/cloud-infrastructure/cloud-dev/raw/master/gitlab/kojibuild.sh | bash
