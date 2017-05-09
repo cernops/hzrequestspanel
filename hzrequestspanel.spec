@@ -119,6 +119,9 @@ systemctl start httpd
 %endif
 
 %changelog
+* Tue May 09 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 1.6-1
+- Fix link to Quota History Dashboard (force selecting organization)
+
 * Tue Mar 07 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 1.5-1
 - Automatically restart httpd when upgrading package
 
