@@ -53,8 +53,7 @@ class AbstractRequestCreator(object):
         try:
             self.config = ConfigParser()
             self.config.readfp(open(
-                # TODO make this value customizable or use fixed /etc/...
-                '/Users/makowals/CERNBox/git/hzrequestspanel/hzrequestspanel.conf'))
+                '/etc/openstack-dashboard/hzrequestspanel.conf'))
             self.sn_user = self.config.get("servicenow", "sn_user")
             self.sn_pass = self.config.get("servicenow", "sn_pass")
             self.sn_instance = self.config.get("servicenow", "sn_instance")
