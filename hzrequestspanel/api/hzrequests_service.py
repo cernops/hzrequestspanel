@@ -80,30 +80,26 @@ class AbstractRequestCreator(object):
             LOG.error("Error creating ticket:" + e.message)
             raise SnowException
 
-    def _get_primary_account_from_ldap(self):
-        try:
-            xldap = XldapClient('ldap://xldap.cern.ch')
-            return xldap.get_primary_account(self.username)
-        except Exception as e:
-            LOG.error("Username not found:" + e.message)
-            raise SnowException
-
     def _add_coordinators_to_watchlist(self):
-        rp = self.snowclient.get_quota_update_request_rp(self.ticket_number)
-        project_name = rp.project_name.lower()
+        try:
+            rp = self.snowclient.get_quota_update_request_rp(self.ticket_number)
+            project_name = rp.project_name.lower()
 
-        # This has strict dependency of having experiment in the project name
-        department = [dep for dep in self.watchlist_departments if
-                      project_name.startswith(dep)]
-        if len(department) != 0:
-            LOG.info("[ OK ] Adding '%s' to %s" % (
-                self.watchlist_egroup_template % department[0],
-                self.ticket_number))
-            self.snowclient.add_email_watch_list(self.ticket_number,
-                                                 self.watchlist_egroup_template %
-                                                 department[0])
-        else:
-            LOG.info("No need of adding resource coordinator to the watchlist")
+            # This has strict dependency of having experiment in the project name
+            department = [dep for dep in self.watchlist_departments if
+                          project_name.startswith(dep)]
+            if len(department) != 0:
+                LOG.info("[ OK ] Adding '%s' to %s" % (
+                    self.watchlist_egroup_template % department[0],
+                    self.ticket_number))
+                self.snowclient.add_email_watch_list(self.ticket_number,
+                                                     self.watchlist_egroup_template %
+                                                     department[0])
+            else:
+                LOG.info("No need of adding resource coordinator to the watchlist")
+        except Exception as e:
+            LOG.error("Error adding coordinators to watchlist:" + e.message)
+            raise SnowException
 
     def _escalate_ticket(self, functional_element_escalate, group_escalate):
         try:
@@ -137,17 +133,8 @@ class AbstractRequestCreator(object):
 
     def create_ticket(self):
         LOG.info("Creating service now ticket with: {0}".format(self.dict_data))
-
         self._create_empty_snow_ticket(self.title)
-        self.dict_data['username'] = self._get_primary_account_from_ldap()
         self._fill_ticket_with_proper_data()
-        # TODO this should be checked if it's "quota change" specific
-        self._add_coordinators_to_watchlist()
-        # TODO we don't want to escalate ANY kind of ticket
-        # How about moving this to the specific class ?
-        self._escalate_ticket(self.functional_element_escalate,
-                              self.group_escalate)
-
         LOG.info("SNOW ticket created successfully")
 
         return self.ticket_number
@@ -157,6 +144,26 @@ class AbstractRequestCreator(object):
         text = "<br/>".join(text.get_string().split("\n"))
         text = "%s%s%s" % ("[code]<pre>", text, "</pre>[/code]")
         return text
+
+    @staticmethod
+    def _get_primary_account_from_ldap(username):
+        try:
+            xldap = XldapClient('ldap://xldap.cern.ch')
+            return xldap.get_primary_account(username)
+        except Exception as e:
+            LOG.error(e.message)
+            raise SnowException
+
+    @staticmethod
+    def _verify_egroup(name):
+        try:
+            xldap = XldapClient('ldap://xldap.cern.ch')
+            if not xldap.is_existing_egroup(name):
+                raise Exception
+            return True
+        except Exception as e:
+            LOG.error("Egroup not found:" + e.message)
+            raise SnowException
 
     @abstractmethod
     def _fill_ticket_with_proper_data(self):
@@ -170,7 +177,7 @@ class AbstractRequestCreator(object):
 class NewProjectCreator(AbstractRequestCreator):
     def __init__(self, dict_data):
         super(NewProjectCreator, self).__init__(dict_data)
-        self.title = "Request for shared Cloud Service Project - name: {0}".format(self.dict_data['new_project_name'])
+        self.title = "Request for shared Cloud Service Project - name: {0}".format(self.dict_data['projectname'])
         self.user_message = """Dear %s,
 
 Your project creation request has been received and sent to
@@ -206,14 +213,20 @@ Best regards,
         return req_summary
 
     def _fill_ticket_with_proper_data(self):
+        self.dict_data['owner'] = self._get_primary_account_from_ldap(
+            self.dict_data['owner'])
+
         try:
-            # TODO implement snowclient.create_project_creation
-            # self.snowclient.create_project_creation(self.ticket_number,
-            #                                         self.dict_data)
-            pass
+            self.snowclient.create_project_creation(self.ticket_number,
+                                                    self.dict_data)
         except Exception as e:
             LOG.error("Error updating snow ticket:" + e.message)
             raise SnowException
+
+        self._verify_egroup(self.dict_data['egroup'])
+
+        self._escalate_ticket(self.functional_element_escalate,
+                              self.group_escalate)
 
 
 class QuotaChanger(AbstractRequestCreator):
@@ -264,6 +277,9 @@ Best regards,
         return worknote_msg
 
     def _fill_ticket_with_proper_data(self):
+        self.dict_data['username'] = self._get_primary_account_from_ldap(
+            self.dict_data['username'])
+
         try:
             self.snowclient.create_quota_update(self.ticket_number,
                                                 self.dict_data[
@@ -272,6 +288,11 @@ Best regards,
         except Exception as e:
             LOG.error("Error updating snow ticket:" + e.message)
             raise SnowException
+
+        self._add_coordinators_to_watchlist()
+
+        self._escalate_ticket(self.functional_element_escalate,
+                              self.group_escalate)
 
     @staticmethod
     def __calculate_variation(current, requested):

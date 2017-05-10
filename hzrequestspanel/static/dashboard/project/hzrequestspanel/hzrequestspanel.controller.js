@@ -567,16 +567,16 @@
               'ticket_type': 'new_project',
               'username': $scope.username,
               'comments': document.getElementById('textarea-comments').value,
-              'exp_or_dept': $scope.exp_or_dept,
-              'new_project_name': $scope.new_project_name,
-              'new_project_description': $scope.new_project_description,
-              'new_project_owner': $scope.new_project_owner,
-              'new_project_egroup': $scope.new_project_egroup,
+              // 'department': $scope.exp_or_dept,
+              'projectname': $scope.new_project_name,
+              'description': $scope.new_project_description,
+              'owner': $scope.new_project_owner,
+              'egroup': $scope.new_project_egroup,
               'instances': $scope.instances,
               'cores': $scope.cores,
               'ram': $scope.ram,
-              'volumes_size': $scope.volumes_size,
-              'volumes_number': $scope.volumes_number
+              'gigabytes': $scope.volumes_size,
+              'volumes': $scope.volumes_number
           };
 
           return data;
