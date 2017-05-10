@@ -96,7 +96,8 @@ class AbstractRequestCreator(object):
                                                      self.watchlist_egroup_template %
                                                      department[0])
             else:
-                LOG.info("No need of adding resource coordinator to the watchlist")
+                LOG.info(
+                    "No need of adding resource coordinator to the watchlist")
         except Exception as e:
             LOG.error("Error adding coordinators to watchlist:" + e.message)
             raise SnowException
@@ -177,7 +178,8 @@ class AbstractRequestCreator(object):
 class NewProjectCreator(AbstractRequestCreator):
     def __init__(self, dict_data):
         super(NewProjectCreator, self).__init__(dict_data)
-        self.title = "Request for shared Cloud Service Project - name: {0}".format(self.dict_data['projectname'])
+        self.title = "Request for shared Cloud Service Project - name: {0}".format(
+            self.dict_data['projectname'])
         self.user_message = """Dear %s,
 
 Your project creation request has been received and sent to
@@ -193,24 +195,30 @@ Could you please review the following project creation request?
 
 %s
 
+If there are any special requests regarding non-standard flavours, please
+reassign the ticket back to Cloud Team.
+
+If not, in order to accept the request, please execute [code]<a href="https://cirundeck.cern.ch/project/HW-Resources/job/show/XXXXX?opt.snow_ticket=%s&opt.behaviour=perform
+" target="_blank">the following Rundeck job</a>[/code].
+
 Best regards,
         Cloud Infrastructure Team"""
 
     def _generate_supporter_message(self):
-        # TODO implement snowclient.get_project_creation_request_rp
-        # In order to get quota values from the ticket directly, not from
-        # dict_data (so we are sure the values are correct)
+        t = prettytable.PrettyTable(["Quota"])
+        t.add_row(["Cores", self.dict_data["cores"]])
+        t.add_row(["Instances", self.dict_data["instances"]])
+        t.add_row(["RAM (GB)", self.dict_data["ram"]])
+        t.add_row(["Volumes (standard)", self.dict_data["volumes_number"]])
+        t.add_row(["Diskspace (standard)", self.dict_data["volumes_size"]])
+        t.border = True
+        t.header = True
+        t.align["Quota"] = 'c'
 
-        # rp = self.snowclient.get_project_creation_request_rp(self.ticket_number)
+        worknote_msg = self.supporter_message % (
+            self._convert_to_monospace(t), self.ticket_number)
 
-        req_summary = "This is a nice table with request summary"
-
-        # TODO implement pretty table for request summary
-
-        # worknote_msg = self.supporter_message % (
-        #     self._convert_to_monospace(req_summary), self.ticket_number)
-
-        return req_summary
+        return worknote_msg
 
     def _fill_ticket_with_proper_data(self):
         self.dict_data['owner'] = self._get_primary_account_from_ldap(
@@ -232,7 +240,8 @@ Best regards,
 class QuotaChanger(AbstractRequestCreator):
     def __init__(self, dict_data):
         super(QuotaChanger, self).__init__(dict_data)
-        self.title = "Request change of resource quota for the Cloud Project {0}".format(self.dict_data['projectname'])
+        self.title = "Request change of resource quota for the Cloud Project {0}".format(
+            self.dict_data['projectname'])
         self.user_message = """Dear %s,
 
 Your quota update request has been received and sent to
@@ -414,7 +423,8 @@ Best regards,
 class ProjectKiller(AbstractRequestCreator):
     def __init__(self, dict_data):
         super(ProjectKiller, self).__init__(dict_data)
-        self.title = "Request removal of Cloud Project {0}".format(self.dict_data['projectname'])
+        self.title = "Request removal of Cloud Project {0}".format(
+            self.dict_data['projectname'])
         self.user_message = "Hi, I'm killing your project"
         self.supporter_message = "Hi, he wants to kill his project"
 
