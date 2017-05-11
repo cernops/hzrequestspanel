@@ -17,6 +17,9 @@ class SnowException(Exception):
               "the Cloud Team"
         super(SnowException, self).__init__(msg)
 
+    def __init__(self, msg):
+        super(SnowException, self).__init__(msg)
+
 
 class AbstractRequestCreator(object):
     def __init__(self, dict_data):
@@ -60,7 +63,7 @@ class AbstractRequestCreator(object):
             self.watchlist_egroup_template = self.config.get("servicenow",
                                                              "watchlist_egroup_template")
         except Exception as e:
-            LOG.error("Error parsing configuration: " + e.message)
+            LOG.error("Error parsing configuration:" + e.message)
             raise SnowException
 
     def _create_snowclient_instance(self):
@@ -68,7 +71,7 @@ class AbstractRequestCreator(object):
             return ServiceNowClient(self.sn_user, self.sn_pass,
                                     instance=self.sn_instance)
         except Exception as e:
-            LOG.error("Error instanciating snow client:" + e.message)
+            LOG.error("Error instanciating SNOW client:" + e.message)
             raise SnowException
 
     def _create_empty_snow_ticket(self, title):
@@ -77,7 +80,7 @@ class AbstractRequestCreator(object):
                                                                 self.funtional_element,
                                                                 assignment_group=self.group).number
         except Exception as e:
-            LOG.error("Error creating ticket:" + e.message)
+            LOG.error("Error creating empty SNOW ticket:" + e.message)
             raise SnowException
 
     def _add_coordinators_to_watchlist(self):
@@ -89,18 +92,11 @@ class AbstractRequestCreator(object):
             department = [dep for dep in self.watchlist_departments if
                           project_name.startswith(dep)]
             if len(department) != 0:
-                LOG.info("[ OK ] Adding '%s' to %s" % (
-                    self.watchlist_egroup_template % department[0],
-                    self.ticket_number))
                 self.snowclient.add_email_watch_list(self.ticket_number,
                                                      self.watchlist_egroup_template %
                                                      department[0])
-            else:
-                LOG.info(
-                    "No need of adding resource coordinator to the watchlist")
         except Exception as e:
             LOG.error("Error adding coordinators to watchlist:" + e.message)
-            raise SnowException
 
     def _escalate_ticket(self, functional_element_escalate, group_escalate):
         try:
@@ -115,17 +111,11 @@ class AbstractRequestCreator(object):
 
             self.snowclient.add_work_note(self.ticket_number, worknote_msg)
 
-            LOG.info("Escalate ticket number '{0}' to FE '{1}' and Group " \
-                     "'{2}'".format(self.ticket_number,
-                                    functional_element_escalate,
-                                    group_escalate))
-
             self.snowclient.change_functional_element(self.ticket_number,
                                                       functional_element_escalate,
                                                       group_escalate)
         except Exception as e:
-            msg = "Error escalating snow ticket {0}".format(self.ticket_number)
-            LOG.error(msg + e.message)
+            LOG.error("Error escalating SNOW ticket {0}").format(self.ticket_number)
             raise Exception("Your ticket {0} has been successfully created, " \
                             "however we have identified some issues during the " \
                             "process. Please go to Service-Now and verify your " \
@@ -133,10 +123,11 @@ class AbstractRequestCreator(object):
                             "the Cloud Team.".format(self.ticket_number))
 
     def create_ticket(self):
-        LOG.info("Creating service now ticket with: {0}".format(self.dict_data))
+        LOG.info("Creating SNOW ticket with: {0}".format(self.dict_data))
+        self._verify_prerequisites()
         self._create_empty_snow_ticket(self.title)
         self._fill_ticket_with_proper_data()
-        LOG.info("SNOW ticket created successfully")
+        LOG.info("SNOW ticket '{0}' created successfully".format(self.ticket_number))
 
         return self.ticket_number
 
@@ -152,8 +143,8 @@ class AbstractRequestCreator(object):
             xldap = XldapClient('ldap://xldap.cern.ch')
             return xldap.get_primary_account(username)
         except Exception as e:
-            LOG.error(e.message)
-            raise SnowException
+            LOG.error("Error creating SNOW ticket. '{0}' is not a valid username".format(username))
+            raise SnowException("Unable to create the ticket. Username you have provided is not correct.")
 
     @staticmethod
     def _verify_egroup(name):
@@ -163,8 +154,12 @@ class AbstractRequestCreator(object):
                 raise Exception
             return True
         except Exception as e:
-            LOG.error("Egroup not found:" + e.message)
-            raise SnowException
+            LOG.error("Error creating SNOW ticket. E-group not found:" + e.message)
+            raise SnowException("Unable to create the ticket. E-group you have provided is not correct.")
+
+    @abstractmethod
+    def _verify_prerequisites(self):
+        pass
 
     @abstractmethod
     def _fill_ticket_with_proper_data(self):
@@ -220,18 +215,19 @@ Best regards,
 
         return worknote_msg
 
-    def _fill_ticket_with_proper_data(self):
+    def _verify_prerequisites(self):
         self.dict_data['owner'] = self._get_primary_account_from_ldap(
             self.dict_data['owner'])
 
+        self._verify_egroup(self.dict_data['egroup'])
+
+    def _fill_ticket_with_proper_data(self):
         try:
             self.snowclient.create_project_creation(self.ticket_number,
                                                     self.dict_data)
         except Exception as e:
             LOG.error("Error updating snow ticket:" + e.message)
             raise SnowException
-
-        self._verify_egroup(self.dict_data['egroup'])
 
         self._escalate_ticket(self.functional_element_escalate,
                               self.group_escalate)
@@ -284,6 +280,9 @@ Best regards,
             self._convert_to_monospace(req_summary), self.ticket_number)
 
         return worknote_msg
+
+    def _verify_prerequisites(self):
+        pass
 
     def _fill_ticket_with_proper_data(self):
         self.dict_data['username'] = self._get_primary_account_from_ldap(
