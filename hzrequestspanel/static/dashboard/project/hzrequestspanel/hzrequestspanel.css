@@ -166,6 +166,7 @@ textarea {
 
 .btn-custom-margin {
     margin-bottom: 30px;
+    margin-right:16px;
 }
 
 /* FIX for font-family in Angular CSS */

@@ -8,8 +8,9 @@
          title='{% trans "Detailed view of Usage history" %}' target="_blank">{% trans "Detailed view of Usage history" %}</a>
     </div>
     <div style="text-align: right;" ng-controller="Hzrequestspanelcontroller as ctrl" ng-hide="ctrl.is_personal_project">
+      <button class="btn-custom-margin btn btn-primary" ng-click="ctrl.openRequestFormNewProject($event)" title="Click to open Request New Project form">Request new project</button>
       <button class="btn-custom-margin btn btn-primary" ng-click="ctrl.openRequestForm($event)" title="Click to open Request Quota Change form">Request quota change</button>
-      <!--<button class="btn-custom-margin btn btn-primary" ng-click="ctrl.openRequestFormDeleteProject($event)" title="Click to open Request Project Deletion form">Delete this project</button>-->
+      <button class="btn-custom-margin btn btn-primary" ng-click="ctrl.openRequestFormDeleteProject($event)" title="Click to open Request Project Deletion form">Delete this project</button>
     </div>
     <div style="text-align: right;" ng-controller="Hzrequestspanelcontroller as ctrl" ng-hide="!ctrl.is_personal_project">
       <button class="btn-custom-margin btn btn-primary" ng-click="ctrl.openRequestFormNewProject($event)" title="Click to open Request New Project form">Request new project</button>
