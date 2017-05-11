@@ -193,22 +193,23 @@ Could you please review the following project creation request?
 If there are any special requests regarding non-standard flavours, please
 reassign the ticket back to Cloud Team.
 
-If not, in order to accept the request, please execute [code]<a href="https://cirundeck.cern.ch/project/HW-Resources/job/show/XXXXX?opt.snow_ticket=%s&opt.behaviour=perform
+If not, in order to accept the request, please execute [code]<a href="https://cirundeck.cern.ch/project/HW-Resources/job/show/d60f2209-a573-4662-960a-0a885ff67c22?opt.snow_ticket=%s&opt.enable_project=yes
 " target="_blank">the following Rundeck job</a>[/code].
 
 Best regards,
         Cloud Infrastructure Team"""
 
     def _generate_supporter_message(self):
-        t = prettytable.PrettyTable(["Quota"])
+        t = prettytable.PrettyTable(["Quota", "Requested"])
         t.add_row(["Cores", self.dict_data["cores"]])
         t.add_row(["Instances", self.dict_data["instances"]])
         t.add_row(["RAM (GB)", self.dict_data["ram"]])
-        t.add_row(["Volumes (standard)", self.dict_data["volumes_number"]])
-        t.add_row(["Diskspace (standard)", self.dict_data["volumes_size"]])
+        t.add_row(["Volumes (standard)", self.dict_data["volumes"]])
+        t.add_row(["Diskspace (standard)", self.dict_data["gigabytes"]])
         t.border = True
         t.header = True
         t.align["Quota"] = 'c'
+        t.align["Requested"] = 'c'
 
         worknote_msg = self.supporter_message % (
             self._convert_to_monospace(t), self.ticket_number)
