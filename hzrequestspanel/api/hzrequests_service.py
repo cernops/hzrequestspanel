@@ -115,7 +115,7 @@ class AbstractRequestCreator(object):
                                                       functional_element_escalate,
                                                       group_escalate)
         except Exception as e:
-            LOG.error("Error escalating SNOW ticket {0}").format(self.ticket_number)
+            LOG.error("Error escalating SNOW ticket {0}".format(self.ticket_number))
             raise Exception("Your ticket {0} has been successfully created, " \
                             "however we have identified some issues during the " \
                             "process. Please go to Service-Now and verify your " \
