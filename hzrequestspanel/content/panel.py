@@ -6,3 +6,4 @@ class Hzrequestspanel(horizon.Panel):
     name = _("Overview")
     slug = "hzrequestspanel"
     permissions = ('openstack.services.compute',)
+    policy_rules = (("compute", "os_compute_api:extensions"),)
