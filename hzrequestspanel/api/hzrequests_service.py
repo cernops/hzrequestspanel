@@ -424,22 +424,52 @@ class ProjectKiller(AbstractRequestCreator):
     def __init__(self, dict_data):
         super(ProjectKiller, self).__init__(dict_data)
         self.title = "Request removal of Cloud Project {0}".format(
-            self.dict_data['projectname'])
-        self.user_message = "Hi, I'm killing your project"
-        self.supporter_message = "Hi, he wants to kill his project"
+            self.dict_data['project_name'])
+        self.user_message = """Dear %s,
+
+Your project deletion request has been received and sent to
+Cloud Infrastructure management in order to be confirmed.
+
+Thank you,
+        Cloud Infrastructure Team"""
+        self.supporter_message = """Hi, it's me, Rundeck,
+
+In order to delete this project, please execute [code]<a href="https://cirundeck.cern.ch/project/Cloud-Operations/job/show/some-fake-id?opt.snow_ticket=%s&opt.behaviour=perform
+" target="_blank">the following Rundeck job</a>[/code]."""
 
     def _generate_supporter_message(self):
-        return self.supporter_message
+        return self.supporter_message % self.ticket_number
 
     def _fill_ticket_with_proper_data(self):
         try:
-            # TODO implement snowclient.create_project_deletion
-            # self.snowclient.create_project_deletion(self.ticket_number,
-            #                                         self.dict_data)
-            pass
+            self.snowclient.create_project_deletion(self.ticket_number,
+                                                    self.dict_data)
         except Exception as e:
             LOG.error("Error updating snow ticket:" + e.message)
             raise SnowException
 
-    def _escalate_ticket(self, *args):
-        pass
+        # self._add_project_members_to_watchlist()
+
+        self._escalate_ticket(self.functional_element, self.group)
+
+    def _verify_prerequisites(self):
+        self.dict_data['username'] = self._get_primary_account_from_ldap(
+            self.dict_data['username'])
+
+        self._verify_project_owner(self.dict_data['project_name'],
+                                   self.dict_data['username'])
+
+    def _verify_project_owner(self, project_name, username):
+        return
+
+        try:
+            owner = self.snowclient.get_project_owner(project_name)
+        except Exception as e:
+            owner = None
+            LOG.error("Error checking project owner:" + e.message)
+            raise SnowException
+
+        if owner != username:
+            raise SnowException("Unable to create the ticket. You are not the owner of this project.")
+
+        return

@@ -668,8 +668,8 @@
           var data = {
               'ticket_type': 'delete_project',
               'username': $scope.username,
-              'projectname': $scope.project_name,
-              'comments': document.getElementById('textarea-comments').value
+              'project_name': $scope.project_name,
+              // 'comments': document.getElementById('textarea-comments').value
           };
 
           return data;
