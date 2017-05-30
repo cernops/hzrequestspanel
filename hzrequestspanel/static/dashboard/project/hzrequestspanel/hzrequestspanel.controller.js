@@ -501,6 +501,9 @@
 
       /* REQUEST FIELDS */
       $scope.exp_or_dept = '';
+      $scope.available_experiments = [ 'ALICE', 'ALPHA', 'AMS', 'ATLAS', 'ATLAS-Tokyo', 'ATLAS-Wisconsin', 'CLOUD', 'CMS', 'COMPASS', 'FCC', 'ILC', 'ISOLDE', 'LHCb', 'MA', 'NA48', 'NA61', 'NA62', 'TOTEM',
+        'BE', 'CLUB', 'DGU', 'DO', 'EN', 'EP', 'FAP', 'HR', 'HSE', 'IPT', 'IR', 'IT', 'IT-Batch', 'PRJ', 'SIS', 'SMB', 'TE', 'TH'
+      ];
       $scope.new_project_name = '';
       $scope.new_project_description = '';
       $scope.new_project_owner = '';
@@ -567,7 +570,7 @@
               'ticket_type': 'new_project',
               'username': $scope.username,
               'comments': document.getElementById('textarea-comments').value,
-              // 'department': $scope.exp_or_dept,
+              'accounting_group': $scope.exp_or_dept,
               'projectname': $scope.new_project_name,
               'description': $scope.new_project_description,
               'owner': $scope.new_project_owner,
