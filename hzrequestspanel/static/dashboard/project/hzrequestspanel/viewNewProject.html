@@ -25,6 +25,12 @@
     </div>
     <div flex layout="column">
       <div layout="row" class="fila-dato">
+        <div flex class="bold">Experiment or department</div>
+        <div flex>
+          <select ng-model="exp_or_dept" ng-options="x for x in available_experiments" required></select>
+        </div>
+      </div>
+      <div layout="row" class="fila-dato">
         <div flex class="bold">Name of the project</div>
         <div flex>
           <input type="text" id="new_project_name"
