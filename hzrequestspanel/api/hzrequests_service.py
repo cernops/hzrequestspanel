@@ -28,7 +28,7 @@ class AbstractRequestCreator(object):
         self.sn_user = None
         self.sn_pass = None
         self.sn_instance = None
-        self.funtional_element = None
+        self.functional_element = None
         self.group = None
         self.functional_element_escalate = None
         self.group_escalate = None
@@ -50,7 +50,7 @@ class AbstractRequestCreator(object):
             self.sn_user = self.config.get("servicenow", "sn_user")
             self.sn_pass = self.config.get("servicenow", "sn_pass")
             self.sn_instance = self.config.get("servicenow", "sn_instance")
-            self.funtional_element = self.config.get("servicenow",
+            self.functional_element = self.config.get("servicenow",
                                                      "sn_functional_element")
             self.group = self.config.get("servicenow", "sn_group")
             self.functional_element_escalate = self.config.get("servicenow",
@@ -77,26 +77,11 @@ class AbstractRequestCreator(object):
     def _create_empty_snow_ticket(self, title):
         try:
             self.ticket_number = self.snowclient.create_request(title,
-                                                                self.funtional_element,
+                                                                self.functional_element,
                                                                 assignment_group=self.group).number
         except Exception as e:
             LOG.error("Error creating empty SNOW ticket:" + e.message)
             raise SnowException
-
-    def _add_coordinators_to_watchlist(self):
-        try:
-            rp = self.snowclient.get_quota_update_request_rp(self.ticket_number)
-            project_name = rp.project_name.lower()
-
-            # This has strict dependency of having experiment in the project name
-            department = [dep for dep in self.watchlist_departments if
-                          project_name.startswith(dep)]
-            if len(department) != 0:
-                self.snowclient.add_email_watch_list(self.ticket_number,
-                                                     self.watchlist_egroup_template %
-                                                     department[0])
-        except Exception as e:
-            LOG.error("Error adding coordinators to watchlist:" + e.message)
 
     def _escalate_ticket(self, functional_element_escalate, group_escalate):
         try:
@@ -302,6 +287,21 @@ Best regards,
 
         self._escalate_ticket(self.functional_element_escalate,
                               self.group_escalate)
+
+    def _add_coordinators_to_watchlist(self):
+        try:
+            rp = self.snowclient.get_quota_update_request_rp(self.ticket_number)
+            project_name = rp.project_name.lower()
+
+            # This has strict dependency of having experiment in the project name
+            department = [dep for dep in self.watchlist_departments if
+                          project_name.startswith(dep)]
+            if len(department) != 0:
+                self.snowclient.add_email_watch_list(self.ticket_number,
+                                                     self.watchlist_egroup_template %
+                                                     department[0])
+        except Exception as e:
+            LOG.error("Error adding coordinators to watchlist:" + e.message)
 
     @staticmethod
     def __calculate_variation(current, requested):
