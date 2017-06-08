@@ -669,7 +669,7 @@
               'ticket_type': 'delete_project',
               'username': $scope.username,
               'project_name': $scope.project_name,
-              // 'comments': document.getElementById('textarea-comments').value
+              'comments': document.getElementById('textarea-comments').value
           };
 
           return data;
