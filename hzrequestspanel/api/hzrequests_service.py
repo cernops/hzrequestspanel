@@ -3,6 +3,7 @@ import logging
 import prettytable
 
 from ConfigParser import ConfigParser
+from ccitools.cloud import CloudClient
 from ccitools.servicenow import ServiceNowClient
 from ccitools.xldap import XldapClient
 
@@ -448,7 +449,7 @@ In order to delete this project, please execute [code]<a href="https://cirundeck
             LOG.error("Error updating snow ticket:" + e.message)
             raise SnowException
 
-        # self._add_project_members_to_watchlist()
+        self._add_project_members_to_watchlist(self.dict_data['project_name'])
 
         self._escalate_ticket(self.functional_element, self.group)
 
@@ -459,13 +460,19 @@ In order to delete this project, please execute [code]<a href="https://cirundeck
         self._verify_project_owner(self.dict_data['project_name'],
                                    self.dict_data['username'])
 
-    def _verify_project_owner(self, project_name, username):
-        return
-
+    def _add_project_members_to_watchlist(self, project_name):
         try:
-            owner = self.snowclient.get_project_owner(project_name)
+            for member in CloudClient.get_project_members(project_name):
+                self.snowclient.add_email_watch_list(self.ticket_number,
+                                                     member + "@cern.ch")
         except Exception as e:
-            owner = None
+            LOG.error("Error adding members to watchlist:" + e.message)
+
+    @staticmethod
+    def _verify_project_owner(project_name, username):
+        try:
+            owner = CloudClient.get_project_owner(project_name)
+        except Exception as e:
             LOG.error("Error checking project owner:" + e.message)
             raise SnowException
 
