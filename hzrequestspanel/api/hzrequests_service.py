@@ -239,7 +239,7 @@ Could you please review the following quota update request?
 
 %s
 
-In order to apply these values, please execute [code]<a href="https://cirundeck.cern.ch/project/HW-Resources/job/show/ad45c0a5-5a81-4861-a7ee-fbb7d54f122a?opt.snow_ticket=%s&opt.behaviour=perform
+In order to apply these values, please execute [code]<a href="https://cirundeck.cern.ch/project/HW-Resources/job/show/14d9ba7f-5dbf-47b7-9142-5d9873fef80d?opt.snow_ticket=%s&opt.behaviour=perform
 " target="_blank">the following Rundeck job</a>[/code].
 
 Best regards,
