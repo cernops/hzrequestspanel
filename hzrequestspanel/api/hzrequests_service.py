@@ -7,6 +7,9 @@ from ccitools.cloud import CloudClient
 from ccitools.servicenow import ServiceNowClient
 from ccitools.xldap import XldapClient
 
+from keystoneauth1.identity import v3
+from keystoneauth1 import session
+
 LOG = logging.getLogger('horizon.hzrequests')
 LOG.setLevel(logging.INFO)
 
@@ -35,8 +38,12 @@ class AbstractRequestCreator(object):
         self.group_escalate = None
         self.watchlist_departments = None
         self.watchlist_egroup_template = None
+        self.svc_user = None
+        self.svc_pass = None
+        self.keystone_endpoint = None
         self._parse_config_file()
         self.snowclient = self._create_snowclient_instance()
+        self.cloudclient = self._create_cloudclient_instance()
         self.ticket_number = None
         self.user_message = None
         self.supporter_message = None
@@ -63,6 +70,9 @@ class AbstractRequestCreator(object):
                                                           "watchlist_departments").split()]
             self.watchlist_egroup_template = self.config.get("servicenow",
                                                              "watchlist_egroup_template")
+            self.svc_user = self.config.get("cloud", "svc_user")
+            self.svc_pass = self.config.get("cloud", "svc_pass")
+            self.keystone_endpoint = self.config.get("cloud", "keystone_endpoint")
         except Exception as e:
             LOG.error("Error parsing configuration:" + e.message)
             raise SnowException
@@ -73,6 +83,23 @@ class AbstractRequestCreator(object):
                                     instance=self.sn_instance)
         except Exception as e:
             LOG.error("Error instanciating SNOW client:" + e.message)
+            raise SnowException
+
+    def _create_cloudclient_instance(self):
+        try:
+            auth = v3.Password(
+                username=self.svc_user,
+                password=self.svc_pass,
+                auth_url=self.keystone_endpoint,
+                user_domain_name='default',
+                project_name='admin',
+                project_domain_name='default'
+            )
+            sess = session.Session(auth=auth)
+            return CloudClient(session=sess)
+
+        except Exception as e:
+            LOG.error("Error instanciating cloud client:" + e.message)
             raise SnowException
 
     def _create_empty_snow_ticket(self, title):
@@ -426,6 +453,7 @@ class ProjectKiller(AbstractRequestCreator):
         super(ProjectKiller, self).__init__(dict_data)
         self.title = "Request removal of Cloud Project {0}".format(
             self.dict_data['project_name'])
+
         self.user_message = """Dear %s,
 
 Your project deletion request has been received and sent to
@@ -462,16 +490,15 @@ In order to delete this project, please execute [code]<a href="https://cirundeck
 
     def _add_project_members_to_watchlist(self, project_name):
         try:
-            for member in CloudClient.get_project_members(project_name):
+            for member in self.cloudclient.get_project_members(project_name):
                 self.snowclient.add_email_watch_list(self.ticket_number,
                                                      member + "@cern.ch")
         except Exception as e:
             LOG.error("Error adding members to watchlist:" + e.message)
 
-    @staticmethod
-    def _verify_project_owner(project_name, username):
+    def _verify_project_owner(self, project_name, username):
         try:
-            owner = CloudClient.get_project_owner(project_name)
+            owner = self.cloudclient.get_project_owner(project_name)
         except Exception as e:
             LOG.error("Error checking project owner:" + e.message)
             raise SnowException
