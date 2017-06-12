@@ -92,7 +92,7 @@ class AbstractRequestCreator(object):
                 password=self.svc_pass,
                 auth_url=self.keystone_endpoint,
                 user_domain_name='default',
-                project_name='admin',
+                project_name='services',
                 project_domain_name='default'
             )
             sess = session.Session(auth=auth)
