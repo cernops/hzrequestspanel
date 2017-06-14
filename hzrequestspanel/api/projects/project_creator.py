@@ -5,8 +5,8 @@ from hzrequestspanel.api.projects import SnowException
 
 
 class NewProjectCreator(hzrequestspanel.api.projects.AbstractRequestCreator):
-    def __init__(self, dict_data, config_file):
-        super(NewProjectCreator, self).__init__(dict_data, config_file)
+    def __init__(self, dict_data, **kwargs):
+        super(NewProjectCreator, self).__init__(dict_data, **kwargs)
         self.title = "Request for shared Cloud Service Project - name: {0}".format(
             self.dict_data['projectname'])
         self.user_message = """Dear %s,

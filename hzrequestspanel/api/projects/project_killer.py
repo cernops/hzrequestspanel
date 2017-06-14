@@ -4,8 +4,8 @@ from hzrequestspanel.api.projects import SnowException
 
 
 class ProjectKiller(hzrequestspanel.api.projects.AbstractRequestCreator):
-    def __init__(self, dict_data, config_file):
-        super(ProjectKiller, self).__init__(dict_data, config_file)
+    def __init__(self, dict_data, **kwargs):
+        super(ProjectKiller, self).__init__(dict_data, **kwargs)
         self.title = "Request removal of Cloud Project {0}".format(
             self.dict_data['project_name'])
 

@@ -7,8 +7,8 @@ from hzrequestspanel.api.projects import SnowException
 
 
 class QuotaChanger(hzrequestspanel.api.projects.AbstractRequestCreator):
-    def __init__(self, dict_data, config_file):
-        super(QuotaChanger, self).__init__(dict_data, config_file)
+    def __init__(self, dict_data, **kwargs):
+        super(QuotaChanger, self).__init__(dict_data, **kwargs)
         self._generate_volume_type_list()
         self.title = "Request change of resource quota for the Cloud Project {0}".format(
             self.dict_data['projectname'])
