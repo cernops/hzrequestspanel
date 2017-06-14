@@ -119,6 +119,9 @@ systemctl start httpd
 %endif
 
 %changelog
+* Wed Jun 14 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.1-1
+- Add unit tests, refactor code and release Delete and Create Project forms
+
 * Thu Jun 08 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.0-10
 - Added Delete Project Request form
 
