@@ -20,6 +20,6 @@ setup(
         'Programming Language :: Python :: 2.7',
         'Topic :: Internet :: WWW/HTTP',
     ],
-    packages=find_packages(),
+    packages=find_packages(exclude=["test"]),
     include_package_data = True,
 )

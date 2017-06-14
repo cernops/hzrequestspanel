@@ -16,6 +16,17 @@ rpmbuild:
   script:
     - curl https://gitlab.cern.ch/cloud-infrastructure/cloud-dev/raw/master/gitlab/rpmbuild.sh | bash
 
+unittest:
+  stage: test
+  image: mkowalski/rpm-builder:latest
+  except:
+    - tags
+  script:
+    - sed -i s/%sn_pass%/$sn_pass/g test/hzrequestspanel_test.conf
+    - sed -i s/%svc_pass%/$svc_pass/g test/hzrequestspanel_test.conf
+    - git clone https://gitlab.cern.ch/cloud-infrastructure/cci-tools.git && cd cci-tools && pip install -e . -r requirements.txt && cd ..
+    - python -m pytest test
+
 kojicheck:
   stage: deploy
   image: mkowalski/rpm-builder:latest
