@@ -35,4 +35,6 @@ ENV/
 
 # CERN internals
 hzrequestspanel.conf
+test/hzrequestspanel_test.conf
 
+.cache

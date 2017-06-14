@@ -119,6 +119,13 @@ systemctl start httpd
 %endif
 
 %changelog
+* Thu Jun 08 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.0-10
+- Added Delete Project Request form
+
+* Wed May 10 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.0-1
+- Complete refactoring of this code
+- Added Create New Project Request form
+
 * Tue May 09 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 1.6-1
 - Fix link to Quota History Dashboard (force selecting organization)
 
