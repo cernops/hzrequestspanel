@@ -25,7 +25,7 @@ class SnowException(Exception):
 
 class AbstractRequestCreator(object):
     def __init__(self, dict_data,
-                 config_file='/Users/makowals/CERNBox/git/hzrequestspanel/hzrequestspanel.conf'):
+                 config_file='/etc/openstack-dashboard/hzrequestspanel.conf'):
         self.dict_data = dict_data
         self.config = None
         self.sn_user = None
