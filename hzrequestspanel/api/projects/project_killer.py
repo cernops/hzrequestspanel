@@ -12,8 +12,7 @@ class ProjectKiller(hzrequestspanel.api.projects.AbstractRequestCreator):
         self.user_message = """Dear %s,
 
 Your project deletion request has been received 
-and sent to
-Cloud Infrastructure management in order to be confirmed.
+and sent to Cloud Infrastructure management in order to be confirmed.
 
 Thank you,
         Cloud Infrastructure Team"""
