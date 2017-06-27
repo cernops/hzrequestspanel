@@ -37,9 +37,6 @@ In order to delete this project, please execute [code]<a href="https://cirundeck
         self._escalate_ticket(self.functional_element, self.group)
 
     def _verify_prerequisites(self):
-        self.dict_data['username'] = self._get_primary_account_from_ldap(
-            self.dict_data['username'])
-
         self._verify_project_owner(self.dict_data['project_name'],
                                    self.dict_data['username'])
 
