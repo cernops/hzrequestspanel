@@ -161,7 +161,7 @@ class AbstractRequestCreator(object):
                 raise Exception
             return True
         except Exception as e:
-            LOG.error("Error creating SNOW ticket. E-group not found:" + e.message)
+            LOG.error("Error creating SNOW ticket. E-group not found: '{0}'".format(name))
             raise SnowException("Unable to create the ticket. E-group you have provided is not correct.")
 
     @abstractmethod
