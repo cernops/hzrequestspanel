@@ -58,6 +58,10 @@ Best regards,
 
     def _fill_ticket_with_proper_data(self):
         try:
+            # self.dict_data['username'] = self.dict_data['owner']
+            self.dict_data['username'] = self._get_primary_account_from_ldap(
+                self.dict_data['username'])
+            
             self.snowclient.create_project_creation(self.ticket_number,
                                                     self.dict_data)
         except Exception as e:
