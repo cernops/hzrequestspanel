@@ -28,57 +28,44 @@ class AbstractRequestCreator(object):
                  config_file='/etc/openstack-dashboard/hzrequestspanel.conf'):
         self.dict_data = dict_data
         self.config = None
-        self.sn_user = None
-        self.sn_pass = None
-        self.sn_instance = None
-        self.functional_element = None
-        self.group = None
-        self.functional_element_escalate = None
-        self.group_escalate = None
-        self.watchlist_departments = None
-        self.watchlist_egroup_template = None
-        self.svc_user = None
-        self.svc_pass = None
-        self.keystone_endpoint = None
-        self.config_file = config_file
-        self._parse_config_file()
+        self._parse_config_file(config_file)
         self.snowclient = self._create_snowclient_instance()
         self.cloudclient = self._create_cloudclient_instance()
         self.ticket_number = None
         self.user_message = None
         self.supporter_message = None
         self.username = dict_data['username']
+        self.target_functional_element = None
+        self.target_group = None
 
-    def _parse_config_file(self):
+    def _parse_config_file(self, config_file):
         try:
             self.config = ConfigParser()
-            self.config.readfp(open(self.config_file))
-            self.sn_user = self.config.get("servicenow", "sn_user")
-            self.sn_pass = self.config.get("servicenow", "sn_pass")
-            self.sn_instance = self.config.get("servicenow", "sn_instance")
-            self.functional_element = self.config.get("servicenow",
-                                                     "sn_functional_element")
-            self.group = self.config.get("servicenow", "sn_group")
-            self.functional_element_escalate = self.config.get("servicenow",
-                                                               "sn_functional_element_escalate")
-            self.group_escalate = self.config.get("servicenow",
-                                                  "sn_group_escalate")
-            self.watchlist_departments = [dep.lower() for dep in
-                                          self.config.get("servicenow",
-                                                          "watchlist_departments").split()]
-            self.watchlist_egroup_template = self.config.get("servicenow",
-                                                             "watchlist_egroup_template")
-            self.svc_user = self.config.get("cloud", "svc_user")
-            self.svc_pass = self.config.get("cloud", "svc_pass")
-            self.keystone_endpoint = self.config.get("cloud", "keystone_endpoint")
+            self.config.readfp(open(config_file))
+
+            config = {'user': self.config.get("servicenow", "user"),
+                      'pass': self.config.get("servicenow", "pass"),
+                      'instance': self.config.get("servicenow", "instance"),
+                      'cloud_functional_element': self.config.get("servicenow", "cloud_functional_element"),
+                      'cloud_group': self.config.get("servicenow", "cloud_group"),
+                      'resources_functional_element': self.config.get("servicenow", "resources_functional_element"),
+                      'resources_group': self.config.get("servicenow", "resources_group"),
+                      'watchlist_departments': [dep.lower() for dep in self.config.get("servicenow", "watchlist_departments").split()],
+                      'watchlist_egroup_template': self.config.get("servicenow", "watchlist_egroup_template"),
+                      'svc_user': self.config.get("cloud", "user"),
+                      'svc_pass': self.config.get("cloud", "pass"),
+                      'keystone_endpoint': self.config.get("cloud", "keystone_endpoint")
+                      }
+
+            self.config = config
         except Exception as e:
             LOG.error("Error parsing configuration:" + e.message)
             raise SnowException
 
     def _create_snowclient_instance(self):
         try:
-            return ServiceNowClient(self.sn_user, self.sn_pass,
-                                    instance=self.sn_instance)
+            return ServiceNowClient(self.config['user'], self.config['pass'],
+                                    instance=self.config['instance'])
         except Exception as e:
             LOG.error("Error instanciating SNOW client:" + e.message)
             raise SnowException
@@ -86,9 +73,9 @@ class AbstractRequestCreator(object):
     def _create_cloudclient_instance(self):
         try:
             auth = v3.Password(
-                username=self.svc_user,
-                password=self.svc_pass,
-                auth_url=self.keystone_endpoint,
+                username=self.config['svc_user'],
+                password=self.config['svc_pass'],
+                auth_url=self.config['keystone_endpoint'],
                 user_domain_name='default',
                 project_name='services',
                 project_domain_name='default'
@@ -103,13 +90,13 @@ class AbstractRequestCreator(object):
     def _create_empty_snow_ticket(self, title):
         try:
             self.ticket_number = self.snowclient.create_request(title,
-                                                                self.functional_element,
-                                                                assignment_group=self.group).number
+                                                                self.target_functional_element,
+                                                                assignment_group=self.target_group).number
         except Exception as e:
             LOG.error("Error creating empty SNOW ticket:" + e.message)
             raise SnowException
 
-    def _escalate_ticket(self, functional_element_escalate, group_escalate):
+    def _create_notes_and_comments(self):
         try:
             self.snowclient.add_comment(self.ticket_number,
                                         self.user_message % self.dict_data['username'])
@@ -118,11 +105,8 @@ class AbstractRequestCreator(object):
 
             self.snowclient.add_work_note(self.ticket_number, worknote_msg)
 
-            self.snowclient.change_functional_element(self.ticket_number,
-                                                      functional_element_escalate,
-                                                      group_escalate)
         except Exception as e:
-            LOG.error("Error escalating SNOW ticket {0}".format(self.ticket_number))
+            LOG.error("Error creating notes for SNOW ticket {0}".format(self.ticket_number))
             raise Exception("Your ticket {0} has been successfully created, " \
                             "however we have identified some issues during the " \
                             "process. Please go to Service-Now and verify your " \
@@ -134,6 +118,7 @@ class AbstractRequestCreator(object):
         self._verify_prerequisites()
         self._create_empty_snow_ticket(self.title)
         self._fill_ticket_with_proper_data()
+        self._create_notes_and_comments()
         LOG.info("SNOW ticket '{0}' created successfully".format(self.ticket_number))
 
         return self.ticket_number

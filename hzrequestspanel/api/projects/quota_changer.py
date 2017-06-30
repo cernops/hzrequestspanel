@@ -9,6 +9,10 @@ from hzrequestspanel.api.projects import SnowException
 class QuotaChanger(hzrequestspanel.api.projects.AbstractRequestCreator):
     def __init__(self, dict_data, **kwargs):
         super(QuotaChanger, self).__init__(dict_data, **kwargs)
+
+        self.target_functional_element = self.config['resources_functional_element']
+        self.target_group = self.config['resources_group']
+
         self._generate_volume_type_list()
         self.title = "Request change of resource quota for the Cloud Project {0}".format(
             self.dict_data['projectname'])
@@ -73,20 +77,17 @@ Best regards,
 
         self._add_coordinators_to_watchlist()
 
-        self._escalate_ticket(self.functional_element_escalate,
-                              self.group_escalate)
-
     def _add_coordinators_to_watchlist(self):
         try:
             rp = self.snowclient.get_quota_update_request_rp(self.ticket_number)
             project_name = rp.project_name.lower()
 
             # This has strict dependency of having experiment in the project name
-            department = [dep for dep in self.watchlist_departments if
+            department = [dep for dep in self.config['watchlist_departments'] if
                           project_name.startswith(dep)]
             if len(department) != 0:
                 self.snowclient.add_email_watch_list(self.ticket_number,
-                                                     self.watchlist_egroup_template %
+                                                     self.config['watchlist_egroup_template'] %
                                                      department[0])
         except Exception as e:
             LOG.error("Error adding coordinators to watchlist:" + e.message)
