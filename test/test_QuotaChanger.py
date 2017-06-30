@@ -58,3 +58,11 @@ class TestQuotaChanger(TestCase):
 
     def test_add_coordinators_to_watchlist_lhcb(self):
         self._test_add_coordinators_to_watchlist("lhcb")
+
+    def test_get_primary_account_from_ldap(self):
+        self.assertEquals(
+            self.request._get_primary_account_from_ldap(
+                "svchorizon"), "makowals")
+        self.assertNotEquals(
+            self.request._get_primary_account_from_ldap(
+                "svchorizon"), "svchorizon")

@@ -30,11 +30,6 @@ class TestProjectCreator(TestCase):
     def tearDown(self):
         self.request.snowclient.change_ticket_state(self.request.ticket_number, "closed")
 
-    def test_escalate_ticket(self):
-        self.request._escalate_ticket(
-            functional_element_escalate=self.request.functional_element,
-            group_escalate=self.request.group)
-
     def test_create_ticket_positive(self):
         self.request.create_ticket()
 
@@ -50,3 +45,18 @@ class TestProjectCreator(TestCase):
         self.request.dict_data['egroup'] = "svchorizon"
         with self.assertRaises(api.SnowException):
             self.request.create_ticket()
+
+    def test_get_primary_account_from_ldap(self):
+        self.assertEquals(
+            self.request._get_primary_account_from_ldap(
+                "svchorizon"), "makowals")
+        self.assertNotEquals(
+            self.request._get_primary_account_from_ldap(
+                "svchorizon"), "svchorizon")
+
+    def test_verify_egroup_positive(self):
+        self.request._verify_egroup("makowals-federated")
+
+    def test_verify_egroup_negative(self):
+        with self.assertRaises(api.SnowException):
+            self.request._verify_egroup("makowals")

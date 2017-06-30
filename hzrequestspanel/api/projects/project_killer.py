@@ -6,6 +6,10 @@ from hzrequestspanel.api.projects import SnowException
 class ProjectKiller(hzrequestspanel.api.projects.AbstractRequestCreator):
     def __init__(self, dict_data, **kwargs):
         super(ProjectKiller, self).__init__(dict_data, **kwargs)
+
+        self.target_functional_element = self.config['cloud_functional_element']
+        self.target_group = self.config['cloud_group']
+
         self.title = "Request removal of Cloud Project {0}".format(
             self.dict_data['project_name'])
 
@@ -33,8 +37,6 @@ In order to delete this project, please execute [code]<a href="https://cirundeck
             raise SnowException
 
         self._add_project_members_to_watchlist(self.dict_data['project_name'])
-
-        self._escalate_ticket(self.functional_element, self.group)
 
     def _verify_prerequisites(self):
         self._verify_project_owner(self.dict_data['project_name'],

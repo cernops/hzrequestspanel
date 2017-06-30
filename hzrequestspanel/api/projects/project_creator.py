@@ -7,6 +7,10 @@ from hzrequestspanel.api.projects import SnowException
 class NewProjectCreator(hzrequestspanel.api.projects.AbstractRequestCreator):
     def __init__(self, dict_data, **kwargs):
         super(NewProjectCreator, self).__init__(dict_data, **kwargs)
+
+        self.target_functional_element = self.config['resources_functional_element']
+        self.target_group = self.config['resources_group']
+
         self.title = "Request for shared Cloud Service Project - name: {0}".format(
             self.dict_data['projectname'])
         self.user_message = """Dear %s,
@@ -61,12 +65,9 @@ Best regards,
             # self.dict_data['username'] = self.dict_data['owner']
             self.dict_data['username'] = self._get_primary_account_from_ldap(
                 self.dict_data['username'])
-            
+
             self.snowclient.create_project_creation(self.ticket_number,
                                                     self.dict_data)
         except Exception as e:
             LOG.error("Error updating snow ticket:" + e.message)
             raise SnowException
-
-        self._escalate_ticket(self.functional_element_escalate,
-                              self.group_escalate)

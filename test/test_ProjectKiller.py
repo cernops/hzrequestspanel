@@ -21,11 +21,6 @@ class TestProjectKiller(TestCase):
     def tearDown(self):
         self.request.snowclient.change_ticket_state(self.request.ticket_number, "closed")
 
-    def test_escalate_ticket(self):
-        self.request._escalate_ticket(
-            functional_element_escalate=self.request.functional_element,
-            group_escalate=self.request.group)
-
     def test_verify_project_owner_positive(self):
         self.request._verify_project_owner("Personal makowals", "makowals")
 

@@ -119,6 +119,9 @@ systemctl start httpd
 %endif
 
 %changelog
+* Fri Jun 30 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.2-1
+- Create SNOW ticket directly against target Functional Element
+
 * Wed Jun 14 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.1-1
 - Add unit tests, refactor code and release Delete and Create Project forms
 
