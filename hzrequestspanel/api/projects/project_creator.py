@@ -71,3 +71,16 @@ Best regards,
         except Exception as e:
             LOG.error("Error updating snow ticket:" + e.message)
             raise SnowException
+
+        self._add_coordinators_to_watchlist()
+
+    def _add_coordinators_to_watchlist(self):
+        try:
+            acc_group = self.dict_data['accounting_group'].lower()
+
+            if acc_group in self.config['watchlist_departments']:
+                self.snowclient.add_email_watch_list(self.ticket_number,
+                                                     self.config['watchlist_egroup_template'] %
+                                                     acc_group)
+        except Exception as e:
+            LOG.error("Error adding coordinators to watchlist:" + e.message)
