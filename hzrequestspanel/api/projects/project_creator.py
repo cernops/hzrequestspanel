@@ -31,7 +31,7 @@ Could you please review the following project creation request?
 If there are any special requests regarding non-standard flavours, please
 reassign the ticket back to Cloud Team.
 
-If not, in order to accept the request, please execute [code]<a href="https://cirundeck.cern.ch/project/HW-Resources/job/show/14d9ba7f-5dbf-47b7-9142-5d9873fef80d?opt.snow_ticket=%s&opt.enable_project=yes
+If not, in order to accept the request, please execute [code]<a href="https://cirundeck.cern.ch/project/HW-Resources/job/show/14d9ba7f-5dbf-47b7-9142-5d9873fef80d?opt.snow_ticket=%s
 " target="_blank">the following Rundeck job</a>[/code].
 
 Best regards,
