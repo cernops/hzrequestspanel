@@ -31,8 +31,7 @@ Could you please review the following quota update request?
 
 %s
 
-In order to apply these values, please execute [code]<a href="https://cirundeck.cern.ch/project/HW-Resources/job/show/ad45c0a5-5a81-4861-a7ee-fbb7d54f122a?opt.snow_ticket=%s&opt.behaviour=perform
-" target="_blank">the following Rundeck job</a>[/code].
+In order to apply these values, please execute the following Rundeck job - [code]<a href="https://cirundeck.cern.ch/project/HW-Resources/job/show/ad45c0a5-5a81-4861-a7ee-fbb7d54f122a?opt.snow_ticket=%s&opt.behaviour=perform" target="_blank">https://cirundeck.cern.ch/project/Cloud-Operations/job/...</a>[/code]
 
 Best regards,
         Cloud Infrastructure Team"""

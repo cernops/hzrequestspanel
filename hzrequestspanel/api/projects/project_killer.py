@@ -22,8 +22,7 @@ Thank you,
         Cloud Infrastructure Team"""
         self.supporter_message = """Hi, it's me, Rundeck,
 
-In order to delete this project, please execute [code]<a href="https://cirundeck.cern.ch/project/Cloud-Operations/job/show/207957c5-f0ff-486d-95bc-24ce4f40f807?opt.snow_ticket=%s
-" target="_blank">the following Rundeck job</a>[/code]."""
+In order to delete this project, please execute the following Rundeck job - [code]<a href="https://cirundeck.cern.ch/project/Cloud-Operations/job/show/207957c5-f0ff-486d-95bc-24ce4f40f807?opt.snow_ticket=%s" target="_blank">https://cirundeck.cern.ch/project/Cloud-Operations/job/...</a>[/code]"""
 
     def _generate_supporter_message(self):
         return self.supporter_message % self.ticket_number
