@@ -37,8 +37,8 @@ Best regards,
         Cloud Infrastructure Team"""
 
     def _generate_supporter_message(self):
-        rp = self.snowclient.get_quota_update_request_rp(self.ticket_number)
-
+        rp = self.snowclient.get_quota_update_rp(self.ticket.info.number)
+        #FIXME: Probably this can be different?
         rp_dict = self._quota_update_rp_to_dict(rp,
                                                 self.dict_data['current_quota'][
                                                     'nova_quota'],
@@ -54,7 +54,7 @@ Best regards,
                                                              'cinder_quota'])
 
         worknote_msg = self.supporter_message % (
-            self._convert_to_monospace(req_summary), self.ticket_number)
+            self._convert_to_monospace(req_summary), self.ticket.info.number)
 
         return worknote_msg
 
@@ -66,10 +66,9 @@ Best regards,
             self.dict_data['username'])
 
         try:
-            self.snowclient.create_quota_update(self.ticket_number,
-                                                self.dict_data[
-                                                    'volume_type_name_list'],
-                                                self.dict_data)
+            # FIXME: ??? Not sure about the dict_data here
+            self.snowclient.record_producer.convert_RQF_to_quota_update(
+                self.ticket, self.dict_data['volume_type_name_list'])
         except Exception as e:
             LOG.error("Error updating snow ticket:" + e.message)
             raise SnowException

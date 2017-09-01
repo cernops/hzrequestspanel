@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 from ConfigParser import ConfigParser
 from ccitools.cloud import CloudClient
-from ccitools.servicenow import ServiceNowClient
+from ccitools.servicenowv2 import ServiceNowClient
 from ccitools.xldap import XldapClient
 from keystoneauth1 import session
 from keystoneauth1.identity import v3
@@ -31,7 +31,7 @@ class AbstractRequestCreator(object):
         self._parse_config_file(config_file)
         self.snowclient = self._create_snowclient_instance()
         self.cloudclient = self._create_cloudclient_instance()
-        self.ticket_number = None
+        self.ticket = None
         self.user_message = None
         self.supporter_message = None
         self.username = dict_data['username']
@@ -89,21 +89,18 @@ class AbstractRequestCreator(object):
 
     def _create_empty_snow_ticket(self, title):
         try:
-            self.ticket_number = self.snowclient.create_request(title,
-                                                                self.target_functional_element,
-                                                                assignment_group=self.target_group).number
+            self.ticket = self.snowclient.ticket.create_RQF(title,
+                                                            self.target_functional_element,
+                                                            assignment_group=self.target_group)
         except Exception as e:
             LOG.error("Error creating empty SNOW ticket:" + e.message)
             raise SnowException
 
     def _create_notes_and_comments(self):
         try:
-            self.snowclient.add_comment(self.ticket_number,
-                                        self.user_message % self.dict_data['username'])
-
+            self.ticket.add_comment(self.user_message % self.dict_data['username'])
             worknote_msg = self._generate_supporter_message()
-
-            self.snowclient.add_work_note(self.ticket_number, worknote_msg)
+            self.ticket.add_work_note(worknote_msg)
 
         except Exception as e:
             LOG.error("Error creating notes for SNOW ticket {0}".format(self.ticket_number))
@@ -119,9 +116,10 @@ class AbstractRequestCreator(object):
         self._create_empty_snow_ticket(self.title)
         self._fill_ticket_with_proper_data()
         self._create_notes_and_comments()
+        self.ticket.save()  # update ticket upstream
         LOG.info("SNOW ticket '{0}' created successfully".format(self.ticket_number))
 
-        return self.ticket_number
+        return self.ticket
 
     @staticmethod
     def _convert_to_monospace(text):

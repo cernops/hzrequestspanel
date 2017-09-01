@@ -49,7 +49,7 @@ Best regards,
         t.align["Requested"] = 'c'
 
         worknote_msg = self.supporter_message % (
-            self._convert_to_monospace(t), self.ticket_number)
+            self._convert_to_monospace(t), self.ticket.info.number)
 
         return worknote_msg
 
@@ -65,8 +65,8 @@ Best regards,
             self.dict_data['username'] = self._get_primary_account_from_ldap(
                 self.dict_data['username'])
 
-            self.snowclient.create_project_creation(self.ticket_number,
-                                                    self.dict_data)
+            self.snowclient.record_producer.convert_RQF_to_project_creation(self.ticket,
+                                                                            self.dict_data)
         except Exception as e:
             LOG.error("Error updating snow ticket:" + e.message)
             raise SnowException
@@ -78,8 +78,7 @@ Best regards,
             acc_group = self.dict_data['accounting_group'].lower()
 
             if acc_group in self.config['watchlist_departments']:
-                self.snowclient.add_email_watch_list(self.ticket_number,
-                                                     self.config['watchlist_egroup_template'] %
-                                                     acc_group)
+                self.ticket.add_email_watch_list(self.config['watchlist_egroup_template'] %
+                                                 acc_group)
         except Exception as e:
             LOG.error("Error adding coordinators to watchlist:" + e.message)
