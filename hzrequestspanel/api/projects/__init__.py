@@ -48,8 +48,7 @@ class AbstractRequestCreator(object):
             self.config = ConfigParser()
             self.config.readfp(open(config_file))
 
-            config = {'user': self.config.get("servicenow", "user"),
-                      'pass': self.config.get("servicenow", "pass"),
+            config = {
                       'instance': self.config.get("servicenow", "instance"),
                       'cloud_functional_element': self.config.get("servicenow", "cloud_functional_element"),
                       'cloud_group': self.config.get("servicenow", "cloud_group"),
