@@ -44,7 +44,7 @@ In order to delete this project, please execute the following Rundeck job - [cod
     def _add_project_members_to_watchlist(self, project_name):
         try:
             for member in self.cloudclient.get_project_members(project_name):
-                self.ticket.add_email_watch_list(member + "@cern.ch")
+                self.ticket.add_email_to_watch_list(member + "@cern.ch")
         except Exception as e:
             LOG.error("Error adding members to watchlist:" + e.message)
 
