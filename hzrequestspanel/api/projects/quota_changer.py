@@ -13,7 +13,7 @@ class QuotaChanger(hzrequestspanel.api.projects.AbstractRequestCreator):
         self.target_functional_element = self.config['resources_functional_element']
         self.target_group = self.config['resources_group']
 
-        self._generate_volume_type_list()
+        # self._generate_volume_type_list()
         self.title = "Request change of resource quota for the Cloud Project {0}".format(
             self.dict_data['projectname'])
         self.user_message = """Dear %s,
@@ -39,6 +39,7 @@ Best regards,
     def _generate_supporter_message(self):
         rp = self.snowclient.get_quota_update_rp(self.ticket.info.number)
         #FIXME: Probably this can be different?
+        #(makowals): RP-dict conversion is so ugly we don't want to touch it,
         rp_dict = self._quota_update_rp_to_dict(rp,
                                                 self.dict_data['current_quota'][
                                                     'nova_quota'],
@@ -66,9 +67,9 @@ Best regards,
             self.dict_data['username'])
 
         try:
-            # FIXME: ??? Not sure about the dict_data here
+            self._generate_volume_types_new_syntax(self.dict_data)
             self.snowclient.record_producer.convert_RQF_to_quota_update(
-                self.ticket, self.dict_data['volume_type_name_list'])
+                self.ticket, self.dict_data)
         except Exception as e:
             LOG.error("Error updating snow ticket:" + e.message)
             raise SnowException
@@ -90,12 +91,44 @@ Best regards,
         except Exception as e:
             LOG.error("Error adding coordinators to watchlist:" + e.message)
 
-    def _generate_volume_type_list(self):
+    def _generate_volume_types_new_syntax(self, dict_data):
+        """Create new JSON schema for volume types in dict_data
+
+        In old times dict_data contained "volumes" which structure was more or
+        less like this
+
+        dict_data["volumes"]["standard"] = {
+            "gigabytes": 1,
+            "volumes": 1
+        }
+
+        Currently we want to have a flat schema like
+
+        dict_data["cp1_gigabytes"] = 1
+        dict_data["cp1_volumes"] = 1
+
+        This function will take dict_data and generate a new schema provided
+        the old one exists. Because of historical reasons it's easier to have
+        this converter instead of modifying user-facing JavaScript to generate
+        a new structure at the first place.
+
+        As python dictionaries are mutable, this function is changing `dict`
+        passed as an argument
+
+        :param dict_data: `dict` with values to create the record producer
+        """
+
         volume_type_list = self.cloudclient.cinder.volume_types.list()
-        volume_type_name_list = []
         for vt in volume_type_list:
-            volume_type_name_list.append(vt.name)
-        self.dict_data['volume_type_name_list'] = volume_type_name_list
+            dict_data[vt.name + "_gigabytes"] = dict_data["volumes"][vt.name]["gigabytes"]
+            dict_data[vt.name + "_volumes"] = dict_data["volumes"][vt.name]["volumes"]
+
+    # def _generate_volume_type_list(self):
+    #     volume_type_list = self.cloudclient.cinder.volume_types.list()
+    #     volume_type_name_list = []
+    #     for vt in volume_type_list:
+    #         volume_type_name_list.append(vt.name)
+    #     self.dict_data['volume_type_name_list'] = volume_type_name_list
 
     @staticmethod
     def __calculate_variation(current, requested):
