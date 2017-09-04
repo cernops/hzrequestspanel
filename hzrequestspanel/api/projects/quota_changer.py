@@ -37,6 +37,10 @@ Best regards,
         Cloud Infrastructure Team"""
 
     def _generate_supporter_message(self):
+        #(makowals) This is an ugly hack, as we need to save the ticket before
+        # accessing anything from it's content with get_..._rp
+        self.ticket.save()
+
         rp = self.snowclient.get_quota_update_rp(self.ticket.info.number)
         #FIXME: Probably this can be different?
         #(makowals): RP-dict conversion is so ugly we don't want to touch it,
