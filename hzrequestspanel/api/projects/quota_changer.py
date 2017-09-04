@@ -78,8 +78,7 @@ Best regards,
 
     def _add_coordinators_to_watchlist(self):
         try:
-            rp = self.snowclient.get_quota_update_rp(self.ticket.info.number)
-            project_name = rp.project_name.lower()
+            project_name = self.dict_data['projectname']
 
             # This has strict dependency of having experiment in the project name
             department = [dep for dep in self.config['watchlist_departments'] if
@@ -122,6 +121,8 @@ Best regards,
         for vt in volume_type_list:
             dict_data[vt.name + "_gigabytes"] = dict_data["volumes"][vt.name]["gigabytes"]
             dict_data[vt.name + "_volumes"] = dict_data["volumes"][vt.name]["volumes"]
+
+        # LOG.info("SNOW content after new schema: {0}".format(self.dict_data))
 
     # def _generate_volume_type_list(self):
     #     volume_type_list = self.cloudclient.cinder.volume_types.list()
