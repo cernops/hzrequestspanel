@@ -23,7 +23,7 @@ unittest:
     - tags
   script:
     - sed -i s/%svc_pass%/$svc_pass/g test/hzrequestspanel_test.conf
-    - git clone -b snow_changes_2 https://gitlab.cern.ch/cloud-infrastructure/cci-tools.git && cd cci-tools && pip install -e . -r requirements.txt && cd ..
+    - git clone -b $cci_tools_branch https://gitlab.cern.ch/cloud-infrastructure/cci-tools.git && cd cci-tools && pip install -e . -r requirements.txt && cd ..
     - python -m pytest test
 
 kojicheck:
