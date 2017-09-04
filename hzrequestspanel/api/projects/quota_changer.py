@@ -78,7 +78,7 @@ Best regards,
 
     def _add_coordinators_to_watchlist(self):
         try:
-            rp = self.snowclient.get_quota_update_request_rp(self.ticket.info.number)
+            rp = self.snowclient.get_quota_update_rp(self.ticket.info.number)
             project_name = rp.project_name.lower()
 
             # This has strict dependency of having experiment in the project name
