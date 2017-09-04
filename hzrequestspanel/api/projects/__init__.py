@@ -99,8 +99,7 @@ class AbstractRequestCreator(object):
     def _create_notes_and_comments(self):
         try:
             self.ticket.add_comment(self.user_message % self.dict_data['username'])
-            worknote_msg = self._generate_supporter_message()
-            self.ticket.add_work_note(worknote_msg)
+            self.ticket.add_work_note(self._generate_supporter_message())
 
         except Exception as e:
             LOG.error("Error creating notes for SNOW ticket {0}".format(self.ticket_number))
