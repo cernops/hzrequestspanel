@@ -119,6 +119,9 @@ systemctl start httpd
 %endif
 
 %changelog
+* Mon Sep 04 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.4-1
+- Support for SnowClientV2
+
 * Fri Jun 30 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.2-1
 - Create SNOW ticket directly against target Functional Element
 
