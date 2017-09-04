@@ -78,14 +78,14 @@ Best regards,
 
     def _add_coordinators_to_watchlist(self):
         try:
-            rp = self.snowclient.get_quota_update_request_rp(self.ticket_number)
+            rp = self.snowclient.get_quota_update_request_rp(self.ticket.info.number)
             project_name = rp.project_name.lower()
 
             # This has strict dependency of having experiment in the project name
             department = [dep for dep in self.config['watchlist_departments'] if
                           project_name.startswith(dep)]
             if len(department) != 0:
-                self.snowclient.add_email_watch_list(self.ticket_number,
+                self.snowclient.add_email_watch_list(self.ticket.info.number,
                                                      self.config['watchlist_egroup_template'] %
                                                      department[0])
         except Exception as e:

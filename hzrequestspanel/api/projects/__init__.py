@@ -109,12 +109,12 @@ class AbstractRequestCreator(object):
             self.ticket.add_work_note(self._generate_supporter_message())
 
         except Exception as e:
-            LOG.error("Error creating notes for SNOW ticket {0}".format(self.ticket_number))
+            LOG.error("Error creating notes for SNOW ticket {0}".format(self.ticket.info.number))
             raise Exception("Your ticket {0} has been successfully created, " \
                             "however we have identified some issues during the " \
                             "process. Please go to Service-Now and verify your " \
                             "request. If you find any problems, please contact " \
-                            "the Cloud Team.".format(self.ticket_number))
+                            "the Cloud Team.".format(self.ticket.info.number))
 
     def create_ticket(self):
         LOG.info("Creating SNOW ticket with: {0}".format(self.dict_data))
@@ -123,9 +123,9 @@ class AbstractRequestCreator(object):
         self._fill_ticket_with_proper_data()
         self._create_notes_and_comments()
         self.ticket.save()  # update ticket upstream
-        LOG.info("SNOW ticket '{0}' created successfully".format(self.ticket_number))
+        LOG.info("SNOW ticket '{0}' created successfully".format(self.ticket.info.number))
 
-        return self.ticket
+        return self.ticket.info.number
 
     @staticmethod
     def _convert_to_monospace(text):
