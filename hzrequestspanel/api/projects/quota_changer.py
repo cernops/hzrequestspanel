@@ -37,20 +37,7 @@ Best regards,
         Cloud Infrastructure Team"""
 
     def _generate_supporter_message(self):
-        #(makowals) This is an ugly hack, as we need to save the ticket before
-        # accessing anything from it's content with get_..._rp
-        self.ticket.save()
-
-        rp = self.snowclient.get_quota_update_rp(self.ticket.info.number)
-        #FIXME: Probably this can be different?
-        #(makowals): RP-dict conversion is so ugly we don't want to touch it,
-        rp_dict = self._quota_update_rp_to_dict(rp,
-                                                self.dict_data['current_quota'][
-                                                    'nova_quota'],
-                                                self.dict_data['current_quota'][
-                                                    'cinder_quota'])
-
-        req_summary = self._quota_change_request_summary(rp_dict,
+        req_summary = self._quota_change_request_summary(self.dict_data,
                                                          self.dict_data[
                                                              'current_quota'][
                                                              'nova_quota'],
@@ -126,15 +113,6 @@ Best regards,
             dict_data[vt.name + "_gigabytes"] = dict_data["volumes"][vt.name]["gigabytes"]
             dict_data[vt.name + "_volumes"] = dict_data["volumes"][vt.name]["volumes"]
 
-        # LOG.info("SNOW content after new schema: {0}".format(self.dict_data))
-
-    # def _generate_volume_type_list(self):
-    #     volume_type_list = self.cloudclient.cinder.volume_types.list()
-    #     volume_type_name_list = []
-    #     for vt in volume_type_list:
-    #         volume_type_name_list.append(vt.name)
-    #     self.dict_data['volume_type_name_list'] = volume_type_name_list
-
     @staticmethod
     def __calculate_variation(current, requested):
         current = int(current)
@@ -171,12 +149,12 @@ Best regards,
         t.add_row(
             ["RAM (GB)", int(nova_quota['ram']), rp['ram'], variation_ram])
 
-        if 'volume_quota' in rp.keys():
-            for volume_quota in rp['volume_quota']:
+        if 'volumes' in rp.keys():
+            for type, values in rp['volumes'].items():
                 t.add_row(["", "", "", ""])
                 current_volumes = cinder_quota[
-                    'volumes_%s' % volume_quota['type']]
-                requested_volumes = volume_quota['volumes']
+                    'volumes_%s' % type]
+                requested_volumes = values['volumes']
 
                 diff_volumes, percent_volumes = QuotaChanger.__calculate_variation(
                     current_volumes, requested_volumes)
@@ -184,18 +162,18 @@ Best regards,
                     diff_volumes, percent_volumes)
 
                 current_gigabytes = cinder_quota[
-                    'gigabytes_%s' % volume_quota['type']]
-                requested_gigabytes = volume_quota['gigabytes']
+                    'gigabytes_%s' % type]
+                requested_gigabytes = values['gigabytes']
 
                 diff_disk, percent_disk = QuotaChanger.__calculate_variation(
                     current_gigabytes, requested_gigabytes)
                 variation_disk = "%+d (%+d%%)" % (diff_disk, percent_disk)
 
                 t.add_row(
-                    ["Volumes (%s)" % volume_quota['type'], current_volumes,
+                    ["Volumes (%s)" % type, current_volumes,
                      requested_volumes, variation_volumes])
                 t.add_row(
-                    ["Diskspace (%s)" % volume_quota['type'], current_gigabytes,
+                    ["Diskspace (%s)" % type, current_gigabytes,
                      requested_gigabytes, variation_disk])
 
         t.border = True
@@ -205,48 +183,3 @@ Best regards,
         t.align["Requested"] = 'c'
         t.align["Variation"] = 'c'
         return t
-
-    @staticmethod
-    def _quota_update_rp_to_dict(rp, nova_quota, cinder_quota):
-        """
-        Creates a python dictionary with the fields and values from the RP.
-
-        :param rp: Quota Update record Producer
-        :param nova_quota: Nova quota object
-        :param cinder_quota: Cinder quota object
-        """
-        rp_dict = {}
-        for field in rp.fields:
-            if field == "volume_quota":
-                for volume_quota in rp.volume_quota:
-                    if field not in rp_dict:
-                        rp_dict[field] = []
-                    for key in volume_quota:
-                        try:
-                            if volume_quota[key]:
-                                volume_quota[key] = int(volume_quota[key])
-                            else:
-                                volume_quota[key] = int(cinder_quota["%s_%s" % (
-                                    key, volume_quota['type'])])
-                        except ValueError:
-                            logging.debug("'%s' can't be converted to Integer" %
-                                          volume_quota[key])
-
-                    rp_dict[field].append(volume_quota)
-            else:
-                if rp.__getattr__(field):
-                    try:
-                        rp_dict[field] = int(rp.__getattr__(field))
-                    except ValueError:
-                        logging.debug(
-                            "'%s' cant be converted to int" % rp.__getattr__(
-                                field))
-                        rp_dict[field] = rp.__getattr__(field)
-
-                else:  # if requested empty, then load current value
-                    if field in nova_quota.keys():
-                        rp_dict[field] = int(nova_quota[field])
-                    elif field in cinder_quota.keys():
-                        rp_dict[field] = int(cinder_quota[field])
-
-        return rp_dict
