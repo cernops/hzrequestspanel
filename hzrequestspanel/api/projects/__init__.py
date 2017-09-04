@@ -3,6 +3,7 @@ from abc import abstractmethod
 
 from ConfigParser import ConfigParser
 from ccitools.cloud import CloudClient
+from ccitools.common import negociate_krb_ticket
 from ccitools.servicenowv2 import ServiceNowClient
 from ccitools.xldap import XldapClient
 from keystoneauth1 import session
@@ -25,7 +26,11 @@ class SnowException(Exception):
 
 class AbstractRequestCreator(object):
     def __init__(self, dict_data,
-                 config_file='/etc/openstack-dashboard/hzrequestspanel.conf'):
+                 config_file='/etc/openstack-dashboard/hzrequestspanel.conf',
+                 keytab_file='/etc/openstack-dashboard/svcrdeck.keytab'):
+
+        negociate_krb_ticket(keytab_file, 'svcrdeck')
+
         self.dict_data = dict_data
         self.config = None
         self._parse_config_file(config_file)
@@ -64,8 +69,7 @@ class AbstractRequestCreator(object):
 
     def _create_snowclient_instance(self):
         try:
-            return ServiceNowClient(self.config['user'], self.config['pass'],
-                                    instance=self.config['instance'])
+            return ServiceNowClient(instance=self.config['instance'])
         except Exception as e:
             LOG.error("Error instanciating SNOW client:" + e.message)
             raise SnowException
