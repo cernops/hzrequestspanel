@@ -98,7 +98,11 @@ class AbstractRequestCreator(object):
 
     def _create_notes_and_comments(self):
         try:
-            self.ticket.add_comment(self.user_message % self.dict_data['username'])
+            user_info = self.snowclient.user.get_user_info_by_user_name(
+                self.dict_data['username'])
+            first_name = user_info.u_preferred_first_name
+
+            self.ticket.add_comment(self.user_message % first_name)
             self.ticket.add_work_note(self._generate_supporter_message())
 
         except Exception as e:
