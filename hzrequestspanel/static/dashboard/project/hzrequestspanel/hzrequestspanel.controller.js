@@ -315,7 +315,7 @@
 
       /**
        * Create a new Service now ticket calling a REST API
-       * 
+       *
        */
       function sendRequest(){
         var data = getFormData();
@@ -342,7 +342,7 @@
               'ticket_type': 'quota_change',
               'username': $scope.username,
               'projectname': $scope.project_name,
-              'comments': document.getElementById('textarea-comments').value,
+              'comment': document.getElementById('textarea-comments').value,
               'instances': $scope.instances,
               'cores': $scope.cores,
               'ram': $scope.ram,
@@ -569,7 +569,7 @@
           var data = {
               'ticket_type': 'new_project',
               'username': $scope.username,
-              'comments': document.getElementById('textarea-comments').value,
+              'comment': document.getElementById('textarea-comments').value,
               'accounting_group': $scope.exp_or_dept,
               'projectname': $scope.new_project_name,
               'description': $scope.new_project_description,
@@ -669,7 +669,7 @@
               'ticket_type': 'delete_project',
               'username': $scope.username,
               'project_name': $scope.project_name,
-              'comments': document.getElementById('textarea-comments').value
+              'comment': document.getElementById('textarea-comments').value
           };
 
           return data;
