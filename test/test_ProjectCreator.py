@@ -11,7 +11,7 @@ class TestProjectCreator(TestCase):
             logging.NullHandler())
         payload = {"ticket_type": "new_project", "username": "svchorizon",
                    "comment": "", "accounting_group": "IT",
-                   "projectname": "makowals-unittests",
+                   "project_name": "makowals-unittests",
                    "description": "unittest for hzrequestspanel",
                    "owner": "svchorizon",
                    "egroup": "makowals-federated",

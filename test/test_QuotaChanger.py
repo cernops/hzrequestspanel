@@ -10,7 +10,7 @@ class TestQuotaChanger(TestCase):
         logging.getLogger("horizon.hzrequests").addHandler(
             logging.NullHandler())
         payload = {"ticket_type": "quota_change", "username": "svchorizon",
-                   "projectname": "Personal makowals", "comment": "",
+                   "project_name": "Personal makowals", "comment": "",
                    "instances": 25, "cores": 25, "ram": 50,
                    "volumes": {"wig-cpio1": {"gigabytes": "0", "volumes": "0"},
                                "wig-cp1": {"gigabytes": "0", "volumes": "0"},
@@ -45,7 +45,7 @@ class TestQuotaChanger(TestCase):
         self.request.create_ticket()
 
     def _test_add_coordinators_to_watchlist(self, experiment):
-        self.request.dict_data['projectname'] = experiment + " " + self.request.dict_data['projectname']
+        self.request.dict_data['project_name'] = experiment + " " + self.request.dict_data['project_name']
         self.request.create_ticket()
         watch_list = self.request.snowclient.get_ticket(self.request.ticket_number).watch_list
         self.assertEqual(watch_list, "cloud-infrastructure-%s-resource-coordinators@cern.ch" % experiment)

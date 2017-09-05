@@ -12,7 +12,7 @@ class NewProjectCreator(hzrequestspanel.api.projects.AbstractRequestCreator):
         self.target_group = self.config['resources_group']
 
         self.title = "Request for shared Cloud Service Project - name: {0}".format(
-            self.dict_data['projectname'])
+            self.dict_data['project_name'])
         self.user_message = """Dear %s,
 
 Your project creation request has been received and sent to

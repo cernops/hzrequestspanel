@@ -341,7 +341,7 @@
           var data = {
               'ticket_type': 'quota_change',
               'username': $scope.username,
-              'projectname': $scope.project_name,
+              'project_name': $scope.project_name,
               'comment': document.getElementById('textarea-comments').value,
               'instances': $scope.instances,
               'cores': $scope.cores,
@@ -571,7 +571,7 @@
               'username': $scope.username,
               'comment': document.getElementById('textarea-comments').value,
               'accounting_group': $scope.exp_or_dept,
-              'projectname': $scope.new_project_name,
+              'project_name': $scope.new_project_name,
               'description': $scope.new_project_description,
               'owner': $scope.new_project_owner,
               'egroup': $scope.new_project_egroup,

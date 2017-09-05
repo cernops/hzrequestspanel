@@ -15,7 +15,7 @@ class QuotaChanger(hzrequestspanel.api.projects.AbstractRequestCreator):
 
         # self._generate_volume_type_list()
         self.title = "Request change of resource quota for the Cloud Project {0}".format(
-            self.dict_data['projectname'])
+            self.dict_data['project_name'])
         self.user_message = """Dear %s,
 
 Your quota update request has been received and sent to
@@ -69,7 +69,7 @@ Best regards,
 
     def _add_coordinators_to_watchlist(self):
         try:
-            project_name = self.dict_data['projectname']
+            project_name = self.dict_data['project_name']
 
             # This has strict dependency of having experiment in the project name
             department = [dep for dep in self.config['watchlist_departments'] if
