@@ -121,6 +121,7 @@ class AbstractRequestCreator(object):
         self._verify_prerequisites()
         self._create_empty_snow_ticket(self.title)
         self._fill_ticket_with_proper_data()
+        self.ticket.save() # this save is required in order not to lose the user's comment
         self._create_notes_and_comments()
         self.ticket.save()  # update ticket upstream
         LOG.info("SNOW ticket '{0}' created successfully".format(self.ticket.info.number))
