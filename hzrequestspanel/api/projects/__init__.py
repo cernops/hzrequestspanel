@@ -3,7 +3,8 @@ from abc import abstractmethod
 
 from ConfigParser import ConfigParser
 from ccitools.cloud import CloudClient
-from ccitools.servicenow import ServiceNowClient
+from ccitools.common import negociate_krb_ticket
+from ccitools.servicenowv2 import ServiceNowClient
 from ccitools.xldap import XldapClient
 from keystoneauth1 import session
 from keystoneauth1.identity import v3
@@ -25,13 +26,17 @@ class SnowException(Exception):
 
 class AbstractRequestCreator(object):
     def __init__(self, dict_data,
-                 config_file='/etc/openstack-dashboard/hzrequestspanel.conf'):
+                 config_file='/etc/openstack-dashboard/hzrequestspanel.conf',
+                 keytab_file='/etc/openstack-dashboard/svcrdeck.keytab'):
+
+        negociate_krb_ticket(keytab_file, 'svcrdeck')
+
         self.dict_data = dict_data
         self.config = None
         self._parse_config_file(config_file)
         self.snowclient = self._create_snowclient_instance()
         self.cloudclient = self._create_cloudclient_instance()
-        self.ticket_number = None
+        self.ticket = None
         self.user_message = None
         self.supporter_message = None
         self.username = dict_data['username']
@@ -43,8 +48,7 @@ class AbstractRequestCreator(object):
             self.config = ConfigParser()
             self.config.readfp(open(config_file))
 
-            config = {'user': self.config.get("servicenow", "user"),
-                      'pass': self.config.get("servicenow", "pass"),
+            config = {
                       'instance': self.config.get("servicenow", "instance"),
                       'cloud_functional_element': self.config.get("servicenow", "cloud_functional_element"),
                       'cloud_group': self.config.get("servicenow", "cloud_group"),
@@ -64,8 +68,7 @@ class AbstractRequestCreator(object):
 
     def _create_snowclient_instance(self):
         try:
-            return ServiceNowClient(self.config['user'], self.config['pass'],
-                                    instance=self.config['instance'])
+            return ServiceNowClient(instance=self.config['instance'])
         except Exception as e:
             LOG.error("Error instanciating SNOW client:" + e.message)
             raise SnowException
@@ -89,29 +92,29 @@ class AbstractRequestCreator(object):
 
     def _create_empty_snow_ticket(self, title):
         try:
-            self.ticket_number = self.snowclient.create_request(title,
-                                                                self.target_functional_element,
-                                                                assignment_group=self.target_group).number
+            self.ticket = self.snowclient.ticket.create_RQF(title,
+                                                            self.target_functional_element,
+                                                            assignment_group=self.target_group)
         except Exception as e:
             LOG.error("Error creating empty SNOW ticket:" + e.message)
             raise SnowException
 
     def _create_notes_and_comments(self):
         try:
-            self.snowclient.add_comment(self.ticket_number,
-                                        self.user_message % self.dict_data['username'])
+            user_info = self.snowclient.user.get_user_info_by_user_name(
+                self.dict_data['username'])
+            first_name = user_info.first_name
 
-            worknote_msg = self._generate_supporter_message()
-
-            self.snowclient.add_work_note(self.ticket_number, worknote_msg)
+            self.ticket.add_comment(self.user_message % first_name)
+            self.ticket.add_work_note(self._generate_supporter_message())
 
         except Exception as e:
-            LOG.error("Error creating notes for SNOW ticket {0}".format(self.ticket_number))
+            LOG.error("Error creating notes for SNOW ticket {0}".format(self.ticket.info.number))
             raise Exception("Your ticket {0} has been successfully created, " \
                             "however we have identified some issues during the " \
                             "process. Please go to Service-Now and verify your " \
                             "request. If you find any problems, please contact " \
-                            "the Cloud Team.".format(self.ticket_number))
+                            "the Cloud Team.".format(self.ticket.info.number))
 
     def create_ticket(self):
         LOG.info("Creating SNOW ticket with: {0}".format(self.dict_data))
@@ -119,9 +122,10 @@ class AbstractRequestCreator(object):
         self._create_empty_snow_ticket(self.title)
         self._fill_ticket_with_proper_data()
         self._create_notes_and_comments()
-        LOG.info("SNOW ticket '{0}' created successfully".format(self.ticket_number))
+        self.ticket.save()  # update ticket upstream
+        LOG.info("SNOW ticket '{0}' created successfully".format(self.ticket.info.number))
 
-        return self.ticket_number
+        return self.ticket.info.number
 
     @staticmethod
     def _convert_to_monospace(text):

@@ -155,7 +155,7 @@
       $scope.show_volume = showVolume;
       $scope.volume_descrip = false;
 
-      /* VAR TO SAVE THE PERCENTAJE OF QUOTA CHANGE */
+      /* VAR TO SAVE THE PERCENTAGE OF QUOTA CHANGE */
       $scope.volume_type_change = [];
 
       /* TO EXECUTE ON COMPUTE INFO CHANGE*/
@@ -315,7 +315,7 @@
 
       /**
        * Create a new Service now ticket calling a REST API
-       * 
+       *
        */
       function sendRequest(){
         var data = getFormData();
@@ -342,7 +342,7 @@
               'ticket_type': 'quota_change',
               'username': $scope.username,
               'projectname': $scope.project_name,
-              'comments': document.getElementById('textarea-comments').value,
+              'comment': document.getElementById('textarea-comments').value,
               'instances': $scope.instances,
               'cores': $scope.cores,
               'ram': $scope.ram,
@@ -394,7 +394,7 @@
             start_value = parseInt(document.getElementById($scope.volume_type_ids[i] + '_size_actual').value);
             $scope.volume_fields[$scope.volume_type_ids[i] + '_size'] = start_value;
 
-            change_volume_type_percentaje($scope.volume_type_ids[i]);
+            change_volume_type_percentage($scope.volume_type_ids[i]);
         }
         document.getElementById('textarea-comments').value = '';
       }
@@ -406,10 +406,10 @@
             $scope.volume_fields[prefix_id + '_size'] = $scope.volume_fields[prefix_id + '_number'];
         }
 
-        change_volume_type_percentaje(prefix_id);
+        change_volume_type_percentage(prefix_id);
       }
 
-      function change_volume_type_percentaje(vol_id){
+      function change_volume_type_percentage(vol_id){
           var number_new = $scope.volume_fields[vol_id + '_number'];
           var size_new = $scope.volume_fields[vol_id + '_size'];
           var number_actual =  parseInt(document.getElementById(vol_id + '_number_actual').value);
@@ -463,18 +463,18 @@
       }
 
       function change_compute(field, number_new, number_actual){
-          var percentaje = parseInt(((100 * number_new) / number_actual) - 100);
+          var percentage = parseInt(((100 * number_new) / number_actual) - 100);
           var number = (number_new - number_actual);
           if (isNaN(number)){ number = 0; }
-          if (isNaN(percentaje)){ percentaje = 0; }
+          if (isNaN(percentage)){ percentage = 0; }
           var sign = '';
           if (number > 0) { sign = '+'; }
 
           // Only display info if it is != 0
-          if (number == 0 && percentaje == 0) {
+          if (number == 0 && percentage == 0) {
               $scope.compute_change[field] = '';
           }else{
-              $scope.compute_change[field] = sign + number + ' (' + sign + '' + percentaje + '%)';
+              $scope.compute_change[field] = sign + number + ' (' + sign + '' + percentage + '%)';
           }
       }
 
@@ -569,7 +569,7 @@
           var data = {
               'ticket_type': 'new_project',
               'username': $scope.username,
-              'comments': document.getElementById('textarea-comments').value,
+              'comment': document.getElementById('textarea-comments').value,
               'accounting_group': $scope.exp_or_dept,
               'projectname': $scope.new_project_name,
               'description': $scope.new_project_description,
@@ -669,7 +669,7 @@
               'ticket_type': 'delete_project',
               'username': $scope.username,
               'project_name': $scope.project_name,
-              'comments': document.getElementById('textarea-comments').value
+              'comment': document.getElementById('textarea-comments').value
           };
 
           return data;

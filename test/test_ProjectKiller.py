@@ -10,7 +10,7 @@ class TestProjectKiller(TestCase):
         logging.getLogger("horizon.hzrequests").addHandler(
             logging.NullHandler())
         payload = {"ticket_type": "delete_project", "username": "makowals",
-                   "project_name": "Personal makowals", "comments": ""}
+                   "project_name": "Personal makowals", "comment": ""}
         self.request = api.ProjectKiller(payload,
                                          config_file=os.path.dirname(
                                                           os.path.abspath(

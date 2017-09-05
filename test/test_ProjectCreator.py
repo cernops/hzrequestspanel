@@ -10,7 +10,7 @@ class TestProjectCreator(TestCase):
         logging.getLogger("horizon.hzrequests").addHandler(
             logging.NullHandler())
         payload = {"ticket_type": "new_project", "username": "svchorizon",
-                   "comments": "", "accounting_group": "IT",
+                   "comment": "", "accounting_group": "IT",
                    "projectname": "makowals-unittests",
                    "description": "unittest for hzrequestspanel",
                    "owner": "svchorizon",

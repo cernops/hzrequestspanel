@@ -22,9 +22,9 @@ unittest:
   except:
     - tags
   script:
-    - sed -i s/%sn_pass%/$sn_pass/g test/hzrequestspanel_test.conf
     - sed -i s/%svc_pass%/$svc_pass/g test/hzrequestspanel_test.conf
-    - git clone https://gitlab.cern.ch/cloud-infrastructure/cci-tools.git && cd cci-tools && pip install -e . -r requirements.txt && cd ..
+    - mkdir -p /etc/openstack-dashboard && echo $svcrdeck_keytab > /etc/openstack-dashboard/svcrdeck.keytab
+    - git clone -b $cci_tools_branch https://gitlab.cern.ch/cloud-infrastructure/cci-tools.git && cd cci-tools && pip install -e . -r requirements.txt && cd ..
     - python -m pytest test
 
 kojicheck:

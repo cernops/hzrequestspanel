@@ -10,7 +10,7 @@ class TestQuotaChanger(TestCase):
         logging.getLogger("horizon.hzrequests").addHandler(
             logging.NullHandler())
         payload = {"ticket_type": "quota_change", "username": "svchorizon",
-                   "projectname": "Personal makowals", "comments": "",
+                   "projectname": "Personal makowals", "comment": "",
                    "instances": 25, "cores": 25, "ram": 50,
                    "volumes": {"wig-cpio1": {"gigabytes": "0", "volumes": "0"},
                                "wig-cp1": {"gigabytes": "0", "volumes": "0"},
