@@ -110,8 +110,8 @@ Best regards,
 
         volume_type_list = self.cloudclient.cinder.volume_types.list()
         for vt in volume_type_list:
-            dict_data[vt.name + "_gigabytes"] = dict_data["volumes"][vt.name]["gigabytes"]
-            dict_data[vt.name + "_volumes"] = dict_data["volumes"][vt.name]["volumes"]
+            dict_data[vt.name.replace("-", "_") + "_gigabytes"] = dict_data["volumes"][vt.name]["gigabytes"]
+            dict_data[vt.name.replace("-", "_") + "_volumes"] = dict_data["volumes"][vt.name]["volumes"]
 
     @staticmethod
     def __calculate_variation(current, requested):
