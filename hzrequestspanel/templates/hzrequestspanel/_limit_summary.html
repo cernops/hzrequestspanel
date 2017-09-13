@@ -32,6 +32,10 @@
                 {% blocktrans trimmed with used=quota.used|diskgbformat available=quota.max|quotainf|diskgbformat %}
                   Used <span> {{ used }} </span>of<span> {{ available }} </span>
                 {% endblocktrans %}
+              {% elif quota.type == "totalShareGigabytesUsed" %}
+                {% blocktrans trimmed with used=quota.used|diskgbformat available=quota.max|quotainf|diskgbformat %}
+                  Used <span> {{ used }} </span>of<span> {{ available }} </span>
+                {% endblocktrans %}
               {% else %}
                 {% blocktrans trimmed with used=quota.used|intcomma available=quota.max|quotainf|intcomma %}
                   Used <span> {{ used }} </span>of<span> {{ available }} </span>
