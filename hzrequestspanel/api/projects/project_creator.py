@@ -78,7 +78,7 @@ Best regards,
             acc_group = self.dict_data['accounting_group'].lower()
 
             if acc_group in self.config['watchlist_departments']:
-                self.ticket.add_email_watch_list(self.config['watchlist_egroup_template'] %
+                self.ticket.add_email_to_watch_list(self.config['watchlist_egroup_template'] %
                                                  acc_group)
         except Exception as e:
             LOG.error("Error adding coordinators to watchlist:" + e.message)
