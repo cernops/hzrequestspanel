@@ -7,11 +7,12 @@ DialogControllerNewProject.$inject = [
     '$mdSidenav',
     'horizon.app.core.openstack-service-api.keystone',
     'horizon.app.core.openstack-service-api.cinder',
+    'horizon.app.core.openstack-service-api.settings',
     'horizon.framework.util.http.service',
     'horizon.framework.widgets.toast.service'
 ];
 
-function DialogControllerNewProject($scope, $mdDialog, $mdSidenav, keystoneAPI, cinderAPI, apiService, toastService) {
+function DialogControllerNewProject($scope, $mdDialog, $mdSidenav, keystoneAPI, cinderAPI, settingsAPI, apiService, toastService) {
 
       $scope.nova_limits = {};
       $scope.username = '';
@@ -36,12 +37,21 @@ function DialogControllerNewProject($scope, $mdDialog, $mdSidenav, keystoneAPI, 
       $scope.cores = 25;
       $scope.ram = 50;
 
-      $scope.volumes_size = 500;
-      $scope.volumes_number = 5;
-
       $scope.show_form = showForm;
       $scope.form_display = false;
       $scope.resquest_sent = false;
+
+      /* VARS FOR VOLUME TYPE DESCRIPTION */
+      $scope.name = '';
+      $scope.usage = '';
+      $scope.hyper = '';
+      $scope.max_iops = '';
+      $scope.max_throughput = '';
+      $scope.description = '';
+
+      /* VARS TO CHANGE VOLUME TYPE DESCRIPTION */
+      $scope.show_volume = showVolume;
+      $scope.volume_descrip = false;
 
       /* FORM BUTTONS */
       $scope.cancel = cancel;
@@ -79,6 +89,7 @@ function DialogControllerNewProject($scope, $mdDialog, $mdSidenav, keystoneAPI, 
               vt[d['id']] = d;
           }
           $scope.volume_types = {'volumes': vt};
+          settingsAPI.getSetting('VOLUME_TYPE_META').then(onGetSetting);
 
           var i = 0;
           for (var k in $scope.volume_types['volumes']){
@@ -86,7 +97,9 @@ function DialogControllerNewProject($scope, $mdDialog, $mdSidenav, keystoneAPI, 
               var name = $scope.volume_types['volumes'][k]['name'];
 
               var d = {'id': id,
-                       'name': name
+                       'name': name,
+                       'total_volumes': 0,
+                       'total_gigabytes': 0
               };
 
               $scope.volume_type_list_limits[i] = d;
@@ -114,6 +127,39 @@ function DialogControllerNewProject($scope, $mdDialog, $mdSidenav, keystoneAPI, 
               }
           }
           return custom_sorted_list;
+      }
+
+      function onGetSetting(dict){
+          $scope.volume_type_meta = dict;
+          dict['standard']['name'] = 'standard';
+          set_default_volume_type_description(dict['standard']);
+          for (var key in $scope.volume_types['volumes']){
+              var name = $scope.volume_types['volumes'][key]['name'];
+              $scope.volume_types['volumes'][key]['usage'] = dict[name]['usage'];
+              $scope.volume_types['volumes'][key]['hypervisor'] = dict[name]['hypervisor'];
+              $scope.volume_types['volumes'][key]['max_iops'] = dict[name]['iops'];
+              $scope.volume_types['volumes'][key]['max_throughput'] = dict[name]['throughput'];
+          }
+      }
+
+      function set_default_volume_type_description(data){
+          $scope.volume_descrip = true;
+          $scope.name = data['name'];
+          $scope.usage = data['usage'];
+          $scope.hyper = data['hypervisor'];
+          $scope.max_iops = data['iops'];
+          $scope.max_throughput = data['throughput'];
+          $scope.description = data['description'];
+      }
+
+      function showVolume(i){
+        $scope.volume_descrip = true;
+        $scope.name = $scope.volume_types['volumes'][i]['name'];
+        $scope.usage = $scope.volume_types['volumes'][i]['usage'];
+        $scope.hyper = $scope.volume_types['volumes'][i]['hypervisor'];
+        $scope.max_iops = $scope.volume_types['volumes'][i]['max_iops'];
+        $scope.max_throughput = $scope.volume_types['volumes'][i]['max_throughput'];
+        $scope.description = $scope.volume_types['volumes'][i]['description'];
       }
 
       /**
@@ -153,9 +199,16 @@ function DialogControllerNewProject($scope, $mdDialog, $mdSidenav, keystoneAPI, 
               'instances': $scope.instances,
               'cores': $scope.cores,
               'ram': $scope.ram,
-              'gigabytes': $scope.volumes_size,
-              'volumes': $scope.volumes_number
+              'volumes': {}
           };
+
+          for (var key in $scope.volume_types['volumes']){
+              var vol_type_name = $scope.volume_types['volumes'][key]['name'];
+              data['volumes'][vol_type_name] = {
+                  'gigabytes': document.getElementById(vol_type_name + '_size').value,
+                  'volumes': document.getElementById(vol_type_name + '_number').value
+              };
+          }
 
           return data;
       }

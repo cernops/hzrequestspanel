@@ -104,32 +104,69 @@
   <div id="section_storage" layout="row" class="fila" layout-padding>
     <div flex="30" class="div-title-fila">
       <h4>Storage</h4>
+      <div class="volume-description" ng-hide="volume_descrip" layout-padding layout-margin>
+            <p>Click the volume type to get the volume description.</p>
+      </div>
+      <div class="volume-description" ng-show="volume_descrip" layout-padding layout-margin>
+              <h5>Volume type description</h5>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Name: </td>
+                    <td>{$name$}</td>
+                  </tr>
+                  <tr>
+                    <td>Usage: </td>
+                    <td>{$usage$}</td>
+                  </tr>
+                  <tr>
+                    <td>Max IOPS: </td>
+                    <td>{$max_iops$}</td>
+                  </tr>
+                  <tr>
+                    <td>Max Throughput: </td>
+                    <td>{$max_throughput$}</td>
+                  </tr>
+                </tbody>
+              </table>
+      </div>
     </div>
     <div flex layout="column">
-      <div layout="row" class="fila-dato">
-        <div flex class="bold">Amount of diskspace</div>
-        <div flex>
-          <input type="number" id="volumes_size"
-              ng-model="volumes_size"
-              ng-pattern="/^[0-9]+$/"
-              required />
+      <div id="div_volume_data_headers" layout="row">
+        <div flex="25"></div>
+        <div flex>Number</div>
+        <div flex>Space</div>
+      </div>
+      <div class="loading" ng-show="loading_img_show_storage">
+          <img ng-src="{$ static_url $}dashboard/project/hzrequestspanel/loading.svg" alt="loading spinner" />
+      </div>
+      <div id="div_storage_rows" ng-hide="loading_img_show_storage">
+          <div layout="row" class="fila-dato"
+              ng-repeat="vol_type in volume_type_list_limits"
+              ng-click="show_volume(vol_type.id)">
+              <div flex="25" class="bold">{$ vol_type.name $}</div>
+              <div flex layout="row" class="div-input-number">
+                  <input type="number"
+                         min="0"
+                         id="{$ vol_type.name $}_number"
+                         ng-model="vol_type.total_volumes"
+                         tabindex="{$ $index + 10 $}"
+                         ng-pattern="/^[0-9]+$/"
+                         required />
+                  <span></span>
+              </div>
+              <div flex layout="row" class="div-input-number">
+                  <input type="number"
+                         min="0"
+                         id="{$ vol_type.name $}_size"
+                         ng-model="vol_type.total_gigabytes"
+                         tabindex="{$ $index + 11 $}"
+                         ng-pattern="/^[0-9]+$/"
+                         required />
+                  <span> GB</span>
+              </div>
         </div>
       </div>
-      <div layout="row" class="fila-dato">
-        <div flex class="bold">Number of volumes</div>
-        <div flex>
-          <input type="number" id="volumes_number"
-              ng-model="volumes_number"
-              ng-pattern="/^[0-9]+$/"
-              required />
-        </div>
-      </div>
-
-      <div layout="row" class="fila-dato" ng-repeat="vol_type in volume_type_list_limits">
-        <div flex class="bold">Types</div>
-        <div flex>{$ vol_type.name $}</div>
-      </div>
-
     </div>
   </div>
   <div id="section_comments" layout="row" class="fila" layout-padding>
