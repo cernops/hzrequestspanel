@@ -57,7 +57,8 @@ Best regards,
         self.dict_data['owner'] = self._get_primary_account_from_ldap(
             self.dict_data['owner'])
 
-        self._verify_egroup(self.dict_data['egroup'])
+        for egroup in self.dict_data['egroup'].split(','):
+            self._verify_egroup(egroup.strip())
 
     def _fill_ticket_with_proper_data(self):
         try:
