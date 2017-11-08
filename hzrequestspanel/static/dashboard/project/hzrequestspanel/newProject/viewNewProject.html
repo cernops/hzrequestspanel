@@ -75,6 +75,7 @@
           <input type="number" id="instances_number"
               ng-model="instances"
               ng-pattern="/^[0-9]+$/"
+              min="0"
               required />
         </div>
       </div>
@@ -84,6 +85,7 @@
           <input type="number" id="cores_number"
               ng-model="cores"
               ng-pattern="/^[0-9]+$/"
+              min="0"
               required />
         </div>
       </div>
@@ -93,6 +95,7 @@
           <input type="number" id="ram_number"
               ng-model="ram"
               ng-pattern="/^[0-9]*\.?[0-9]+$/"
+              min="0"
               required />
         </div>
       </div>
@@ -121,6 +124,12 @@
               required />
         </div>
       </div>
+
+      <div layout="row" class="fila-dato" ng-repeat="vol_type in volume_type_list_limits">
+        <div flex class="bold">Types</div>
+        <div flex>{$ vol_type.name $}</div>
+      </div>
+
     </div>
   </div>
   <div id="section_comments" layout="row" class="fila" layout-padding>
