@@ -65,7 +65,7 @@ Best regards,
             # self.dict_data['username'] = self.dict_data['owner']
             self.dict_data['username'] = self._get_primary_account_from_ldap(
                 self.dict_data['username'])
-
+            self._generate_volume_types_new_syntax(self.dict_data)
             self.snowclient.record_producer.convert_RQF_to_project_creation(self.ticket,
                                                                             self.dict_data)
         except Exception as e:
