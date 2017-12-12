@@ -75,9 +75,7 @@ Best regards,
             department = [dep for dep in self.config['watchlist_departments'] if
                           project_name.startswith(dep)]
             if len(department) != 0:
-                self.snowclient.add_email_watch_list(self.ticket.info.number,
-                                                     self.config['watchlist_egroup_template'] %
-                                                     department[0])
+                self.ticket.add_email_to_watch_list(self.config['watchlist_egroup_template'] % department[0])
         except Exception as e:
             LOG.error("Error adding coordinators to watchlist:" + e.message)
 

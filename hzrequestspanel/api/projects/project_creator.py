@@ -66,8 +66,7 @@ Best regards,
     def _fill_ticket_with_proper_data(self):
         try:
             # self.dict_data['username'] = self.dict_data['owner']
-            self.dict_data['username'] = self._get_primary_account_from_ldap(
-                self.dict_data['username'])
+            self.dict_data['username'] = self._get_primary_account_from_ldap(self.dict_data['username'])
             self._generate_volume_types_new_syntax(self.dict_data)
             self.snowclient.record_producer.convert_RQF_to_project_creation(self.ticket,
                                                                             self.dict_data)
@@ -82,7 +81,6 @@ Best regards,
             acc_group = self.dict_data['accounting_group'].lower()
 
             if acc_group in self.config['watchlist_departments']:
-                self.ticket.add_email_to_watch_list(self.config['watchlist_egroup_template'] %
-                                                 acc_group)
+                self.ticket.add_email_to_watch_list(self.config['watchlist_egroup_template'] % acc_group)
         except Exception as e:
             LOG.error("Error adding coordinators to watchlist:" + e.message)
