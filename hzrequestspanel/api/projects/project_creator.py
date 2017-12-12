@@ -41,8 +41,11 @@ Best regards,
         t.add_row(["Cores", self.dict_data["cores"]])
         t.add_row(["Instances", self.dict_data["instances"]])
         t.add_row(["RAM (GB)", self.dict_data["ram"]])
-        t.add_row(["Volumes (standard)", self.dict_data["volumes"]])
-        t.add_row(["Diskspace (standard)", self.dict_data["gigabytes"]])
+
+        for volume_type in self.dict_data["volumes"].keys():
+            t.add_row(["Volumes (%s)" % volume_type, self.dict_data["volumes"][volume_type]["volumes"]])
+            t.add_row(["Diskspace (%s)" % volume_type, self.dict_data["volumes"][volume_type]["gigabytes"]])
+
         t.border = True
         t.header = True
         t.align["Quota"] = 'c'
