@@ -41,8 +41,11 @@ Best regards,
         t.add_row(["Cores", self.dict_data["cores"]])
         t.add_row(["Instances", self.dict_data["instances"]])
         t.add_row(["RAM (GB)", self.dict_data["ram"]])
-        t.add_row(["Volumes (standard)", self.dict_data["volumes"]])
-        t.add_row(["Diskspace (standard)", self.dict_data["gigabytes"]])
+
+        for volume_type in self.dict_data["volumes"].keys():
+            t.add_row(["Volumes (%s)" % volume_type, self.dict_data["volumes"][volume_type]["volumes"]])
+            t.add_row(["Diskspace (%s)" % volume_type, self.dict_data["volumes"][volume_type]["gigabytes"]])
+
         t.border = True
         t.header = True
         t.align["Quota"] = 'c'
@@ -57,14 +60,14 @@ Best regards,
         self.dict_data['owner'] = self._get_primary_account_from_ldap(
             self.dict_data['owner'])
 
-        self._verify_egroup(self.dict_data['egroup'])
+        for egroup in self.dict_data['egroup'].split(','):
+            self._verify_egroup(egroup.strip())
 
     def _fill_ticket_with_proper_data(self):
         try:
             # self.dict_data['username'] = self.dict_data['owner']
-            self.dict_data['username'] = self._get_primary_account_from_ldap(
-                self.dict_data['username'])
-
+            self.dict_data['username'] = self._get_primary_account_from_ldap(self.dict_data['username'])
+            self._generate_volume_types_new_syntax(self.dict_data)
             self.snowclient.record_producer.convert_RQF_to_project_creation(self.ticket,
                                                                             self.dict_data)
         except Exception as e:
@@ -78,7 +81,6 @@ Best regards,
             acc_group = self.dict_data['accounting_group'].lower()
 
             if acc_group in self.config['watchlist_departments']:
-                self.ticket.add_email_to_watch_list(self.config['watchlist_egroup_template'] %
-                                                 acc_group)
+                self.ticket.add_email_to_watch_list(self.config['watchlist_egroup_template'] % acc_group)
         except Exception as e:
             LOG.error("Error adding coordinators to watchlist:" + e.message)

@@ -119,6 +119,10 @@ systemctl start httpd
 %endif
 
 %changelog
+* Mon Nov 13 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.4-9
+- Support for volume type quotas in new project request
+- Support for multiple e-groups in new project request
+
 * Mon Sep 04 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.4-1
 - Support for SnowClientV2
 

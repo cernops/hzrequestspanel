@@ -1,5 +1,6 @@
 from unittest import TestCase
 import hzrequestspanel.api.projects.quota_changer as api
+from ccitools.utils.snow.ticket import RequestState
 
 import logging
 import os
@@ -9,8 +10,10 @@ class TestQuotaChanger(TestCase):
     def setUp(self):
         logging.getLogger("horizon.hzrequests").addHandler(
             logging.NullHandler())
-        payload = {"ticket_type": "quota_change", "username": "svchorizon",
-                   "project_name": "Personal makowals", "comment": "",
+        payload = {"ticket_type": "quota_change",
+                   "username": "svchorizon",
+                   "project_name": "Personal makowals",
+                   "comment": "",
                    "instances": 25, "cores": 25, "ram": 50,
                    "volumes": {"wig-cpio1": {"gigabytes": "0", "volumes": "0"},
                                "wig-cp1": {"gigabytes": "0", "volumes": "0"},
@@ -32,14 +35,16 @@ class TestQuotaChanger(TestCase):
                                  "gigabytes_standard": "500",
                                  "volumes_standard": "5"}}}
         self.request = api.QuotaChanger(payload,
-                                        config_file=os.path.dirname(
-                                                       os.path.abspath(
-                                                           __file__)) + "/hzrequestspanel_test.conf")
+                                        config_file=os.path.dirname(os.path.abspath(__file__)) +
+                                                    "/hzrequestspanel_test.conf",
+                                        keytab_file=os.path.dirname(os.path.abspath(__file__)) + "/svcrdeck.keytab",
+                                        )
         self.request._create_empty_snow_ticket(
             "Unit tests for hzrequestspanel")
 
     def tearDown(self):
-        self.request.snowclient.change_ticket_state(self.request.ticket_number, "closed")
+        self.request.ticket.change_state(RequestState.CLOSED)
+        self.request.ticket.save()
 
     def test_create_ticket_positive(self):
         self.request.create_ticket()
@@ -47,7 +52,7 @@ class TestQuotaChanger(TestCase):
     def _test_add_coordinators_to_watchlist(self, experiment):
         self.request.dict_data['project_name'] = experiment + " " + self.request.dict_data['project_name']
         self.request.create_ticket()
-        watch_list = self.request.snowclient.get_ticket(self.request.ticket_number).watch_list
+        watch_list = self.request.ticket.info.watch_list
         self.assertEqual(watch_list, "cloud-infrastructure-%s-resource-coordinators@cern.ch" % experiment)
 
     def test_add_coordinators_to_watchlist_atlas(self):

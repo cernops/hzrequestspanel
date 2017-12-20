@@ -1,5 +1,6 @@
 from unittest import TestCase
 import hzrequestspanel.api.projects.project_killer as api
+from ccitools.utils.snow.ticket import RequestState
 
 import logging
 import os
@@ -9,17 +10,21 @@ class TestProjectKiller(TestCase):
     def setUp(self):
         logging.getLogger("horizon.hzrequests").addHandler(
             logging.NullHandler())
-        payload = {"ticket_type": "delete_project", "username": "makowals",
-                   "project_name": "Personal makowals", "comment": ""}
+        payload = {"ticket_type": "delete_project",
+                   "username": "makowals",
+                   "project_name": "Personal makowals",
+                   "comment": ""}
         self.request = api.ProjectKiller(payload,
-                                         config_file=os.path.dirname(
-                                                          os.path.abspath(
-                                                              __file__)) + "/hzrequestspanel_test.conf")
+                                         config_file=os.path.dirname(os.path.abspath(__file__)) +
+                                                     "/hzrequestspanel_test.conf",
+                                         keytab_file=os.path.dirname(os.path.abspath(__file__)) + "/svcrdeck.keytab",
+                                         )
         self.request._create_empty_snow_ticket(
             "Unit tests for hzrequestspanel")
 
     def tearDown(self):
-        self.request.snowclient.change_ticket_state(self.request.ticket_number, "closed")
+        self.request.ticket.change_state(RequestState.CLOSED)
+        self.request.ticket.save()
 
     def test_verify_project_owner_positive(self):
         self.request._verify_project_owner("Personal makowals", "makowals")

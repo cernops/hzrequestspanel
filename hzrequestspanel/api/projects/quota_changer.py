@@ -75,43 +75,9 @@ Best regards,
             department = [dep for dep in self.config['watchlist_departments'] if
                           project_name.startswith(dep)]
             if len(department) != 0:
-                self.snowclient.add_email_watch_list(self.ticket.info.number,
-                                                     self.config['watchlist_egroup_template'] %
-                                                     department[0])
+                self.ticket.add_email_to_watch_list(self.config['watchlist_egroup_template'] % department[0])
         except Exception as e:
             LOG.error("Error adding coordinators to watchlist:" + e.message)
-
-    def _generate_volume_types_new_syntax(self, dict_data):
-        """Create new JSON schema for volume types in dict_data
-
-        In old times dict_data contained "volumes" which structure was more or
-        less like this
-
-        dict_data["volumes"]["standard"] = {
-            "gigabytes": 1,
-            "volumes": 1
-        }
-
-        Currently we want to have a flat schema like
-
-        dict_data["cp1_gigabytes"] = 1
-        dict_data["cp1_volumes"] = 1
-
-        This function will take dict_data and generate a new schema provided
-        the old one exists. Because of historical reasons it's easier to have
-        this converter instead of modifying user-facing JavaScript to generate
-        a new structure at the first place.
-
-        As python dictionaries are mutable, this function is changing `dict`
-        passed as an argument
-
-        :param dict_data: `dict` with values to create the record producer
-        """
-
-        volume_type_list = self.cloudclient.cinder.volume_types.list()
-        for vt in volume_type_list:
-            dict_data[vt.name.replace("-", "_") + "_gigabytes"] = dict_data["volumes"][vt.name]["gigabytes"]
-            dict_data[vt.name.replace("-", "_") + "_volumes"] = dict_data["volumes"][vt.name]["volumes"]
 
     @staticmethod
     def __calculate_variation(current, requested):
