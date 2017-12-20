@@ -27,7 +27,7 @@
       <div layout="row" class="fila-dato">
         <div flex class="bold">Experiment or department</div>
         <div flex>
-          <select ng-model="exp_or_dept" ng-options="x for x in available_experiments" required></select>
+          <select ng-model="exp_or_dept" ng-options="x for x in available_experiments | orderBy:'toString()'" required></select>
         </div>
       </div>
       <div layout="row" class="fila-dato">
