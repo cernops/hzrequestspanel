@@ -119,6 +119,9 @@ systemctl start httpd
 %endif
 
 %changelog
+* Wed Dec 20 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.4-13
+- Add GBAR to the list of experiments
+
 * Mon Nov 13 2017 Mateusz Kowalski <mateusz.kowalski@cern.ch> 2.4-9
 - Support for volume type quotas in new project request
 - Support for multiple e-groups in new project request

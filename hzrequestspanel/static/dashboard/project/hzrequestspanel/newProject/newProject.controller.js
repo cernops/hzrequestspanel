@@ -25,7 +25,7 @@ function DialogControllerNewProject($scope, $mdDialog, $mdSidenav, keystoneAPI, 
 
       /* REQUEST FIELDS */
       $scope.exp_or_dept = '';
-      $scope.available_experiments = [ 'ALICE', 'ALPHA', 'AMS', 'ATLAS', 'ATLAS-Tokyo', 'ATLAS-Wisconsin', 'CLOUD', 'CMS', 'COMPASS', 'FCC', 'ILC', 'ISOLDE', 'LHCb', 'MA', 'NA48', 'NA61', 'NA62', 'TOTEM',
+      $scope.available_experiments = [ 'ALICE', 'ALPHA', 'AMS', 'ATLAS', 'ATLAS-Tokyo', 'ATLAS-Wisconsin', 'CLOUD', 'CMS', 'COMPASS', 'FCC', 'GBAR', 'ILC', 'ISOLDE', 'LHCb', 'MA', 'NA48', 'NA61', 'NA62', 'TOTEM',
         'BE', 'CLUB', 'DGU', 'DO', 'EN', 'EP', 'FAP', 'HR', 'HSE', 'IPT', 'IR', 'IT', 'IT-Batch', 'PRJ', 'SIS', 'SMB', 'TE', 'TH'
       ];
       $scope.new_project_name = '';
