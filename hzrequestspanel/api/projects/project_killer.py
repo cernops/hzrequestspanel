@@ -33,7 +33,7 @@ In order to delete this project, please execute the following Rundeck job - [cod
                 self.ticket, self.dict_data)
         except Exception as e:
             LOG.error("Error updating snow ticket:" + e.message)
-            raise SnowException
+            raise SnowException(e)
 
         self._add_project_members_to_watchlist(self.dict_data['project_name'])
 
@@ -53,7 +53,7 @@ In order to delete this project, please execute the following Rundeck job - [cod
             owner = self.cloudclient.get_project_owner(project_name)
         except Exception as e:
             LOG.error("Error checking project owner:" + e.message)
-            raise SnowException
+            raise SnowException(e)
 
         if owner != username:
             raise SnowException("Unable to create the ticket. You are not the owner of this project.")
