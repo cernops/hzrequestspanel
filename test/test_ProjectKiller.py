@@ -17,7 +17,7 @@ class TestProjectKiller(TestCase):
         self.request = api.ProjectKiller(payload,
                                          config_file=os.path.dirname(os.path.abspath(__file__)) +
                                                      "/hzrequestspanel_test.conf",
-                                         keytab_file=os.path.dirname(os.path.abspath(__file__)) + "/svcrdeck.keytab",
+                                         keytab_file="/etc/openstack-dashboard/svcrdeck.keytab",
                                          )
         self.request._create_empty_snow_ticket(
             "Unit tests for hzrequestspanel")

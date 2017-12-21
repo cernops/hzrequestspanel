@@ -64,14 +64,14 @@ class AbstractRequestCreator(object):
             self.config = config
         except Exception as e:
             LOG.error("Error parsing configuration:" + e.message)
-            raise SnowException
+            raise SnowException(e)
 
     def _create_snowclient_instance(self):
         try:
             return ServiceNowClient(instance=self.config['instance'])
         except Exception as e:
             LOG.error("Error instanciating SNOW client:" + e.message)
-            raise SnowException
+            raise SnowException(e)
 
     def _create_cloudclient_instance(self):
         try:
@@ -88,7 +88,7 @@ class AbstractRequestCreator(object):
 
         except Exception as e:
             LOG.error("Error instanciating cloud client:" + e.message)
-            raise SnowException
+            raise SnowException(e)
 
     def _create_empty_snow_ticket(self, title):
         try:
@@ -97,7 +97,7 @@ class AbstractRequestCreator(object):
                                                             assignment_group=self.target_group)
         except Exception as e:
             LOG.error("Error creating empty SNOW ticket:" + e.message)
-            raise SnowException
+            raise SnowException(e)
 
     def _create_notes_and_comments(self):
         try:

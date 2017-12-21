@@ -72,7 +72,7 @@ Best regards,
                                                                             self.dict_data)
         except Exception as e:
             LOG.error("Error updating snow ticket:" + e.message)
-            raise SnowException
+            raise SnowException(e)
 
         self._add_coordinators_to_watchlist()
 
