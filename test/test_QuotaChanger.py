@@ -67,7 +67,7 @@ class TestQuotaChanger(TestCase):
     def test_get_primary_account_from_ldap(self):
         self.assertEquals(
             self.request._get_primary_account_from_ldap(
-                "svchorizon"), "makowals")
+                "svchorizon"), "jcastro")
         self.assertNotEquals(
             self.request._get_primary_account_from_ldap(
                 "svchorizon"), "svchorizon")
