@@ -1,3 +1,5 @@
+# coding: utf-8
+
 from unittest import TestCase
 import hzrequestspanel.api.projects.project_creator as api
 from ccitools.utils.snow.ticket import RequestState
@@ -13,7 +15,7 @@ class TestProjectCreator(TestCase):
         payload = {
             "ticket_type": "new_project",
             "username": "svchorizon",
-            "comment": "",
+            "comment": u"A spécial 人物",
             "accounting_group": "IT",
             "project_name": "makowals-unittests",
             "description": "unittest for hzrequestspanel",
