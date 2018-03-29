@@ -12,7 +12,7 @@ class TestQuotaChanger(TestCase):
             logging.NullHandler())
         payload = {"ticket_type": "quota_change",
                    "username": "svchorizon",
-                   "project_name": "Personal makowals",
+                   "project_name": "Personal jcastro",
                    "comment": "",
                    "instances": 25, "cores": 25, "ram": 50,
                    "volumes": {"wig-cpio1": {"gigabytes": "0", "volumes": "0"},

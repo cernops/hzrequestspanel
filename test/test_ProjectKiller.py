@@ -11,8 +11,8 @@ class TestProjectKiller(TestCase):
         logging.getLogger("horizon.hzrequests").addHandler(
             logging.NullHandler())
         payload = {"ticket_type": "delete_project",
-                   "username": "makowals",
-                   "project_name": "Personal makowals",
+                   "username": "jcastro",
+                   "project_name": "Personal jcastro",
                    "comment": ""}
         self.request = api.ProjectKiller(payload,
                                          config_file=os.path.dirname(os.path.abspath(__file__)) +
@@ -27,16 +27,16 @@ class TestProjectKiller(TestCase):
         self.request.ticket.save()
 
     def test_verify_project_owner_positive(self):
-        self.request._verify_project_owner("Personal makowals", "makowals")
+        self.request._verify_project_owner("Personal jcastro", "jcastro")
 
     def test_verify_project_owner_negative(self):
         with self.assertRaises(api.SnowException):
-            self.request._verify_project_owner("Personal makowals", "svchorizon")
+            self.request._verify_project_owner("Personal jcastro", "makowals")
 
     def test_create_ticket_positive(self):
         self.request.create_ticket()
 
     def test_create_ticket_wrong_owner(self):
-        self.request.dict_data['username'] = "jcastro"
+        self.request.dict_data['username'] = "wiebalck"
         with self.assertRaises(api.SnowException):
             self.request.create_ticket()

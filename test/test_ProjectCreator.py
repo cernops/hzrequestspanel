@@ -18,7 +18,7 @@ class TestProjectCreator(TestCase):
             "project_name": "makowals-unittests",
             "description": "unittest for hzrequestspanel",
             "owner": "svchorizon",
-            "egroup": "makowals-federated",
+            "egroup": "cloud-infrastructure-3rd-level",
             "instances": 25,
             "cores": 25,
             "ram": 50,
@@ -55,7 +55,7 @@ class TestProjectCreator(TestCase):
         self.request.create_ticket()
 
     def test_create_ticket_positive_multiple_egroups(self):
-        egroups = "makowals-federated,cloud-infrastructure-baremetal-admin"
+        egroups = "cloud-infrastructure-3rd-level,cloud-infrastructure-baremetal-admin"
         self.request.dict_data['egroup'] = egroups
         self.request.create_ticket()
         record_producer = self.request.snowclient.get_project_creation_rp(self.request.ticket.info.number)
@@ -75,7 +75,7 @@ class TestProjectCreator(TestCase):
                 "svchorizon"), "svchorizon")
 
     def test_verify_egroup_positive(self):
-        self.request._verify_egroup("makowals-federated")
+        self.request._verify_egroup("cloud-infrastructure-3rd-level")
 
     def test_verify_egroup_negative(self):
         with self.assertRaises(api.SnowException):
