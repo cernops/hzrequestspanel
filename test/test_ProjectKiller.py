@@ -1,3 +1,5 @@
+# coding: utf-8
+
 from unittest import TestCase
 import hzrequestspanel.api.projects.project_killer as api
 from ccitools.utils.snow.ticket import RequestState
@@ -13,7 +15,7 @@ class TestProjectKiller(TestCase):
         payload = {"ticket_type": "delete_project",
                    "username": "jcastro",
                    "project_name": "Personal jcastro",
-                   "comment": ""}
+                   "comment": u"A spécial 人物"}
         self.request = api.ProjectKiller(payload,
                                          config_file=os.path.dirname(os.path.abspath(__file__)) +
                                                      "/hzrequestspanel_test.conf",
