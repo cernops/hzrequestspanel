@@ -18,14 +18,13 @@ rpmbuild:
 
 unittest:
   stage: test
-  image: mkowalski/rpm-builder:latest
+  image: gitlab-registry.cern.ch/cloud-infrastructure/cci-scripts/hzrequestspanel-unittests:latest
   except:
     - tags
   script:
     - sed -i s/%svc_pass%/$svc_pass/g test/hzrequestspanel_test.conf
     - mkdir -p /etc/openstack-dashboard && echo "$svcrdeck_keytab" > /etc/openstack-dashboard/svcrdeck.keytab.encoded
     - base64 --decode /etc/openstack-dashboard/svcrdeck.keytab.encoded > /etc/openstack-dashboard/svcrdeck.keytab
-    - yum install -y cern-get-sso-cookie
     - git clone -b $cci_tools_branch https://gitlab.cern.ch/cloud-infrastructure/cci-tools.git && cd cci-tools && pip install -e . -r requirements.txt && cd ..
     - python -m pytest test
 
